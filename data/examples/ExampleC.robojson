@@ -1,0 +1,7 @@
+{
+  "id": "example_music",
+  "title": "Музыкальный проект",
+  "board": "uno",
+  "description": "Пример из раздела 21.3 ТЗ",
+  "source": "ExampleC.ino"
+}

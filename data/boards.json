@@ -1,1 +1,22 @@
-{ "boards": [ { "id": "uno", "name": "Arduino Uno R3" } ] }
+{
+  "version": 1,
+  "boards": [
+    {
+      "id": "uno",
+      "name": "Arduino Uno R3",
+      "fqbn": "arduino:avr:uno",
+      "mcu": "atmega328p",
+      "upload": {
+        "tool": "avrdude",
+        "protocol": "arduino",
+        "speed": 115200,
+        "command": "{avrdude} -v -p atmega328p -c arduino -P {port} -b {speed} -D -U flash:w:{hex_path}:i"
+      },
+      "pins": {
+        "digital": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        "pwm": [3, 5, 6, 9, 10, 11],
+        "analog": ["A0", "A1", "A2", "A3", "A4", "A5"]
+      }
+    }
+  ]
+}
