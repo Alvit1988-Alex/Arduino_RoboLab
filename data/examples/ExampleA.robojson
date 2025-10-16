@@ -1,1 +1,7 @@
-{ "project": "ExampleA" }
+{
+  "id": "example_line_follow",
+  "title": "Следование по линии",
+  "board": "uno",
+  "description": "Пример из раздела 21.1 ТЗ",
+  "source": "ExampleA.ino"
+}
