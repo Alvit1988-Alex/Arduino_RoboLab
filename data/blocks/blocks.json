@@ -1,1 +1,166 @@
-[ ]
+{
+  "version": 1,
+  "categories": {
+    "EVENT": {"title": "События", "color": "#FF8A00"},
+    "CTRL": {"title": "Управление", "color": "#1E88E5"},
+    "SENS": {"title": "Сенсоры", "color": "#00ACC1"},
+    "LIGHT": {"title": "Свет и звук", "color": "#FFEB3B"},
+    "VAR": {"title": "Переменные", "color": "#E53935"},
+    "TIME": {"title": "Время", "color": "#4FC3F7"},
+    "LOGIC": {"title": "Логика", "color": "#0D47A1"}
+  },
+  "blocks": [
+    {
+      "id": "EV_START",
+      "name": "При старте",
+      "category": "EVENT",
+      "kind": "event",
+      "description": "Точка входа программы",
+      "containers": [
+        {"name": "setup", "section": "setup"},
+        {"name": "loop", "section": "loop"}
+      ]
+    },
+    {
+      "id": "EV_TIMER_MS",
+      "name": "Каждые N мс",
+      "category": "EVENT",
+      "kind": "statement",
+      "section": "loop",
+      "template": "static unsigned long __timer_{id} = 0;\nif (millis() - __timer_{id} >= {period_ms}) {\n  __timer_{id} = millis();\n{body_inner}\n}",
+      "containers": [
+        {"name": "body", "section": "loop", "placeholder": "body_inner"}
+      ],
+      "parameters": [
+        {"name": "period_ms", "type": "int", "default": 1000}
+      ]
+    },
+    {
+      "id": "CTL_IF",
+      "name": "Если",
+      "category": "CTRL",
+      "kind": "statement",
+      "section": "loop",
+      "template": "if ({condition}) {\n{body_then}\n}",
+      "containers": [
+        {"name": "then", "section": "loop", "placeholder": "body_then"}
+      ],
+      "parameters": [
+        {"name": "condition", "type": "expression", "default": "true"}
+      ]
+    },
+    {
+      "id": "CTL_IF_ELSE",
+      "name": "Если иначе",
+      "category": "CTRL",
+      "kind": "statement",
+      "section": "loop",
+      "template": "if ({condition}) {\n{body_then}\n} else {\n{body_else}\n}",
+      "containers": [
+        {"name": "then", "section": "loop", "placeholder": "body_then"},
+        {"name": "else", "section": "loop", "placeholder": "body_else"}
+      ],
+      "parameters": [
+        {"name": "condition", "type": "expression", "default": "true"}
+      ]
+    },
+    {
+      "id": "LS_LED_ON",
+      "name": "LED ON",
+      "category": "LIGHT",
+      "kind": "statement",
+      "section": "loop",
+      "template": "digitalWrite({pin}, HIGH);",
+      "setup": ["pinMode({pin}, OUTPUT);"] ,
+      "parameters": [
+        {"name": "pin", "type": "digital_pin", "default": 13}
+      ]
+    },
+    {
+      "id": "LS_LED_OFF",
+      "name": "LED OFF",
+      "category": "LIGHT",
+      "kind": "statement",
+      "section": "loop",
+      "template": "digitalWrite({pin}, LOW);",
+      "parameters": [
+        {"name": "pin", "type": "digital_pin", "default": 13}
+      ]
+    },
+    {
+      "id": "SN_DIGITAL_READ",
+      "name": "Цифровой вход",
+      "category": "SENS",
+      "kind": "expression",
+      "returns": "int",
+      "template": "digitalRead({pin})",
+      "parameters": [
+        {"name": "pin", "type": "digital_pin", "default": 2}
+      ]
+    },
+    {
+      "id": "VAR_DECLARE",
+      "name": "Объявить переменную",
+      "category": "VAR",
+      "kind": "statement",
+      "section": "globals",
+      "template": "{type} {name} = {value};",
+      "parameters": [
+        {"name": "type", "type": "string", "default": "int"},
+        {"name": "name", "type": "identifier", "default": "value"},
+        {"name": "value", "type": "expression", "default": "0"}
+      ]
+    },
+    {
+      "id": "VAR_SET",
+      "name": "Присвоить",
+      "category": "VAR",
+      "kind": "statement",
+      "section": "loop",
+      "template": "{name} = {value};",
+      "parameters": [
+        {"name": "name", "type": "identifier", "default": "value"},
+        {"name": "value", "type": "expression", "default": "0"}
+      ]
+    },
+    {
+      "id": "TM_DELAY",
+      "name": "Пауза мс",
+      "category": "TIME",
+      "kind": "statement",
+      "section": "loop",
+      "template": "delay({ms});",
+      "parameters": [
+        {"name": "ms", "type": "int", "default": 1000}
+      ]
+    },
+    {
+      "id": "LG_CMP_EQ",
+      "name": "Равно",
+      "category": "LOGIC",
+      "kind": "expression",
+      "returns": "bool",
+      "template": "({left}) == ({right})",
+      "parameters": [
+        {"name": "left", "type": "expression", "default": "0"},
+        {"name": "right", "type": "expression", "default": "0"}
+      ]
+    },
+    {
+      "id": "EV_BUTTON",
+      "name": "По нажатию кнопки",
+      "category": "EVENT",
+      "kind": "statement",
+      "section": "loop",
+      "template": "static bool __btn_prev_{pin} = false;\nbool __btn_now_{pin} = (digitalRead({pin}) == {active_state});\nif (__btn_now_{pin} && !__btn_prev_{pin}) {\n{body_inner}\n}\n__btn_prev_{pin} = __btn_now_{pin};",
+      "containers": [
+        {"name": "body", "section": "loop", "placeholder": "body_inner"}
+      ],
+      "setup": ["pinMode({pin}, INPUT_PULLUP);"] ,
+      "parameters": [
+        {"name": "pin", "type": "digital_pin", "default": 2},
+        {"name": "active_state", "type": "expression", "default": "LOW"}
+      ]
+    }
+  ]
+}

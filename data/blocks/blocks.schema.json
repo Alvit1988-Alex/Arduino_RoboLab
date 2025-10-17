@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Arduino RoboLab Blocks",
+  "type": "object",
+  "required": ["version", "categories", "blocks"],
+  "properties": {
+    "version": {"type": "integer", "minimum": 1},
+    "categories": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["title", "color"],
+        "properties": {
+          "title": {"type": "string"},
+          "color": {"type": "string"}
+        }
+      }
+    },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "kind"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "category": {"type": "string"},
+          "kind": {"type": "string", "enum": ["event", "statement", "expression"]},
+          "section": {"type": "string"},
+          "template": {"type": "string"},
+          "returns": {"type": "string"},
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": {"type": "string"},
+                "type": {"type": "string"},
+                "default": {}
+              }
+            }
+          },
+          "setup": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "globals": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "includes": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "functions": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "containers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "section"],
+              "properties": {
+                "name": {"type": "string"},
+                "section": {"type": "string"},
+                "placeholder": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
