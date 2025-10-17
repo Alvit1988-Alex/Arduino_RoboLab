@@ -1,0 +1,9 @@
+{
+  "id": "line_follow_pid",
+  "title": "Линия с PID",
+  "description": "Добавьте PID-регулятор для плавного движения.",
+  "requirements": {
+    "blocks": ["RB_PID_SETUP", "RB_PID_RUN"],
+    "board": "uno"
+  }
+}

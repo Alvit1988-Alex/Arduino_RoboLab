@@ -1,0 +1,7 @@
+{
+  "id": "example_anti_collision",
+  "title": "Антистолкновение",
+  "board": "uno",
+  "description": "Пример из раздела 21.2 ТЗ",
+  "source": "ExampleB.ino"
+}
