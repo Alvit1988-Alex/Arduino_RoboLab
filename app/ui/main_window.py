@@ -1,15 +1,22 @@
+"""Главное окно предварительной версии Arduino RoboLab."""
 from __future__ import annotations
 
-from pathlib import Path
 import json
 import uuid
-from typing import List, Dict, Optional
+from pathlib import Path
+from typing import Dict, List, Optional
 
 from PySide6.QtCore import Qt, QMimeData
 from PySide6.QtGui import QAction, QDrag  # QAction и QDrag в QtGui
 from PySide6.QtWidgets import (
-    QMainWindow, QListWidget, QListWidgetItem, QAbstractItemView,
-    QTextEdit, QSplitter, QMessageBox, QFileDialog
+    QAbstractItemView,
+    QFileDialog,
+    QListWidget,
+    QListWidgetItem,
+    QMainWindow,
+    QMessageBox,
+    QSplitter,
+    QTextEdit,
 )
 
 from app.ui.canvas import CanvasScene, CanvasView, ProjectModel
@@ -78,7 +85,7 @@ class MainWindow(QMainWindow):
         self.code_view.setReadOnly(True)
         self.code_view.setObjectName("codeView")
 
-        splitter.setSizes([220, 700, 360])
+        splitter.setSizes([200, 400, 400])  # как в Codex-ветке
         self.setCentralWidget(splitter)
         self.setWindowTitle(self.WINDOW_TITLE)
         self.resize(1200, 700)
@@ -129,7 +136,11 @@ class MainWindow(QMainWindow):
         try:
             model = ProjectModel.load_from_file(path)
         except (OSError, json.JSONDecodeError) as exc:
-            QMessageBox.warning(self, "Ошибка", f"Не удалось открыть проект: {exc}")
+            QMessageBox.warning(
+                self,
+                "Ошибка",
+                f"Не удалось открыть проект: {exc}",
+            )
             self.statusBar().showMessage(f"Ошибка открытия проекта: {exc}", 8000)
             return
         self.canvas_scene.load_model(model)
@@ -177,7 +188,9 @@ class MainWindow(QMainWindow):
             payload = json.loads(raw_text)
             self.blocks = list(payload.get("blocks", []))
         except (OSError, json.JSONDecodeError) as exc:
-            self.statusBar().showMessage(f"Ошибка загрузки blocks.json: {exc}", 8000)
+            self.statusBar().showMessage(
+                f"Ошибка загрузки blocks.json: {exc}", 8000
+            )
             return
 
         self.block_titles = {}
@@ -209,7 +222,7 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage(
                 f"Генератор недоступен, используется шаблон: {exc}", 8000
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - показать ошибку генерации
             self.statusBar().showMessage(
                 f"Ошибка генерации, использован шаблон: {exc}", 8000
             )
