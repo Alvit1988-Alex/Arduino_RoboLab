@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Arduino RoboLab (Preview)")
         self.resize(1280, 800)
 
+        # Центральный сплиттер: палитра | канва | код
         central = QWidget(self)
         layout = QHBoxLayout(central)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -99,6 +100,7 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f"Удалено блоков: {count}", 4000)
 
     def _on_connection_added(self, connection) -> None:
+        # можно подсветить код или обновить панель свойств — пока заглушка
         pass
 
     def _on_connections_removed(self, count: int) -> None:

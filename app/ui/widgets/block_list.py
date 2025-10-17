@@ -12,6 +12,7 @@ from ..canvas.canvas_scene import MIME_BLOCK
 class BlockListWidget(QListWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
+        # Qt6: enum берём из класса QAbstractItemView.SelectionMode
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setDragEnabled(True)
         self._catalog: Dict[str, Dict[str, object]] = {}
