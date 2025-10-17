@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List
 import copy
 
 
 @dataclass
 class BlockInstance:
+    """Описание блока, размещённого на сцене."""
     uid: str
     type_id: str
     x: float = 0.0
@@ -35,16 +36,18 @@ class BlockInstance:
 
 @dataclass
 class ConnectionModel:
+    """Connection between two block ports."""
     from_block_uid: str
     from_port: str
     to_block_uid: str
     to_port: str
 
     def key(self) -> str:
+        """Unique key of the connection (stable)."""
         return f"{self.from_block_uid}:{self.from_port}->{self.to_block_uid}:{self.to_port}"
 
     def to_dict(self) -> Dict[str, object]:
-        # «плоский» формат для совместимости со старыми проектами
+        # сохранение в «плоском» формате (совместимо со старыми проектами)
         return {
             "from_uid": self.from_block_uid,
             "from_port": self.from_port,
@@ -54,6 +57,7 @@ class ConnectionModel:
 
     @classmethod
     def from_dict(cls, payload: Dict[str, object]) -> "ConnectionModel":
+        # поддержка обоих форматов
         if not isinstance(payload, dict):
             payload = {}
         if "from_uid" in payload or "to_uid" in payload:
@@ -83,6 +87,7 @@ class ConnectionModel:
 
 @dataclass
 class ProjectModel:
+    """Проект: набор блоков и соединений."""
     blocks: List[BlockInstance] = field(default_factory=list)
     connections: List[ConnectionModel] = field(default_factory=list)
 
@@ -94,7 +99,10 @@ class ProjectModel:
 
     def remove_block(self, uid: str) -> None:
         self.blocks = [b for b in self.blocks if b.uid != uid]
-        self.connections = [c for c in self.connections if (c.from_block_uid != uid and c.to_block_uid != uid)]
+        # связанные соединения тоже удалим — безопасность на уровне модели
+        self.connections = [
+            c for c in self.connections if (c.from_block_uid != uid and c.to_block_uid != uid)
+        ]
 
     def add_connection(self, connection: ConnectionModel) -> None:
         self.connections.append(connection)
@@ -113,8 +121,8 @@ class ProjectModel:
 
     @classmethod
     def from_dict(cls, payload: Dict[str, object]) -> "ProjectModel":
-        blocks: List[BlockInstance] = []
-        connections: List[ConnectionModel] = []
+        blocks = []
+        connections = []
         if isinstance(payload, dict):
             for b in payload.get("blocks", []):
                 if isinstance(b, dict):

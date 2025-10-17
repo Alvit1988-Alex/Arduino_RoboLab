@@ -9,17 +9,19 @@ from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPath
 
 from .model import BlockInstance
 
-GRID_SIZE = 20
+GRID_SIZE = 20  # экспортируется в сцену
 
 
 @dataclass(frozen=True)
 class PortSpec:
+    """Specification of a block port."""
     name: str
     direction: str   # "in" | "out"
     dtype: Optional[str] = None
 
 
 class BlockItem(QGraphicsItem):
+    """Visual representation of a block on the canvas."""
     WIDTH = 180
     HEADER_HEIGHT = 28
     MIN_HEIGHT = 96
@@ -54,22 +56,28 @@ class BlockItem(QGraphicsItem):
         self._height = self._compute_height()
         self._create_ports()
 
+        # позиционирование из модели
         self.setPos(self.block.x, self.block.y)
 
+    # --------------------------------------------------------------- QGraphics
     def boundingRect(self) -> QRectF:  # type: ignore[override]
         return QRectF(0, 0, self.WIDTH, self._height)
 
     def paint(self, painter: QPainter, option, widget=None) -> None:  # type: ignore[override]
         rect = QRectF(0, 0, self.WIDTH, self._height)
+
+        # тело
         painter.setPen(QPen(QColor(96, 125, 139), 1.5))
         painter.setBrush(QColor(38, 50, 56))
         painter.drawRoundedRect(rect, 8, 8)
 
+        # хэдэр
         header = QRectF(0, 0, self.WIDTH, self.HEADER_HEIGHT)
         painter.setBrush(QColor(55, 71, 79))
         painter.drawRoundedRect(header, 8, 8)
         painter.drawRect(0, self.HEADER_HEIGHT - 1, self.WIDTH, 1)
 
+        # текст
         painter.setPen(QColor(236, 239, 241))
         font = QFont()
         font.setPointSize(9)
@@ -77,6 +85,7 @@ class BlockItem(QGraphicsItem):
         painter.setFont(font)
         painter.drawText(header.adjusted(8, 0, -8, 0), Qt.AlignVCenter | Qt.AlignLeft, self.title)
 
+        # рамка выделения
         if self.isSelected():
             painter.setPen(QPen(QColor(255, 193, 7), 2.0, Qt.DashLine))
             painter.setBrush(Qt.NoBrush)
@@ -84,6 +93,7 @@ class BlockItem(QGraphicsItem):
 
     def itemChange(self, change, value):  # type: ignore[override]
         if change == QGraphicsItem.ItemPositionHasChanged:
+            # «прилипание» к сетке и обновление модели
             pos = self.pos()
             gx = round(pos.x() / self.grid_size) * self.grid_size
             gy = round(pos.y() / self.grid_size) * self.grid_size
@@ -93,6 +103,7 @@ class BlockItem(QGraphicsItem):
                 connection.update_path()
         return super().itemChange(change, value)
 
+    # -------------------------------------------------------------- port utils
     def ports_in(self) -> Iterable["PortItem"]:
         return tuple(self._ports_in)
 
@@ -110,6 +121,7 @@ class BlockItem(QGraphicsItem):
     def unregister_connection(self, connection: "ConnectionItem") -> None:
         self._connections.discard(connection)
 
+    # --------------------------------------------------------------- helpers
     def _compute_height(self) -> float:
         rows = max(len(self._port_specs_in), len(self._port_specs_out), 1)
         return max(self.MIN_HEIGHT, self.HEADER_HEIGHT + self.PORT_MARGIN_TOP + rows * self.PORT_SPACING)
@@ -129,6 +141,7 @@ class BlockItem(QGraphicsItem):
 
 
 class PortItem(QGraphicsEllipseItem):
+    """Interactive port item used for connections."""
     RADIUS = 6.0
     COLOR_DEFAULT = QColor(236, 239, 241)
     COLOR_HOVER = QColor(255, 241, 118)
@@ -148,6 +161,7 @@ class PortItem(QGraphicsEllipseItem):
         self._connections: Set["ConnectionItem"] = set()
         self.setToolTip(f"{self.direction}: {self.spec.name}")
 
+    # --------------------------------------------------------------- helpers
     @property
     def name(self) -> str:
         return self.spec.name
@@ -167,6 +181,7 @@ class PortItem(QGraphicsEllipseItem):
     def connection_anchor(self) -> QPointF:
         return self.mapToScene(self.boundingRect().center())
 
+    # ---------------------------------------------------------------- events
     def hoverEnterEvent(self, event) -> None:  # type: ignore[override]
         self.setBrush(self.COLOR_HOVER)
         super().hoverEnterEvent(event)
@@ -197,6 +212,7 @@ class PortItem(QGraphicsEllipseItem):
 
 
 class ConnectionItem(QGraphicsPathItem):
+    """Visual connection between two ports."""
     COLOR_DEFAULT = QColor(120, 144, 156)
     COLOR_SELECTED = QColor(255, 193, 7)
 
@@ -222,6 +238,7 @@ class ConnectionItem(QGraphicsPathItem):
         self.setAcceptHoverEvents(True)
         self.update_path()
 
+    # --------------------------------------------------------------- helpers
     def _make_pen(self, preview: bool) -> QPen:
         style = Qt.DashLine if preview else Qt.SolidLine
         return QPen(self.COLOR_DEFAULT, 2.0 if not preview else 1.5, style, Qt.RoundCap, Qt.RoundJoin)
@@ -241,7 +258,6 @@ class ConnectionItem(QGraphicsPathItem):
     def update_path(self) -> None:
         start = self._anchor_for_port(self.start_port)
         if start is None:
-            from PySide6.QtGui import QPainterPath
             self.setPath(QPainterPath())
             return
         if self.end_port is not None:
@@ -250,7 +266,6 @@ class ConnectionItem(QGraphicsPathItem):
             end = self._temp_end
         else:
             end = start
-        from PySide6.QtGui import QPainterPath
         path = QPainterPath(start)
         dx = (end.x() - start.x()) * 0.5
         path.cubicTo(start.x() + dx, start.y(), end.x() - dx, end.y(), end.x(), end.y())
@@ -262,6 +277,7 @@ class ConnectionItem(QGraphicsPathItem):
         return port.connection_anchor()
 
     def detach(self) -> None:
+        """Detach the connection from its ports."""
         if self.start_port is not None:
             self.start_port.remove_connection(self)
             self.start_port.block_item.unregister_connection(self)
@@ -270,3 +286,16 @@ class ConnectionItem(QGraphicsPathItem):
             self.end_port.block_item.unregister_connection(self)
         self.start_port = None  # type: ignore[assignment]
         self.end_port = None    # type: ignore[assignment]
+
+    # ---------------------------------------------------------------- events
+    def hoverEnterEvent(self, event) -> None:  # type: ignore[override]
+        pen = self.pen()
+        pen.setColor(self.COLOR_SELECTED)
+        self.setPen(pen)
+        super().hoverEnterEvent(event)
+
+    def hoverLeaveEvent(self, event) -> None:  # type: ignore[override]
+        pen = self.pen()
+        pen.setColor(self.COLOR_DEFAULT)
+        self.setPen(pen)
+        super().hoverLeaveEvent(event)
