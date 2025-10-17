@@ -37,7 +37,7 @@ class CanvasScene(QGraphicsScene):
 
         # фон и drop
         self.setBackgroundBrush(QColor("#202020"))
-        self._accept_drops_enabled = True
+        self._accept_drops_enabled = True  # у QGraphicsScene нет реального setAcceptDrops
 
         # состояние превью соединения
         self._connection_preview: Optional[ConnectionItem] = None
