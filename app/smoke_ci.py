@@ -57,11 +57,29 @@ def main() -> int:
     # 3) Инварианты по содержимому
     try:
         mime_src = read_text(os.path.join(REPO_ROOT, "app/ui/common/mime.py"))
-        ok, msg = must_contain(mime_src, 'BLOCK_MIME = "application/x-robolab-block"', "BLOCK_MIME constant")
+        ok, msg = must_contain(
+            mime_src,
+            'BLOCK_MIME = "application/x-robolab-block"',
+            "BLOCK_MIME constant",
+        )
         if not ok:
             errors.append(f"mime.py: {msg}")
     except Exception as e:
         errors.append(f"mime.py read failed: {e}")
+
+    try:
+        scene_src = read_text(os.path.join(REPO_ROOT, "app/ui/canvas/canvas_scene.py"))
+        ok, msg = must_contain(
+            scene_src,
+            "from ..common.mime import BLOCK_MIME",
+            "canvas_scene imports BLOCK_MIME",
+        )
+        if not ok:
+            errors.append(f"canvas_scene.py: {msg}")
+        if "MIME_BLOCK" in scene_src:
+            errors.append("canvas_scene.py: legacy MIME_BLOCK symbol detected")
+    except Exception as e:
+        errors.append(f"canvas_scene.py read failed: {e}")
 
     try:
         items_src = read_text(os.path.join(REPO_ROOT, "app/ui/canvas/items.py"))
