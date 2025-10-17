@@ -4,7 +4,7 @@ from typing import Dict
 
 from PySide6.QtCore import Qt, QMimeData
 from PySide6.QtGui import QDrag
-from PySide6.QtWidgets import QListWidget, QListWidgetItem
+from PySide6.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem
 
 from ..canvas.canvas_scene import MIME_BLOCK
 
@@ -12,7 +12,8 @@ from ..canvas.canvas_scene import MIME_BLOCK
 class BlockListWidget(QListWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setSelectionMode(self.SingleSelection)
+        # Qt6: enum берём из класса QAbstractItemView.SelectionMode
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setDragEnabled(True)
         self._catalog: Dict[str, Dict[str, object]] = {}
 

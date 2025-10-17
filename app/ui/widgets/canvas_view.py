@@ -11,7 +11,8 @@ class CanvasView(QGraphicsView):
         super().__init__(parent)
         self.setScene(scene)
         self.setRenderHints(self.renderHints())
-        self.setDragMode(QGraphicsView.RubberBandDrag)
+        # Qt6: drag mode из вложенного enum-класса DragMode
+        self.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
         self._panning = False
         self._pan_start = QPoint()
 
