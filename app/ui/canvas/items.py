@@ -158,9 +158,17 @@ class PortItem(QGraphicsEllipseItem):
         self.setZValue(2)
         self.setAcceptHoverEvents(True)
         self.setAcceptedMouseButtons(Qt.LeftButton)
-        self.setCursor(Qt.CrossCursor)
         self._connections: Set["ConnectionItem"] = set()
         self.setToolTip(f"{self.direction}: {self.spec.name}")
+        # наглядный курсор для перетаскивания связей
+        self.setCursor(Qt.CrossCursor)
+
+    # увеличенная область попадания для удобства
+    def shape(self) -> QPainterPath:  # type: ignore[override]
+        r = self.RADIUS + 3.0
+        path = QPainterPath()
+        path.addEllipse(QRectF(-r, -r, r * 2, r * 2))
+        return path
 
     # --------------------------------------------------------------- helpers
     @property
@@ -181,12 +189,6 @@ class PortItem(QGraphicsEllipseItem):
 
     def connection_anchor(self) -> QPointF:
         return self.mapToScene(self.boundingRect().center())
-
-    def shape(self) -> QPainterPath:  # type: ignore[override]
-        r = self.RADIUS + 3.0
-        path = QPainterPath()
-        path.addEllipse(QRectF(-r, -r, r * 2, r * 2))
-        return path
 
     # ---------------------------------------------------------------- events
     def hoverEnterEvent(self, event) -> None:  # type: ignore[override]
@@ -242,6 +244,7 @@ class ConnectionItem(QGraphicsPathItem):
         self.setBrush(Qt.NoBrush)
         self.setZValue(0)
         self.setFlag(QGraphicsItem.ItemIsSelectable, not preview)
+        # превью не должно перехватывать hover
         self.setAcceptHoverEvents(False if preview else True)
         self.update_path()
 
@@ -260,6 +263,7 @@ class ConnectionItem(QGraphicsPathItem):
         self._is_preview = False
         self.setPen(self._make_pen(False))
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.setAcceptHoverEvents(True)
         self.update_path()
 
     def update_path(self) -> None:

@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsSceneDragDropEvent
 from .items import BlockItem, ConnectionItem, PortItem, PortSpec, GRID_SIZE
 from .model import BlockInstance, ConnectionModel, ProjectModel
 
+# MIME тип, который отдаёт левая палитра (BlockListWidget)
 MIME_BLOCK = "application/x-robolab-block"
 
 
@@ -37,7 +38,7 @@ class CanvasScene(QGraphicsScene):
 
         # фон и drop
         self.setBackgroundBrush(QColor("#202020"))
-        self._accept_drops_enabled = True
+        self._accept_drops_enabled = True  # у QGraphicsScene нет реального setAcceptDrops
 
         # состояние превью соединения
         self._connection_preview: Optional[ConnectionItem] = None
@@ -65,7 +66,7 @@ class CanvasScene(QGraphicsScene):
                 self._project_model.remove_connection(connection)
 
     def model(self) -> ProjectModel:
-        # вернуть актуальную модель (с координатами из item'ов)
+        """Вернуть актуальную модель (с координатами из item'ов)."""
         for uid, item in self._block_items.items():
             item.block.x, item.block.y = item.pos().x(), item.pos().y()
         self._project_model.blocks = [item.block for item in self._block_items.values()]
@@ -141,11 +142,14 @@ class CanvasScene(QGraphicsScene):
 
     def mouseReleaseEvent(self, event) -> None:  # type: ignore[override]
         if self._connection_preview is not None and event.button() == Qt.LeftButton:
+            # Попробуем найти целевой входной порт под курсором
             target = self._port_at(event.scenePos(), direction="in")
             if target is not None:
+                # Завершим соединение так же, как если бы пользователь отпустил на PortItem
                 self.complete_connection(target)
                 event.accept()
                 return
+            # Если под курсором нет валидного входа — отменяем
             self._emit_status("Соединение отменено: отпустите над входным портом")
             self._cancel_connection_preview()
             event.accept()
@@ -300,13 +304,6 @@ class CanvasScene(QGraphicsScene):
             return None
         return block_item.get_port(name, direction)
 
-    def _port_at(self, pos: QPointF, direction: Optional[str] = None) -> Optional[PortItem]:
-        for item in self.items(pos):
-            if isinstance(item, PortItem):
-                if direction is None or item.direction == direction:
-                    return item
-        return None
-
     def _create_connection_item(self, connection: ConnectionModel) -> Optional[ConnectionItem]:
         start = self._find_port(connection.from_block_uid, connection.from_port, "out")
         end = self._find_port(connection.to_block_uid, connection.to_port, "in")
@@ -364,3 +361,11 @@ class CanvasScene(QGraphicsScene):
     def acceptsDrops(self) -> bool:  # type: ignore[override]
         """Текущее состояние приёма drop."""
         return bool(self._accept_drops_enabled)
+
+    # ------------------------------------------------------------- helpers (UX)
+    def _port_at(self, pos: QPointF, direction: Optional[str] = None) -> Optional[PortItem]:
+        for item in self.items(pos):
+            if isinstance(item, PortItem):
+                if direction is None or item.direction == direction:
+                    return item
+        return None
