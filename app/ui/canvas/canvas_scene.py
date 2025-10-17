@@ -141,12 +141,16 @@ class CanvasScene(QGraphicsScene):
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event) -> None:  # type: ignore[override]
-        if (
-            self._connection_preview is not None
-            and event.button() == Qt.LeftButton
-            and not event.isAccepted()
-        ):
-            self._emit_status("Соединение отменено")
+        if self._connection_preview is not None and event.button() == Qt.LeftButton:
+            # Попробуем найти целевой входной порт под курсором
+            target = self._port_at(event.scenePos(), direction="in")
+            if target is not None:
+                # Завершим соединение так же, как если бы пользователь отпустил на PortItem
+                self.complete_connection(target)
+                event.accept()
+                return
+            # Если под курсором нет валидного входа — отменяем
+            self._emit_status("Соединение отменено: отпустите над входным портом")
             self._cancel_connection_preview()
             event.accept()
             return
@@ -357,3 +361,11 @@ class CanvasScene(QGraphicsScene):
     def acceptsDrops(self) -> bool:  # type: ignore[override]
         """Текущее состояние приёма drop."""
         return bool(self._accept_drops_enabled)
+
+    # ------------------------------------------------------------- helpers (UX)
+    def _port_at(self, pos: QPointF, direction: Optional[str] = None) -> Optional[PortItem]:
+        for item in self.items(pos):
+            if isinstance(item, PortItem):
+                if direction is None or item.direction == direction:
+                    return item
+        return None
