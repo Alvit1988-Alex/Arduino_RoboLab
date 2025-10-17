@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List
 import copy
 
 
@@ -47,7 +47,7 @@ class ConnectionModel:
         return f"{self.from_block_uid}:{self.from_port}->{self.to_block_uid}:{self.to_port}"
 
     def to_dict(self) -> Dict[str, object]:
-        # сохранение в «плоском» формате (из Codex-ветки)
+        # сохранение в «плоском» формате (совместимо со старыми проектами)
         return {
             "from_uid": self.from_block_uid,
             "from_port": self.from_port,

@@ -65,6 +65,7 @@ class BlockItem(QGraphicsItem):
 
     def paint(self, painter: QPainter, option, widget=None) -> None:  # type: ignore[override]
         rect = QRectF(0, 0, self.WIDTH, self._height)
+
         # тело
         painter.setPen(QPen(QColor(96, 125, 139), 1.5))
         painter.setBrush(QColor(38, 50, 56))

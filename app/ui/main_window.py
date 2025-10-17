@@ -3,15 +3,14 @@ from __future__ import annotations
 from typing import Dict, List, Optional
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QAction, QDrag  # QAction и QDrag в QtGui
+from PySide6.QtGui import QAction, QDrag
 from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QSplitter
 
 from .canvas.canvas_scene import CanvasScene
-from .canvas.items import PortSpec
-from .canvas.model import BlockInstance, ProjectModel
-from .widgets.block_list import BlockListWidget  # предположительно есть
-from .widgets.canvas_view import CanvasView      # предположительно есть
-from .widgets.code_panel import CodePanel        # предположительно есть
+from .canvas.model import BlockInstance
+from .widgets.block_list import BlockListWidget
+from .widgets.canvas_view import CanvasView
+from .widgets.code_panel import CodePanel
 
 
 class MainWindow(QMainWindow):
@@ -31,7 +30,7 @@ class MainWindow(QMainWindow):
         # Левая палитра
         self.block_list = BlockListWidget(splitter)
 
-        # Центр: канва (Scene + View)
+        # Центр: канва
         self.canvas_scene = CanvasScene()
         self.canvas_scene.blockAdded.connect(self._on_block_added)
         self.canvas_scene.blocksRemoved.connect(self._on_blocks_removed)
@@ -44,29 +43,29 @@ class MainWindow(QMainWindow):
         # Правая панель: код
         self.code_panel = CodePanel(splitter)
 
-        splitter.setSizes([200, 400, 400])  # как в Codex-ветке
+        splitter.setSizes([220, 640, 420])
 
-        # Каталог блоков (title + схема портов)
+        # Каталог блоков
         self.block_catalog: Dict[str, Dict[str, object]] = {}
         self._load_block_catalog()
 
-        # Привязать каталог к сцене
+        # Привязка каталогов
+        self.block_list.set_catalog(self.block_catalog)
         self.canvas_scene.set_block_catalog(self.block_catalog)
 
-        # Статус-бар
         self.statusBar().showMessage("Готово")
 
-    # -------------------------------------------------------- catalog loading
     def _load_block_catalog(self) -> None:
-        """
-        Собираем каталог из данных (в MVP может быть упрощённым).
-        Ожидаемый формат для сцен: {type_id: {"title": str, "inputs": [...], "outputs": [...]}}
-        """
-        # Пример минимального набора:
+        # MVP-набор; в дальнейшем подменим генерацией из YAML/JSON
         blocks = [
-            {"id": "EV_START", "title": "При старте", "ports": {"inputs": [], "outputs": [{"name": "out", "type": None}]}},
-            {"id": "LS_LED_ON", "title": "LED ON", "ports": {"inputs": [{"name": "in", "type": "pulse"}], "outputs": []}},
-            {"id": "CTL_IF", "title": "Если", "ports": {"inputs": [{"name": "in", "type": "flow"}], "outputs": [{"name": "then", "type": "flow"}, {"name": "else", "type": "flow"}]}},
+            {"id": "EV_START", "title": "При старте",
+             "ports": {"inputs": [], "outputs": [{"name": "out", "type": "flow"}]}},
+            {"id": "LS_LED_ON", "title": "LED ON",
+             "ports": {"inputs": [{"name": "in", "type": "flow"}], "outputs": []}},
+            {"id": "CTL_IF", "title": "Если",
+             "ports": {"inputs": [{"name": "in", "type": "flow"}],
+                       "outputs": [{"name": "then", "type": "flow"},
+                                   {"name": "else", "type": "flow"}]}},
         ]
         self.block_catalog = {}
         for block in blocks:
@@ -77,11 +76,7 @@ class MainWindow(QMainWindow):
             outputs = self._normalize_ports(ports.get("outputs"), prefix="out") if isinstance(ports, dict) else []
             if not outputs:
                 outputs = [{"name": "out", "type": None}]
-            self.block_catalog[block_id] = {
-                "title": str(title),
-                "inputs": inputs,
-                "outputs": outputs,
-            }
+            self.block_catalog[block_id] = {"title": str(title), "inputs": inputs, "outputs": outputs}
 
     def _normalize_ports(self, payload, *, prefix: str) -> List[Dict[str, Optional[str]]]:
         result: List[Dict[str, Optional[str]]] = []
@@ -97,7 +92,6 @@ class MainWindow(QMainWindow):
                 result.append({"name": name, "type": dtype_value})
         return result
 
-    # ------------------------------------------------------------ callbacks
     def _on_block_added(self, block: BlockInstance) -> None:
         title = self.block_catalog.get(block.type_id, {}).get("title", block.type_id)
         self.statusBar().showMessage(f"Добавлен блок: {title}", 4000)

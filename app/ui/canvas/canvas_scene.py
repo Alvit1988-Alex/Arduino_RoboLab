@@ -1,16 +1,17 @@
 from __future__ import annotations
-
-"""Graphics scene implementing drag-and-drop and project synchronisation."""
+"""Graphics scene implementing drag-and-drop, connections, and project sync."""
 
 from collections import deque
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, List, Optional
 
-from PySide6.QtCore import QPointF, Qt, Signal
+from PySide6.QtCore import QPointF, Qt, QMimeData, Signal
 from PySide6.QtGui import QColor
-from PySide6.QtWidgets import QGraphicsScene
+from PySide6.QtWidgets import QGraphicsScene, QGraphicsSceneDragDropEvent
 
 from .items import BlockItem, ConnectionItem, PortItem, PortSpec, GRID_SIZE
 from .model import BlockInstance, ConnectionModel, ProjectModel
+
+MIME_BLOCK = "application/x-robolab-block"
 
 
 class CanvasScene(QGraphicsScene):
@@ -34,12 +35,12 @@ class CanvasScene(QGraphicsScene):
         self._block_catalog: Dict[str, Dict[str, object]] = {}
         self._grid_size = GRID_SIZE
 
-        # цвет фона и флаг «принимаем ли drop»
+        # фон и drop
         self.setBackgroundBrush(QColor("#202020"))
         self._accept_drops_enabled = True
         super().setAcceptDrops(True)
 
-        # состояние для превью соединения
+        # состояние превью соединения
         self._connection_preview: Optional[ConnectionItem] = None
         self._connection_start_port: Optional[PortItem] = None
 
@@ -106,7 +107,34 @@ class CanvasScene(QGraphicsScene):
             self._emit_status(f"Удалено соединений: {removed_connections}")
         return removed_blocks + removed_connections
 
-    # --------------------------------------------------------------- events
+    # --------------------------------------------------------------- DnD events
+    def dragEnterEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
+        md: QMimeData = event.mimeData()
+        if md.hasFormat(MIME_BLOCK) and self._accept_drops_enabled:
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
+        md: QMimeData = event.mimeData()
+        if md.hasFormat(MIME_BLOCK) and self._accept_drops_enabled:
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
+        md: QMimeData = event.mimeData()
+        if md.hasFormat(MIME_BLOCK) and self._accept_drops_enabled:
+            type_id = str(bytes(md.data(MIME_BLOCK)).decode("utf-8")).strip()
+            pos = event.scenePos()
+            gx = round(pos.x() / self._grid_size) * self._grid_size
+            gy = round(pos.y() / self._grid_size) * self._grid_size
+            self.add_block_at(type_id, QPointF(gx, gy))
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    # ----------------------------------------------------------------- events
     def mouseMoveEvent(self, event) -> None:  # type: ignore[override]
         if self._connection_preview is not None:
             self._connection_preview.set_temp_end(event.scenePos())
@@ -187,6 +215,7 @@ class CanvasScene(QGraphicsScene):
         self._project_model.add_connection(connection_model)
         item = ConnectionItem(start_port, port, model=connection_model, preview=False)
         self._register_connection_item(connection_model, item)
+
         title_from = self._block_catalog.get(start_port.block_item.block.type_id, {}).get(
             "title", start_port.block_item.block.type_id
         )
@@ -301,13 +330,9 @@ class CanvasScene(QGraphicsScene):
         return False
 
     def _are_types_compatible(self, source: PortItem, target: PortItem) -> bool:
-        src = source.dtype or ""
-        dst = target.dtype or ""
-        if not src or src.lower() in {"any", "*"}:
-            return True
-        if not dst or dst.lower() in {"any", "*"}:
-            return True
-        return src == dst
+        src = (source.dtype or "").lower()
+        dst = (target.dtype or "").lower()
+        return (not src or src in {"any", "*"}) or (not dst or dst in {"any", "*"}) or (src == dst)
 
     def _connection_key(self, from_uid: str, from_port: str, to_uid: str, to_port: str) -> str:
         return f"{from_uid}:{from_port}->{to_uid}:{to_port}"
