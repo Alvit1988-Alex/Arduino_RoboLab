@@ -6,7 +6,7 @@ from PySide6.QtCore import Qt, QMimeData
 from PySide6.QtGui import QDrag
 from PySide6.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem
 
-from ..canvas.canvas_scene import MIME_BLOCK
+from ..common.mime import BLOCK_MIME
 
 
 class BlockListWidget(QListWidget):
@@ -34,7 +34,7 @@ class BlockListWidget(QListWidget):
         if not type_id:
             return
         mime = QMimeData()
-        mime.setData(MIME_BLOCK, type_id.encode("utf-8"))
+        mime.setData(BLOCK_MIME, type_id.encode("utf-8"))
         drag = QDrag(self)
         drag.setMimeData(mime)
         drag.exec(Qt.CopyAction)
