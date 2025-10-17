@@ -1,21 +1,15 @@
 """Главное окно предварительной версии Arduino RoboLab."""
 from __future__ import annotations
-
-import json
 from pathlib import Path
-from typing import List
+import json
+from typing import List, Dict, Any, Optional
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QAction  # <-- Важно: QAction из QtGui
 from PySide6.QtWidgets import (
-    QAction,
-    QFileDialog,
-    QLabel,
-    QListWidget,
-    QListWidgetItem,
-    QMainWindow,
-    QMessageBox,
-    QSplitter,
-    QTextEdit,
+    QMainWindow, QWidget, QVBoxLayout, QLabel, QMenuBar, QStatusBar,
+    QListWidget, QListWidgetItem, QTextEdit, QSplitter, QMessageBox, QFileDialog,
+    QToolBar, QPushButton
 )
 
 
