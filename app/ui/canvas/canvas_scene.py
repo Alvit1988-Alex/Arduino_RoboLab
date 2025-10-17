@@ -1,5 +1,6 @@
-"""Graphics scene implementing drag-and-drop and project synchronisation."""
 from __future__ import annotations
+
+"""Graphics scene implementing drag-and-drop and project synchronisation."""
 
 from typing import Dict, Optional
 
@@ -22,13 +23,18 @@ class CanvasScene(QGraphicsScene):
     def __init__(self, *, parent=None) -> None:
         super().__init__(parent)
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
+        # предпочтения Codex: большой «лист» сцены
         self.setSceneRect(-5000, -5000, 10000, 10000)
+
+        # модель / отображение
         self._project_model = ProjectModel()
         self._block_items: Dict[str, BlockItem] = {}
         self._block_catalog: Dict[str, str] = {}
         self._grid_size = GRID_SIZE
-        self._accept_drops_enabled = False
+
+        # цвет фона и флаг «принимаем ли drop»
         self.setBackgroundBrush(QColor("#202020"))
+        self._accept_drops_enabled = True
         self.setAcceptDrops(True)
 
     # ------------------------------------------------------------ catalog/model
@@ -92,7 +98,7 @@ class CanvasScene(QGraphicsScene):
         try:
             raw_bytes = bytes(mime.data(MIME_TYPE))
             block_id = raw_bytes.decode("utf-8")
-        except Exception:  # noqa: BLE001 - защитный fallback
+        except Exception:
             block_id = ""
         self.add_block_from_palette(block_id, event.scenePos())
         event.acceptProposedAction()
@@ -103,7 +109,8 @@ class CanvasScene(QGraphicsScene):
         try:
             item = BlockItem(block, title=final_title, grid_size=self._grid_size)
         except TypeError:
-            item = BlockItem(block)  # type: ignore[call-arg] - совместимость со старыми версиями
+            # совместимость со старыми версиями BlockItem
+            item = BlockItem(block)  # type: ignore[call-arg]
         self.addItem(item)
         item.setPos(block.x, block.y)
         self._block_items[block.uid] = item
@@ -118,7 +125,6 @@ class CanvasScene(QGraphicsScene):
 
     def _add_block(self, *, type_id: str, pos: QPointF) -> Optional[BlockItem]:
         """Create a new block instance and corresponding graphics item."""
-
         title = self._block_catalog.get(type_id, type_id)
         snapped = self._snap_to_grid(pos)
         block = self._project_model.create_block(type_id=type_id, x=snapped.x(), y=snapped.y())
@@ -128,16 +134,12 @@ class CanvasScene(QGraphicsScene):
 
     # --------------------------------------------------------- drop toggling API
     def setAcceptDrops(self, accept: bool) -> None:  # type: ignore[override]
-        """Store drop availability flag for the scene.
-
-        Qt не предоставляет прямой реализации ``setAcceptDrops`` для
-        :class:`QGraphicsScene`, поэтому сохраняем состояние самостоятельно.
-        Метод присутствует для совместимости с ожидаемым API.
         """
-
+        QGraphicsScene не имеет встроенного setAcceptDrops — храним флаг сами.
+        Метод оставлен для совместимости с ожидаемым API.
+        """
         self._accept_drops_enabled = bool(accept)
 
     def acceptsDrops(self) -> bool:  # type: ignore[override]
-        """Return whether the scene currently accepts drops."""
-
+        """Текущее состояние приёма drop."""
         return self._accept_drops_enabled

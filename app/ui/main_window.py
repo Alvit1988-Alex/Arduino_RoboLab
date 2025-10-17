@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from PySide6.QtCore import Qt, QMimeData
-from PySide6.QtGui import QAction, QDrag
+from PySide6.QtGui import QAction, QDrag  # QAction и QDrag в QtGui
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QFileDialog,
@@ -25,7 +25,6 @@ from app.ui.canvas.canvas_scene import MIME_TYPE
 
 class BlockListWidget(QListWidget):
     """Список блоков, поддерживающий drag-and-drop на канву."""
-
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setObjectName("blockList")
@@ -61,6 +60,7 @@ class MainWindow(QMainWindow):
             Path(__file__).resolve().parents[2] / "data" / "blocks" / "blocks.json"
         )
         self.project_path: Optional[Path] = None
+
         self._create_ui()
         self._create_menu()
         self.statusBar()
@@ -70,19 +70,22 @@ class MainWindow(QMainWindow):
     def _create_ui(self) -> None:
         splitter = QSplitter(Qt.Horizontal, self)
 
+        # Левая палитра
         self.block_list = BlockListWidget(splitter)
 
+        # Центр: канва (Scene + View)
         self.canvas_scene = CanvasScene()
         self.canvas_scene.blockAdded.connect(self._on_block_added)
         self.canvas_scene.blocksRemoved.connect(self._on_blocks_removed)
         self.canvas_view = CanvasView(self.canvas_scene, splitter)
         self.canvas_view.setObjectName("canvasView")
 
+        # Правая панель: код
         self.code_view = QTextEdit(splitter)
         self.code_view.setReadOnly(True)
         self.code_view.setObjectName("codeView")
 
-        splitter.setSizes([200, 400, 400])
+        splitter.setSizes([200, 400, 400])  # как в Codex-ветке
         self.setCentralWidget(splitter)
         self.setWindowTitle(self.WINDOW_TITLE)
         self.resize(1200, 700)
@@ -201,6 +204,7 @@ class MainWindow(QMainWindow):
             self.block_list.addItem(item)
             self.block_titles[block_id] = str(title)
         self.canvas_scene.set_block_catalog(self.block_titles)
+
         self.statusBar().showMessage(
             f"Загружено блоков: {self.block_list.count()}", 5000
         )
@@ -212,7 +216,6 @@ class MainWindow(QMainWindow):
         try:
             # TODO: integrate with app.core.generator.codegen
             from app.core.generator.codegen import generate_code  # type: ignore
-
             sketch = str(generate_code(project_model.to_dict()))
             self.statusBar().showMessage("Скетч сгенерирован", 4000)
         except ImportError as exc:
