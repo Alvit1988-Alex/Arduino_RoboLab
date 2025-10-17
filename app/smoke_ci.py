@@ -78,6 +78,8 @@ def main() -> int:
             errors.append(f"canvas_scene.py: {msg}")
         if "MIME_BLOCK" in scene_src:
             errors.append("canvas_scene.py: legacy MIME_BLOCK symbol detected")
+        if "<<<<<<<" in scene_src or "=======" in scene_src or ">>>>>>>" in scene_src:
+            errors.append("canvas_scene.py: merge markers detected")
     except Exception as e:
         errors.append(f"canvas_scene.py read failed: {e}")
 
@@ -87,6 +89,8 @@ def main() -> int:
             ok, msg = must_contain(items_src, cls, f"{cls} declaration")
             if not ok:
                 errors.append(f"items.py: {msg}")
+        if "<<<<<<<" in items_src or "=======" in items_src or ">>>>>>>" in items_src:
+            errors.append("items.py: merge markers detected")
     except Exception as e:
         errors.append(f"items.py read failed: {e}")
 
