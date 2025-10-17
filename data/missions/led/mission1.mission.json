@@ -1,0 +1,9 @@
+{
+  "id": "led_basic_on",
+  "title": "Светодиод — включение",
+  "description": "Включите светодиод на пине 13 при старте программы.",
+  "requirements": {
+    "blocks": ["LS_LED_ON"],
+    "board": "uno"
+  }
+}
