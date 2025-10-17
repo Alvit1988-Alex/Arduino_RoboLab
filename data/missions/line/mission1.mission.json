@@ -1,0 +1,9 @@
+{
+  "id": "line_follow_intro",
+  "title": "Следование по линии",
+  "description": "Настройте робота для удержания линии по двум датчикам.",
+  "requirements": {
+    "blocks": ["RB_LINE_FOLLOW"],
+    "board": "uno"
+  }
+}
