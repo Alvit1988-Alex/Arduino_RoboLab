@@ -1,5 +1,6 @@
-"""Graphics scene implementing drag-and-drop and project synchronisation."""
 from __future__ import annotations
+
+"""Graphics scene implementing drag-and-drop and project synchronisation."""
 
 from collections import deque
 from typing import Dict, Iterable, List, Optional
@@ -11,63 +12,79 @@ from PySide6.QtWidgets import QGraphicsScene
 from .items import BlockItem, ConnectionItem, PortItem, PortSpec, GRID_SIZE
 from .model import BlockInstance, ConnectionModel, ProjectModel
 
-MIME_TYPE = "application/x-robolab-block-id"
-
 
 class CanvasScene(QGraphicsScene):
-    """Canvas with drag & drop support for RoboLab blocks."""
-
+    # события в UI
     blockAdded = Signal(BlockInstance)
     blocksRemoved = Signal(int)
     connectionsRemoved = Signal(int)
     connectionAdded = Signal(ConnectionModel)
     statusMessage = Signal(str, int)
 
-    def __init__(self, *, parent=None) -> None:
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setItemIndexMethod(QGraphicsScene.NoIndex)
+
+        # большой рабочий лист
         self.setSceneRect(-5000, -5000, 10000, 10000)
+
+        # модель / отображение
         self._project_model = ProjectModel()
         self._block_items: Dict[str, BlockItem] = {}
         self._connection_items: Dict[str, ConnectionItem] = {}
         self._block_catalog: Dict[str, Dict[str, object]] = {}
         self._grid_size = GRID_SIZE
-        self._accept_drops_enabled = False
+
+        # цвет фона и флаг «принимаем ли drop»
+        self.setBackgroundBrush(QColor("#202020"))
+        self._accept_drops_enabled = True
+        super().setAcceptDrops(True)
+
+        # состояние для превью соединения
         self._connection_preview: Optional[ConnectionItem] = None
         self._connection_start_port: Optional[PortItem] = None
-        self.setBackgroundBrush(QColor("#202020"))
-        self.setAcceptDrops(True)
 
     # ------------------------------------------------------------ catalog/model
     def set_block_catalog(self, catalog: Dict[str, Dict[str, object]]) -> None:
+        """catalog: {type_id: {title, inputs[], outputs[]}}"""
         self._block_catalog = dict(catalog)
 
     def load_model(self, model: ProjectModel) -> None:
+        """Загрузить полную модель проекта в сцену."""
         self._cancel_connection_preview()
         self.clear()
         self._block_items.clear()
         self._connection_items.clear()
         self._project_model = model.clone()
+
         for block in self._project_model.blocks:
             self._create_item_for_block(block)
+
         for connection in list(self._project_model.connections):
             if self._create_connection_item(connection) is None:
+                # если не смогли восстановить — удалим из модели
                 self._project_model.remove_connection(connection)
-        self.update()
 
-    def reset(self) -> None:
-        self.load_model(ProjectModel())
+    def model(self) -> ProjectModel:
+        # вернуть актуальную модель (с координатами из item'ов)
+        for uid, item in self._block_items.items():
+            item.block.x, item.block.y = item.pos().x(), item.pos().y()
+        self._project_model.blocks = [item.block for item in self._block_items.values()]
+        return self._project_model
 
-    def export_model(self) -> ProjectModel:
-        return self._project_model.clone()
+    # ------------------------------------------------------------- block CRUD
+    def add_block_at(self, type_id: str, pos: QPointF, *, uid: Optional[str] = None) -> BlockItem:
+        """Создать новый блок указанного типа и добавить на сцену."""
+        from uuid import uuid4
+        block = BlockInstance(uid=uid or str(uuid4()), type_id=type_id, x=pos.x(), y=pos.y())
+        self._project_model.add_block(block)
+        item = self._create_item_for_block(block)
+        self.blockAdded.emit(block)
+        title = self._block_catalog.get(type_id, {}).get("title", type_id)
+        self._emit_status(f"Добавлен блок: {title}")
+        return item
 
-    # ----------------------------------------------------------------- actions
-    def add_block_from_palette(self, type_id: str, pos: QPointF) -> Optional[BlockItem]:
-        if not type_id:
-            return None
-        return self._add_block(type_id=type_id, pos=pos)
-
-    def remove_selected_blocks(self) -> int:
+    def remove_selected(self) -> int:
+        """Удалить выделенные блоки и соединения. Возвращает общее число удалённых."""
         removed_blocks = 0
         removed_connections = 0
         for item in list(self.selectedItems()):
@@ -89,35 +106,7 @@ class CanvasScene(QGraphicsScene):
             self._emit_status(f"Удалено соединений: {removed_connections}")
         return removed_blocks + removed_connections
 
-    # ------------------------------------------------------------------ Qt DnD
-    def dragEnterEvent(self, event) -> None:  # type: ignore[override]
-        if self.acceptsDrops() and event.mimeData().hasFormat(MIME_TYPE):
-            event.acceptProposedAction()
-        else:
-            super().dragEnterEvent(event)
-
-    def dragMoveEvent(self, event) -> None:  # type: ignore[override]
-        if self.acceptsDrops() and event.mimeData().hasFormat(MIME_TYPE):
-            event.acceptProposedAction()
-        else:
-            super().dragMoveEvent(event)
-
-    def dropEvent(self, event) -> None:  # type: ignore[override]
-        if not self.acceptsDrops():
-            super().dropEvent(event)
-            return
-        mime = event.mimeData()
-        if not mime.hasFormat(MIME_TYPE):
-            super().dropEvent(event)
-            return
-        try:
-            raw_bytes = bytes(mime.data(MIME_TYPE))
-            block_id = raw_bytes.decode("utf-8")
-        except Exception:  # noqa: BLE001 - защитный fallback
-            block_id = ""
-        self.add_block_from_palette(block_id, event.scenePos())
-        event.acceptProposedAction()
-
+    # --------------------------------------------------------------- events
     def mouseMoveEvent(self, event) -> None:  # type: ignore[override]
         if self._connection_preview is not None:
             self._connection_preview.set_temp_end(event.scenePos())
@@ -134,63 +123,6 @@ class CanvasScene(QGraphicsScene):
             event.accept()
             return
         super().mouseReleaseEvent(event)
-
-    # ---------------------------------------------------------------- helpers
-    def _create_item_for_block(self, block: BlockInstance, title: Optional[str] = None) -> BlockItem:
-        metadata = self._block_catalog.get(block.type_id, {})
-        final_title = title or str(metadata.get("title", block.type_id))
-        ports_in = self._make_port_specs(metadata.get("inputs", []), direction="in")
-        ports_out = self._make_port_specs(metadata.get("outputs", []), direction="out")
-        if not ports_out:
-            ports_out = [PortSpec(name="out", direction="out", dtype=None)]
-        try:
-            item = BlockItem(
-                block,
-                title=final_title,
-                ports_in=ports_in,
-                ports_out=ports_out,
-                grid_size=self._grid_size,
-            )
-        except TypeError:
-            item = BlockItem(block)  # type: ignore[call-arg] - совместимость со старыми версиями
-        self.addItem(item)
-        item.setPos(block.x, block.y)
-        self._block_items[block.uid] = item
-        return item
-
-    def _make_port_specs(
-        self, payload: Iterable[Dict[str, object]], *, direction: str
-    ) -> List[PortSpec]:
-        result: List[PortSpec] = []
-        for index, raw in enumerate(payload or []):
-            if isinstance(raw, dict):
-                name = str(raw.get("name", f"{direction}{index+1}"))
-                dtype = raw.get("type")
-            else:
-                name = f"{direction}{index+1}"
-                dtype = None
-            dtype_value = str(dtype).strip() if isinstance(dtype, str) else None
-            result.append(PortSpec(name=name, direction=direction, dtype=dtype_value))
-        return result
-
-    def _snap_to_grid(self, pos: QPointF) -> QPointF:
-        if self._grid_size <= 1:
-            return pos
-        x = round(pos.x() / self._grid_size) * self._grid_size
-        y = round(pos.y() / self._grid_size) * self._grid_size
-        return QPointF(x, y)
-
-    def _add_block(self, *, type_id: str, pos: QPointF) -> Optional[BlockItem]:
-        """Create a new block instance and corresponding graphics item."""
-
-        metadata = self._block_catalog.get(type_id, {})
-        title = str(metadata.get("title", type_id))
-        snapped = self._snap_to_grid(pos)
-        block = self._project_model.create_block(type_id=type_id, x=snapped.x(), y=snapped.y())
-        item = self._create_item_for_block(block, title=title)
-        self.blockAdded.emit(block)
-        self._emit_status(f"Добавлен блок: {title}")
-        return item
 
     # ----------------------------------------------------------- connection API
     def begin_connection(self, port: PortItem) -> None:
@@ -218,6 +150,7 @@ class CanvasScene(QGraphicsScene):
         if port.direction != "in":
             self._emit_status("Целевой порт должен быть входом")
             return
+
         start_port = self._connection_start_port
         if start_port.direction != "out":
             self._emit_status("Соединение начинается с выходного порта")
@@ -231,6 +164,7 @@ class CanvasScene(QGraphicsScene):
             self._emit_status("Несовместимые типы портов")
             self._cancel_connection_preview()
             return
+
         from_uid = start_port.block_item.block.uid
         to_uid = port.block_item.block.uid
         key = self._connection_key(from_uid, start_port.name, to_uid, port.name)
@@ -239,9 +173,10 @@ class CanvasScene(QGraphicsScene):
             self._cancel_connection_preview()
             return
         if self._creates_cycle(from_uid, to_uid):
-            self._emit_status("Соединение создает цикл — запрещено")
+            self._emit_status("Соединение создаёт цикл — запрещено")
             self._cancel_connection_preview()
             return
+
         self._cancel_connection_preview()
         connection_model = ConnectionModel(
             from_block_uid=from_uid,
@@ -252,18 +187,53 @@ class CanvasScene(QGraphicsScene):
         self._project_model.add_connection(connection_model)
         item = ConnectionItem(start_port, port, model=connection_model, preview=False)
         self._register_connection_item(connection_model, item)
-        title_from = self._block_catalog.get(
-            start_port.block_item.block.type_id, {}
-        ).get("title", start_port.block_item.block.type_id)
+        title_from = self._block_catalog.get(start_port.block_item.block.type_id, {}).get(
+            "title", start_port.block_item.block.type_id
+        )
         title_to = self._block_catalog.get(port.block_item.block.type_id, {}).get(
             "title", port.block_item.block.type_id
         )
         self.connectionAdded.emit(connection_model)
         self._emit_status(f"Создано соединение: {title_from} → {title_to}")
 
-    def _register_connection_item(
-        self, connection: ConnectionModel, item: ConnectionItem
-    ) -> None:
+    # ---------------------------------------------------------------- helpers
+    def _create_item_for_block(self, block: BlockInstance, title: Optional[str] = None) -> BlockItem:
+        metadata = self._block_catalog.get(block.type_id, {})
+        final_title = title or str(metadata.get("title", block.type_id))
+        ports_in = self._make_port_specs(metadata.get("inputs", []), direction="in")
+        ports_out = self._make_port_specs(metadata.get("outputs", []), direction="out")
+        if not ports_out:
+            ports_out = [PortSpec(name="out", direction="out", dtype=None)]
+        try:
+            item = BlockItem(
+                block,
+                title=final_title,
+                ports_in=ports_in,
+                ports_out=ports_out,
+                grid_size=self._grid_size,
+            )
+        except TypeError:
+            item = BlockItem(block, title=final_title)  # совместимость со старыми версиями
+        self.addItem(item)
+        self._block_items[block.uid] = item
+        item.setPos(block.x, block.y)
+        return item
+
+    def _make_port_specs(self, payload, *, direction: str) -> List[PortSpec]:
+        result: List[PortSpec] = []
+        if isinstance(payload, list):
+            for index, raw in enumerate(payload or []):
+                if isinstance(raw, dict):
+                    name = str(raw.get("name", f"{direction}{index+1}"))
+                    dtype = raw.get("type")
+                else:
+                    name = f"{direction}{index+1}"
+                    dtype = None
+                dtype_value = str(dtype).strip() if isinstance(dtype, str) else None
+                result.append(PortSpec(name=name, direction=direction, dtype=dtype_value))
+        return result
+
+    def _register_connection_item(self, connection: ConnectionModel, item: ConnectionItem) -> None:
         key = connection.key()
         self._connection_items[key] = item
         self.addItem(item)
@@ -305,10 +275,7 @@ class CanvasScene(QGraphicsScene):
         start = self._find_port(connection.from_block_uid, connection.from_port, "out")
         end = self._find_port(connection.to_block_uid, connection.to_port, "in")
         if start is None or end is None:
-            self._emit_status(
-                "Не удалось восстановить соединение при загрузке проекта",
-                6000,
-            )
+            self._emit_status("Не удалось восстановить соединение при загрузке проекта", 6000)
             return None
         item = ConnectionItem(start, end, model=connection, preview=False)
         self._register_connection_item(connection, item)
@@ -356,17 +323,13 @@ class CanvasScene(QGraphicsScene):
 
     # --------------------------------------------------------- drop toggling API
     def setAcceptDrops(self, accept: bool) -> None:  # type: ignore[override]
-        """Store drop availability flag for the scene.
-
-        Qt не предоставляет прямой реализации ``setAcceptDrops`` для
-        :class:`QGraphicsScene`, поэтому сохраняем состояние самостоятельно.
-        Метод присутствует для совместимости с ожидаемым API.
         """
-
+        QGraphicsScene не имеет полноценного setAcceptDrops — храним флаг сами.
+        Метод оставлен для совместимости с ожидаемым API.
+        """
         self._accept_drops_enabled = bool(accept)
         super().setAcceptDrops(accept)
 
     def acceptsDrops(self) -> bool:  # type: ignore[override]
-        """Return whether the scene currently accepts drops."""
-
-        return self._accept_drops_enabled
+        """Текущее состояние приёма drop."""
+        return bool(self._accept_drops_enabled)

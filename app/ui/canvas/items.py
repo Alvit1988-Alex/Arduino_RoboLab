@@ -1,4 +1,3 @@
-"""Graphics items used on the RoboLab canvas."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,21 +9,19 @@ from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPath
 
 from .model import BlockInstance
 
-GRID_SIZE = 16
+GRID_SIZE = 20  # экспортируется в сцену
 
 
 @dataclass(frozen=True)
 class PortSpec:
     """Specification of a block port."""
-
     name: str
-    direction: str
+    direction: str   # "in" | "out"
     dtype: Optional[str] = None
 
 
 class BlockItem(QGraphicsItem):
     """Visual representation of a block on the canvas."""
-
     WIDTH = 180
     HEADER_HEIGHT = 28
     MIN_HEIGHT = 96
@@ -44,6 +41,12 @@ class BlockItem(QGraphicsItem):
         self.block = block
         self.title = title
         self.grid_size = grid_size
+
+        self.setFlag(QGraphicsItem.ItemIsMovable, True)
+        self.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
+        self.setZValue(1)
+
         self._port_specs_in = list(ports_in or [])
         self._port_specs_out = list(ports_out or [])
         self._ports_in: List[PortItem] = []
@@ -51,14 +54,10 @@ class BlockItem(QGraphicsItem):
         self._port_lookup: Dict[Tuple[str, str], PortItem] = {}
         self._connections: Set["ConnectionItem"] = set()
         self._height = self._compute_height()
-        self.setFlags(
-            QGraphicsItem.ItemIsSelectable
-            | QGraphicsItem.ItemIsMovable
-            | QGraphicsItem.ItemSendsGeometryChanges
-        )
-        self.setCacheMode(QGraphicsItem.DeviceCoordinateCache)
-        self.setZValue(1)
         self._create_ports()
+
+        # позиционирование из модели
+        self.setPos(self.block.x, self.block.y)
 
     # --------------------------------------------------------------- QGraphics
     def boundingRect(self) -> QRectF:  # type: ignore[override]
@@ -66,40 +65,39 @@ class BlockItem(QGraphicsItem):
 
     def paint(self, painter: QPainter, option, widget=None) -> None:  # type: ignore[override]
         rect = QRectF(0, 0, self.WIDTH, self._height)
-        background = QColor(55, 71, 79) if self.isSelected() else QColor(38, 50, 56)
-        border_color = QColor(0, 188, 212) if self.isSelected() else QColor(96, 125, 139)
-        painter.setPen(QPen(border_color, 1.5))
-        painter.setBrush(background)
+        # тело
+        painter.setPen(QPen(QColor(96, 125, 139), 1.5))
+        painter.setBrush(QColor(38, 50, 56))
         painter.drawRoundedRect(rect, 8, 8)
 
-        header_rect = QRectF(rect.left(), rect.top(), rect.width(), self.HEADER_HEIGHT)
-        header_color = QColor(120, 144, 156)
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(header_color)
-        painter.drawRoundedRect(header_rect, 8, 8)
-        painter.drawRect(
-            QRectF(
-                header_rect.left(),
-                header_rect.top() + self.HEADER_HEIGHT / 2,
-                header_rect.width(),
-                self.HEADER_HEIGHT / 2,
-            )
-        )
+        # хэдэр
+        header = QRectF(0, 0, self.WIDTH, self.HEADER_HEIGHT)
+        painter.setBrush(QColor(55, 71, 79))
+        painter.drawRoundedRect(header, 8, 8)
+        painter.drawRect(0, self.HEADER_HEIGHT - 1, self.WIDTH, 1)
 
-        painter.setPen(Qt.white)
+        # текст
+        painter.setPen(QColor(236, 239, 241))
         font = QFont()
+        font.setPointSize(9)
         font.setBold(True)
         painter.setFont(font)
-        painter.drawText(header_rect.adjusted(8, 0, -8, 0), Qt.AlignVCenter | Qt.AlignLeft, self.title)
+        painter.drawText(header.adjusted(8, 0, -8, 0), Qt.AlignVCenter | Qt.AlignLeft, self.title)
 
-    def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value):  # type: ignore[override]
-        if change == QGraphicsItem.ItemPositionChange:
-            pos: QPointF = value
-            snapped = self._snap_to_grid(pos)
-            return snapped
+        # рамка выделения
+        if self.isSelected():
+            painter.setPen(QPen(QColor(255, 193, 7), 2.0, Qt.DashLine))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 8, 8)
+
+    def itemChange(self, change, value):  # type: ignore[override]
         if change == QGraphicsItem.ItemPositionHasChanged:
-            new_pos = self.pos()
-            self.block.set_position(new_pos.x(), new_pos.y())
+            # «прилипание» к сетке и обновление модели
+            pos = self.pos()
+            gx = round(pos.x() / self.grid_size) * self.grid_size
+            gy = round(pos.y() / self.grid_size) * self.grid_size
+            self.block.x, self.block.y = gx, gy
+            self.setPos(gx, gy)
             for connection in list(self._connections):
                 connection.update_path()
         return super().itemChange(change, value)
@@ -122,14 +120,7 @@ class BlockItem(QGraphicsItem):
     def unregister_connection(self, connection: "ConnectionItem") -> None:
         self._connections.discard(connection)
 
-    # ------------------------------------------------------------- helpers
-    def _snap_to_grid(self, pos: QPointF) -> QPointF:
-        if self.grid_size <= 1:
-            return pos
-        x = round(pos.x() / self.grid_size) * self.grid_size
-        y = round(pos.y() / self.grid_size) * self.grid_size
-        return QPointF(x, y)
-
+    # --------------------------------------------------------------- helpers
     def _compute_height(self) -> float:
         rows = max(len(self._port_specs_in), len(self._port_specs_out), 1)
         return max(self.MIN_HEIGHT, self.HEADER_HEIGHT + self.PORT_MARGIN_TOP + rows * self.PORT_SPACING)
@@ -150,7 +141,6 @@ class BlockItem(QGraphicsItem):
 
 class PortItem(QGraphicsEllipseItem):
     """Interactive port item used for connections."""
-
     RADIUS = 6.0
     COLOR_DEFAULT = QColor(236, 239, 241)
     COLOR_HOVER = QColor(255, 241, 118)
@@ -222,7 +212,6 @@ class PortItem(QGraphicsEllipseItem):
 
 class ConnectionItem(QGraphicsPathItem):
     """Visual connection between two ports."""
-
     COLOR_DEFAULT = QColor(120, 144, 156)
     COLOR_SELECTED = QColor(255, 193, 7)
 
@@ -288,7 +277,6 @@ class ConnectionItem(QGraphicsPathItem):
 
     def detach(self) -> None:
         """Detach the connection from its ports."""
-
         if self.start_port is not None:
             self.start_port.remove_connection(self)
             self.start_port.block_item.unregister_connection(self)
@@ -296,7 +284,7 @@ class ConnectionItem(QGraphicsPathItem):
             self.end_port.remove_connection(self)
             self.end_port.block_item.unregister_connection(self)
         self.start_port = None  # type: ignore[assignment]
-        self.end_port = None  # type: ignore[assignment]
+        self.end_port = None    # type: ignore[assignment]
 
     # ---------------------------------------------------------------- events
     def hoverEnterEvent(self, event) -> None:  # type: ignore[override]
