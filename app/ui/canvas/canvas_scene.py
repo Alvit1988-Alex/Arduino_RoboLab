@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsSceneDragDropEvent
 from .items import BlockItem, ConnectionItem, PortItem, PortSpec, GRID_SIZE
 from .model import BlockInstance, ConnectionModel, ProjectModel
 
+# MIME тип, который отдаёт левая палитра (BlockListWidget)
 MIME_BLOCK = "application/x-robolab-block"
 
 
@@ -37,7 +38,7 @@ class CanvasScene(QGraphicsScene):
 
         # фон и drop
         self.setBackgroundBrush(QColor("#202020"))
-        self._accept_drops_enabled = True
+        self._accept_drops_enabled = True  # у QGraphicsScene нет реального setAcceptDrops
 
         # состояние превью соединения
         self._connection_preview: Optional[ConnectionItem] = None
@@ -65,7 +66,7 @@ class CanvasScene(QGraphicsScene):
                 self._project_model.remove_connection(connection)
 
     def model(self) -> ProjectModel:
-        # вернуть актуальную модель (с координатами из item'ов)
+        """Вернуть актуальную модель (с координатами из item'ов)."""
         for uid, item in self._block_items.items():
             item.block.x, item.block.y = item.pos().x(), item.pos().y()
         self._project_model.blocks = [item.block for item in self._block_items.values()]
