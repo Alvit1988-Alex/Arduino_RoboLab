@@ -8,10 +8,10 @@ from PySide6.QtCore import QPointF, Qt, QMimeData, Signal
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsSceneDragDropEvent
 
+from ..common.mime import BLOCK_MIME
 from .items import BlockItem, ConnectionItem, PortItem, PortSpec, GRID_SIZE
 from .model import BlockInstance, ConnectionModel, ProjectModel
 
-MIME_BLOCK = "application/x-robolab-block"
 
 
 class CanvasScene(QGraphicsScene):
@@ -135,22 +135,22 @@ class CanvasScene(QGraphicsScene):
     # --------------------------------------------------------------- DnD events
     def dragEnterEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
         md: QMimeData = event.mimeData()
-        if md.hasFormat(MIME_BLOCK) and self._accept_drops_enabled:
+        if md.hasFormat(BLOCK_MIME) and self._accept_drops_enabled:
             event.acceptProposedAction()
         else:
             event.ignore()
 
     def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
         md: QMimeData = event.mimeData()
-        if md.hasFormat(MIME_BLOCK) and self._accept_drops_enabled:
+        if md.hasFormat(BLOCK_MIME) and self._accept_drops_enabled:
             event.acceptProposedAction()
         else:
             event.ignore()
 
     def dropEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
         md: QMimeData = event.mimeData()
-        if md.hasFormat(MIME_BLOCK) and self._accept_drops_enabled:
-            type_id = str(bytes(md.data(MIME_BLOCK)).decode("utf-8")).strip()
+        if md.hasFormat(BLOCK_MIME) and self._accept_drops_enabled:
+            type_id = str(bytes(md.data(BLOCK_MIME)).decode("utf-8")).strip()
             pos = event.scenePos()
             gx = round(pos.x() / self._grid_size) * self._grid_size
             gy = round(pos.y() / self._grid_size) * self._grid_size

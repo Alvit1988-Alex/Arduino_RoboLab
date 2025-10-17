@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..canvas.canvas_scene import MIME_BLOCK
+from ..common.mime import BLOCK_MIME
 
 
 class PaletteTreeWidget(QTreeWidget):
@@ -46,7 +46,7 @@ class PaletteTreeWidget(QTreeWidget):
         if not block_id:
             return
         mime = QMimeData()
-        mime.setData(MIME_BLOCK, str(block_id).encode("utf-8"))
+        mime.setData(BLOCK_MIME, str(block_id).encode("utf-8"))
         drag = QDrag(self)
         drag.setMimeData(mime)
         drag.exec(Qt.CopyAction)

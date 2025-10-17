@@ -56,12 +56,12 @@ def main() -> int:
 
     # 3) Инварианты по содержимому
     try:
-        scene_src = read_text(os.path.join(REPO_ROOT, "app/ui/canvas/canvas_scene.py"))
-        ok, msg = must_contain(scene_src, 'MIME_BLOCK = "application/x-robolab-block"', "MIME_BLOCK constant")
+        mime_src = read_text(os.path.join(REPO_ROOT, "app/ui/common/mime.py"))
+        ok, msg = must_contain(mime_src, 'BLOCK_MIME = "application/x-robolab-block"', "BLOCK_MIME constant")
         if not ok:
-            errors.append(f"canvas_scene.py: {msg}")
+            errors.append(f"mime.py: {msg}")
     except Exception as e:
-        errors.append(f"canvas_scene.py read failed: {e}")
+        errors.append(f"mime.py read failed: {e}")
 
     try:
         items_src = read_text(os.path.join(REPO_ROOT, "app/ui/canvas/items.py"))
