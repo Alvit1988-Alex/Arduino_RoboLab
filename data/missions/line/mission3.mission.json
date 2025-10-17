@@ -1,0 +1,9 @@
+{
+  "id": "line_follow_simulator",
+  "title": "Испытание в симуляторе",
+  "description": "Проверьте траекторию в симуляторе 2D.",
+  "requirements": {
+    "blocks": ["RB_LINE_FOLLOW", "SYS_SIMULATOR_START"],
+    "board": "uno"
+  }
+}
