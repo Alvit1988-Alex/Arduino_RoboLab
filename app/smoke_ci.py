@@ -76,10 +76,14 @@ def main() -> int:
         )
         if not ok:
             errors.append(f"canvas_scene.py: {msg}")
+        if "catalog_defaults = metadata.get(\"default_params\")" not in scene_src:
+            errors.append("canvas_scene.py: default_params merge block missing")
         if "MIME_BLOCK" in scene_src:
             errors.append("canvas_scene.py: legacy MIME_BLOCK symbol detected")
         if "<<<<<<<" in scene_src or "=======" in scene_src or ">>>>>>>" in scene_src:
             errors.append("canvas_scene.py: merge markers detected")
+        if "QApplication.focusWidget" not in scene_src:
+            errors.append("canvas_scene.py: focus guard for Delete missing")
     except Exception as e:
         errors.append(f"canvas_scene.py read failed: {e}")
 
@@ -115,6 +119,34 @@ def main() -> int:
         assert hasattr(model, "BlockInstance"), "BlockInstance not found"
         assert hasattr(model, "ConnectionModel"), "ConnectionModel not found"
         assert hasattr(model, "ProjectModel"), "ProjectModel not found"
+        BlockInstance = model.BlockInstance
+        ConnectionModel = model.ConnectionModel
+        ProjectModel = model.ProjectModel
+        scenario_model = ProjectModel()
+        blocks = [
+            BlockInstance(uid="A", type_id="logic/start"),
+            BlockInstance(uid="B", type_id="logic/step"),
+            BlockInstance(uid="C", type_id="logic/end"),
+        ]
+        for block in blocks:
+            scenario_model.add_block(block)
+        connection_ab = ConnectionModel("A", "out", "B", "in")
+        connection_bc = ConnectionModel("B", "out", "C", "in")
+        scenario_model.add_connection(connection_ab)
+        scenario_model.add_connection(connection_bc)
+        scenario_model.remove_connection(connection_ab)
+        if len(scenario_model.connections) != 1:
+            errors.append("ProjectModel: connection removal inconsistent")
+        if any(conn.matches(connection_ab) for conn in scenario_model.connections):
+            errors.append("ProjectModel: dangling reference to removed connection")
+        scenario_model.remove_block("B")
+        if any(block.uid == "B" for block in scenario_model.blocks):
+            errors.append("ProjectModel: block removal failed")
+        if any(
+            conn.from_block_uid == "B" or conn.to_block_uid == "B"
+            for conn in scenario_model.connections
+        ):
+            errors.append("ProjectModel: edges referencing removed block remain")
     except Exception:
         errors.append("Import error in app.ui.canvas.model:\n" + traceback.format_exc())
 
