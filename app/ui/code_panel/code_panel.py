@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import (
     QDockWidget,
     QHBoxLayout,
@@ -45,7 +46,7 @@ class CodePanel(QWidget):
             return
         self.editor.selectAll()
         self.editor.copy()
-        self.editor.moveCursor(self.editor.textCursor().End)
+        self.editor.moveCursor(QTextCursor.End)
 
     # API -------------------------------------------------------------
     def set_code(self, text: str) -> None:

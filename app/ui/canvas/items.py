@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 from PySide6.QtCore import QPointF, QRectF, Qt
-from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem, QMenu
+from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPainterPathStroker, QPen
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem
 
 from .model import BlockInstance
 
@@ -39,6 +39,7 @@ class BlockItem(QGraphicsItem):
     ) -> None:
         super().__init__()
         self.block = block
+        self.model_id = block.uid
         self.title = title
         self.grid_size = grid_size
 
@@ -227,13 +228,8 @@ class PortItem(QGraphicsEllipseItem):
         if not self.isSelected():
             scene.clearSelection()
             self.setSelected(True)
-        menu = QMenu()
-        delete_action = menu.addAction("Удалить")
-        chosen = menu.exec(event.screenPos())
-        if chosen == delete_action:
-            handler = getattr(scene, "delete_selection", None)
-            if callable(handler):
-                handler()
+        handler = getattr(scene, "show_delete_context_menu", None)
+        if callable(handler) and handler(event.screenPos()):
             event.accept()
             return
         super().contextMenuEvent(event)
@@ -256,6 +252,7 @@ class ConnectionItem(QGraphicsPathItem):
         self.start_port = start_port
         self.end_port = end_port
         self.model = model
+        self.model_id = model.key() if hasattr(model, "key") else None
         self._temp_end: Optional[QPointF] = None
         self._is_preview = preview
         pen = self._make_pen(preview)
@@ -266,6 +263,11 @@ class ConnectionItem(QGraphicsPathItem):
         # превью не должно перехватывать hover
         self.setAcceptHoverEvents(False if preview else True)
         self.update_path()
+
+    def shape(self) -> QPainterPath:  # type: ignore[override]
+        stroker = QPainterPathStroker()
+        stroker.setWidth(12.0)
+        return stroker.createStroke(self.path())
 
     # --------------------------------------------------------------- helpers
     def _make_pen(self, preview: bool) -> QPen:
@@ -338,13 +340,8 @@ class ConnectionItem(QGraphicsPathItem):
         if not self.isSelected():
             scene.clearSelection()
             self.setSelected(True)
-        menu = QMenu()
-        delete_action = menu.addAction("Удалить")
-        chosen = menu.exec(event.screenPos())
-        if chosen == delete_action:
-            handler = getattr(scene, "delete_selection", None)
-            if callable(handler):
-                handler()
+        handler = getattr(scene, "show_delete_context_menu", None)
+        if callable(handler) and handler(event.screenPos()):
             event.accept()
             return
         super().contextMenuEvent(event)

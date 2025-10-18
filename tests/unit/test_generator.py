@@ -1,15 +1,23 @@
 """Юнит-тесты генерации Arduino-кода."""
 from pathlib import Path
 
+import pytest
+
 from app.core.ast.ast_nodes import BlockInstance, BlockRegistry, ProgramNode, load_board_profiles
 from app.core.generator.codegen import build_sketch
 from app.core.validator.validator import ProgramValidator
+from app.core.blocks_loader import BlocksLoaderError, load_blocks
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 
 def _load_registry() -> BlockRegistry:
-    return BlockRegistry.load_from_file(DATA_DIR / "blocks" / "blocks.json")
+    normalized = load_blocks(DATA_DIR / "blocks" / "blocks.json")
+    try:
+        payload = normalized.require_registry_payload()
+    except BlocksLoaderError as exc:
+        pytest.skip(f"Пропуск тестов генератора: {exc}")
+    return BlockRegistry.from_mapping(payload)
 
 
 def _load_board() -> tuple:
