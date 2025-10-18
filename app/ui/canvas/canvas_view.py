@@ -6,7 +6,17 @@ from typing import Optional
 
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsScene,
+    QGraphicsView,
+    QLineEdit,
+    QPlainTextEdit,
+    QTextEdit,
+)
+
+
+_TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
 
 
 class CanvasView(QGraphicsView):
@@ -80,10 +90,16 @@ class CanvasView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:  # type: ignore[override]
-        if event.key() == Qt.Key_Delete and self.scene() is not None:
-            remove = getattr(self.scene(), "remove_selected_blocks", None)
-            if callable(remove):
-                remove()
+        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace) and self.scene() is not None:
+            if isinstance(QApplication.focusWidget(), _TEXT_INPUT_WIDGETS):
+                super().keyPressEvent(event)
+                return
+            delete = getattr(self.scene(), "delete_selection", None)
+            if callable(delete) and delete():
+                event.accept()
+                return
+            remove = getattr(self.scene(), "remove_selected", None)
+            if callable(remove) and remove():
                 event.accept()
                 return
         if event.key() == Qt.Key_0 and event.modifiers() & Qt.ControlModifier:

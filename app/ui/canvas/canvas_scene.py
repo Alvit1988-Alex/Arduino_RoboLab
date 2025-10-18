@@ -6,12 +6,21 @@ from typing import Dict, List, Optional
 
 from PySide6.QtCore import QPointF, Qt, QMimeData, Signal
 from PySide6.QtGui import QColor
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsSceneDragDropEvent
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsScene,
+    QGraphicsSceneDragDropEvent,
+    QLineEdit,
+    QPlainTextEdit,
+    QTextEdit,
+)
 
 from ..common.mime import BLOCK_MIME
 from .items import BlockItem, ConnectionItem, PortItem, PortSpec, GRID_SIZE
 from .model import BlockInstance, ConnectionModel, ProjectModel
 
+
+_TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
 
 
 class CanvasScene(QGraphicsScene):
@@ -20,6 +29,7 @@ class CanvasScene(QGraphicsScene):
     blocksRemoved = Signal(int)
     connectionsRemoved = Signal(int)
     connectionAdded = Signal(ConnectionModel)
+    projectModelChanged = Signal(ProjectModel)
     statusMessage = Signal(str, int)
 
     def __init__(self, parent=None) -> None:
@@ -84,37 +94,60 @@ class CanvasScene(QGraphicsScene):
         from uuid import uuid4
         metadata = self._block_catalog.get(type_id, {})
         defaults: Dict[str, object] = {}
+
+        # --- единая логика сборки дефолтов: default_params -> legacy params[] -> overrides
         catalog_defaults = metadata.get("default_params")
         if isinstance(catalog_defaults, dict):
-            defaults.update(catalog_defaults)
-        elif isinstance(metadata.get("params"), list):
-            # совместимость с каталогами без default_params
-            for descriptor in metadata.get("params", []):
-                if isinstance(descriptor, dict):
+            # современный формат каталога: словарь значений по умолчанию
+            defaults.update({str(k): v for k, v in catalog_defaults.items()})
+        else:
+            # совместимость со старыми каталогами: извлекаем из params[]
+            params_meta = metadata.get("params")
+            if isinstance(params_meta, list):
+                for descriptor in params_meta:
+                    if not isinstance(descriptor, dict):
+                        continue
                     name = descriptor.get("name")
-                    if name:
-                        defaults[name] = descriptor.get("default")
+                    if name is not None:
+                        defaults[str(name)] = descriptor.get("default")
 
-        combined: Dict[str, object] = dict(defaults)
-        if params:
-            combined.update(params)
+        # пользовательские overrides накрывают библиотечные дефолты
+        if isinstance(params, dict):
+            for key, value in params.items():
+                defaults[str(key)] = value
 
         block = BlockInstance(
             uid=uid or str(uuid4()),
             type_id=type_id,
             x=pos.x(),
             y=pos.y(),
-            params=combined,
+            params=dict(defaults),
         )
         self._project_model.add_block(block)
         item = self._create_item_for_block(block)
         self.blockAdded.emit(block)
+        self._notify_model_change()
         title = self._block_catalog.get(type_id, {}).get("title", type_id)
         self._emit_status(f"Добавлен блок: {title}")
         return item
 
+    def delete_selection(self) -> bool:
+        """Удалить выделённые блоки и соединения."""
+        removed_blocks, removed_connections = self._remove_selected_items()
+        if removed_blocks or removed_connections:
+            self._finalise_removal(removed_blocks, removed_connections)
+            return True
+        return False
+
     def remove_selected(self) -> int:
-        """Удалить выделенные блоки и соединения. Возвращает общее число удалённых."""
+        """Совместимость: удалить выделение и вернуть количество элементов."""
+        removed_blocks, removed_connections = self._remove_selected_items()
+        total = removed_blocks + removed_connections
+        if total:
+            self._finalise_removal(removed_blocks, removed_connections)
+        return total
+
+    def _remove_selected_items(self) -> tuple[int, int]:
         removed_blocks = 0
         removed_connections = 0
         for item in list(self.selectedItems()):
@@ -128,13 +161,17 @@ class CanvasScene(QGraphicsScene):
             elif isinstance(item, ConnectionItem):
                 if self._remove_connection_item(item):
                     removed_connections += 1
+        return removed_blocks, removed_connections
+
+    def _finalise_removal(self, removed_blocks: int, removed_connections: int) -> None:
         if removed_blocks:
             self.blocksRemoved.emit(removed_blocks)
             self._emit_status(f"Удалено блоков: {removed_blocks}")
         if removed_connections:
             self.connectionsRemoved.emit(removed_connections)
             self._emit_status(f"Удалено соединений: {removed_connections}")
-        return removed_blocks + removed_connections
+        if removed_blocks or removed_connections:
+            self._notify_model_change()
 
     # --------------------------------------------------------------- DnD events
     def dragEnterEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
@@ -165,6 +202,16 @@ class CanvasScene(QGraphicsScene):
             event.ignore()
 
     # ----------------------------------------------------------------- events
+    def keyPressEvent(self, event) -> None:  # type: ignore[override]
+        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace):
+            if self._focus_in_text_input():
+                super().keyPressEvent(event)
+                return
+            if self.delete_selection():
+                event.accept()
+                return
+        super().keyPressEvent(event)
+
     def mouseMoveEvent(self, event) -> None:  # type: ignore[override]
         if self._connection_preview is not None:
             self._connection_preview.set_temp_end(event.scenePos())
@@ -254,6 +301,7 @@ class CanvasScene(QGraphicsScene):
             "title", port.block_item.block.type_id
         )
         self.connectionAdded.emit(connection_model)
+        self._notify_model_change()
         self._emit_status(f"Создано соединение: {title_from} → {title_to}")
 
     # ---------------------------------------------------------------- helpers
@@ -383,6 +431,14 @@ class CanvasScene(QGraphicsScene):
 
     def _emit_status(self, text: str, timeout: int = 4000) -> None:
         self.statusMessage.emit(text, timeout)
+
+    def _notify_model_change(self) -> None:
+        """Уведомить подписчиков о том, что модель проекта изменилась."""
+        self.projectModelChanged.emit(self.model().clone())
+
+    def _focus_in_text_input(self) -> bool:
+        widget = QApplication.focusWidget()
+        return isinstance(widget, _TEXT_INPUT_WIDGETS)
 
     # --------------------------------------------------------- drop toggling API
     def setAcceptDrops(self, accept: bool) -> None:  # type: ignore[override]

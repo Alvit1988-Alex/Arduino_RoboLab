@@ -7,17 +7,21 @@ from typing import Dict, List, Optional
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
+    QApplication,
     QFileDialog,
     QLabel,
+    QLineEdit,
     QMainWindow,
     QMessageBox,
+    QPlainTextEdit,
     QShortcut,
+    QTextEdit,
 )
 
 from app.core.projects.io import load_project_file, save_project_file
 
 from .canvas.canvas_scene import CanvasScene
-from .canvas.model import BlockInstance
+from .canvas.model import BlockInstance, ProjectModel
 from .code_panel.code_panel import CodeDock
 from .palette.palette import PaletteDock
 from .widgets.canvas_view import CanvasView
@@ -25,6 +29,8 @@ from .widgets.serial_monitor import SerialMonitorDock
 
 
 class MainWindow(QMainWindow):
+    _TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
+
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Arduino RoboLab (Preview)")
@@ -36,6 +42,8 @@ class MainWindow(QMainWindow):
         self.canvas_scene.connectionsRemoved.connect(self._on_connections_removed)
         self.canvas_scene.connectionAdded.connect(self._on_connection_added)
         self.canvas_scene.statusMessage.connect(self._show_status_message)
+        self.canvas_scene.selectionChanged.connect(self._update_delete_action)
+        self.canvas_scene.projectModelChanged.connect(self._on_project_model_changed)
 
         self.canvas_view = CanvasView(self.canvas_scene, self)
         self.setCentralWidget(self.canvas_view)
@@ -84,7 +92,7 @@ class MainWindow(QMainWindow):
         menu_bar = self.menuBar()
 
         file_menu = menu_bar.addMenu("Файл")
-        act_open = QAction("Открыть…", self)
+        act_open = QAction("Открыть", self)
         act_open.setShortcut(QKeySequence.Open)
         act_open.setStatusTip("Открыть проект .robojson")
         act_open.triggered.connect(self.action_open)
@@ -97,6 +105,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.act_save)
 
         act_save_as = QAction("Сохранить как…", self)
+        act_save_as.setShortcut(QKeySequence.SaveAs)
         act_save_as.setStatusTip("Сохранить проект под новым именем")
         act_save_as.triggered.connect(self.action_save_as)
         file_menu.addAction(act_save_as)
@@ -104,15 +113,10 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
 
         act_exit = QAction("Выход", self)
+        act_exit.setShortcut(QKeySequence.Quit)
         act_exit.setStatusTip("Закрыть приложение")
         act_exit.triggered.connect(self.action_exit)
         file_menu.addAction(act_exit)
-
-        device_menu = menu_bar.addMenu("Устройство")
-        device_menu.addAction(QAction("Настройки устройства (скоро)", self, enabled=False))
-
-        firmware_menu = menu_bar.addMenu("Прошивка")
-        firmware_menu.addAction(QAction("Инструменты прошивки (скоро)", self, enabled=False))
 
         view_menu = menu_bar.addMenu("Вид")
         self.act_show_palette = QAction(
@@ -143,14 +147,25 @@ class MainWindow(QMainWindow):
         act_generate.triggered.connect(self.action_generate)
         tools_menu.addAction(act_generate)
 
+        tools_menu.addSeparator()
+        self.act_delete = QAction("Удалить выделенное", self)
+        self.act_delete.setShortcuts([QKeySequence.Delete, QKeySequence(Qt.Key_Backspace)])
+        self.act_delete.setStatusTip("Удалить выделенные блоки или соединения")
+        self.act_delete.triggered.connect(self._delete_selection)
+        tools_menu.addAction(self.act_delete)
+        self.act_delete.setEnabled(False)
+
         help_menu = menu_bar.addMenu("Справка")
         act_about = QAction("О программе", self)
         act_about.setStatusTip("Информация о приложении")
         act_about.triggered.connect(self.action_about)
         help_menu.addAction(act_about)
 
+        self._update_delete_action()
+
     def _install_shortcuts(self) -> None:
         QShortcut(QKeySequence.Delete, self, activated=self._delete_selection)
+        QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self._delete_selection)
         QShortcut(QKeySequence.ZoomIn, self, activated=self._zoom_in)
         QShortcut(QKeySequence.ZoomOut, self, activated=self._zoom_out)
         QShortcut(QKeySequence("Ctrl+0"), self, activated=self._reset_zoom)
@@ -333,9 +348,15 @@ class MainWindow(QMainWindow):
 
     # ------------------------------------------------------------ shortcuts
     def _delete_selection(self) -> None:
-        removed = self.canvas_scene.remove_selected()
-        if removed:
-            self._update_status_counts()
+        focus = QApplication.focusWidget()
+        if isinstance(focus, self._TEXT_INPUT_WIDGETS):
+            return
+        self.canvas_scene.delete_selection()
+        self._update_delete_action()
+
+    def _on_project_model_changed(self, _model: ProjectModel) -> None:
+        # Пока просто обновляем статус; в будущем можно добавить отметку «есть несохранённые изменения».
+        self._update_status_counts()
 
     def _zoom_in(self) -> None:
         self.canvas_view.scale(1.15, 1.15)
@@ -389,6 +410,13 @@ class MainWindow(QMainWindow):
         board = self._current_board or "—"
         port = self._current_port or "—"
         self.status_label.setText(f"Блоков на сцене: {count} | Плата: {board} | Порт: {port}")
+
+    def _update_delete_action(self) -> None:
+        action = getattr(self, "act_delete", None)
+        if action is None:
+            return
+        has_selection = bool(self.canvas_scene.selectedItems())
+        action.setEnabled(has_selection)
 
     # ---------------------------------------------------------- visibility
     def _sync_palette_action(self, visible: bool) -> None:
