@@ -1,3 +1,4 @@
+# app/ui/canvas/canvas_scene.py
 from __future__ import annotations
 """Graphics scene implementing drag-and-drop, connections, and project sync."""
 
@@ -126,6 +127,7 @@ class CanvasScene(QGraphicsScene):
         self._emit_status(f"Добавлен блок: {title}")
         return item
 
+    # ------------------------------------------------------------- deletion API
     def delete_selected(self) -> bool:
         """Удалить выделённые элементы и вернуть True, если что-то удалено."""
         removed_blocks, removed_connections = self._delete_items(
@@ -156,6 +158,7 @@ class CanvasScene(QGraphicsScene):
         connections = [item for item in selected if isinstance(item, ConnectionItem)]
         blocks = [item for item in selected if isinstance(item, BlockItem)]
 
+        # сначала связи — затем блоки
         for connection in connections:
             if self._remove_connection_item(connection):
                 removed_connections += 1
@@ -183,7 +186,7 @@ class CanvasScene(QGraphicsScene):
 
     # ----------------------------------------------------------- context menu
     def show_delete_context_menu(self, screen_pos) -> bool:
-        """Показать меню удаления для внешних вызовов."""
+        """Показать меню удаления для внешних вызовов (делегаты из items/view)."""
         return self._show_delete_menu(screen_pos)
 
     def _show_delete_menu(self, screen_pos) -> bool:

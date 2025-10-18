@@ -1,3 +1,4 @@
+# app/ui/canvas/canvas_view.py
 """Graphics view with panning, zoom and grid drawing."""
 from __future__ import annotations
 
@@ -88,7 +89,10 @@ class CanvasView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:  # type: ignore[override]
-        if event.key() == Qt.Key_Delete:
+        # Централизованная обработка удаления:
+        # - если фокус в текстовом поле — пропускаем
+        # - иначе вызываем единый контракт сцены delete_selected() -> bool
+        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace):
             focus = QApplication.focusWidget()
             if isinstance(focus, self._TEXT_INPUT_WIDGETS):
                 super().keyPressEvent(event)

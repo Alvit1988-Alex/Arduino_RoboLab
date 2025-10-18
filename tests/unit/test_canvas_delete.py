@@ -1,3 +1,4 @@
+# tests/unit/test_canvas_delete.py
 import pytest
 
 try:  # pragma: no cover - skip when Qt bindings are unavailable
@@ -110,7 +111,10 @@ def test_delete_selected_updates_attached_project(scene: CanvasScene) -> None:
     assert len(dummy.removed_connections) >= 1
     connection_payload = dummy.removed_connections[0]
     if hasattr(connection_payload, "from_block_uid"):
-        assert connection_payload.from_block_uid == block_a.block.uid or connection_payload.to_block_uid == block_a.block.uid
+        assert (
+            connection_payload.from_block_uid == block_a.block.uid
+            or connection_payload.to_block_uid == block_a.block.uid
+        )
     else:
         assert block_a.block.uid in str(connection_payload)
 
