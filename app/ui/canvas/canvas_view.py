@@ -97,12 +97,17 @@ class CanvasView(QGraphicsView):
                 return
 
             # Предпочтительно вызывать единый helper сцены
-            delete = getattr(self.scene(), "delete_selection", None)
+            delete = getattr(self.scene(), "delete_selected", None)
             if callable(delete) and delete():
                 event.accept()
                 return
 
             # Fallback для старого API
+            delete_compat = getattr(self.scene(), "delete_selection", None)
+            if callable(delete_compat) and delete_compat():
+                event.accept()
+                return
+
             remove = getattr(self.scene(), "remove_selected", None)
             if callable(remove) and remove():
                 event.accept()

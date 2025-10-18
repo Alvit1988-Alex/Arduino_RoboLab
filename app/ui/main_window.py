@@ -277,11 +277,15 @@ class MainWindow(QMainWindow):
         self._register_shortcut("Ctrl+N", self.action_new_project)
         self._register_shortcut("Ctrl+O", self.action_open)
         self._register_shortcut("Ctrl+S", self.action_save)
-        self._register_shortcut("Delete", self._delete_selection)
         self._register_shortcut("Backspace", self._delete_selection)
         self._register_shortcut(QKeySequence.StandardKey.ZoomIn, self._zoom_in)
         self._register_shortcut(QKeySequence.StandardKey.ZoomOut, self._zoom_out)
         self._register_shortcut("Ctrl+0", self._reset_zoom)
+
+        delete_shortcut = QShortcut(QKeySequence("Delete"), self)
+        delete_shortcut.setContext(Qt.WidgetWithChildrenShortcut)
+        delete_shortcut.activated.connect(self._delete_selection)
+        self._shortcuts.append(delete_shortcut)
 
     def _register_shortcut(
         self,
@@ -528,7 +532,7 @@ class MainWindow(QMainWindow):
         focus = QApplication.focusWidget()
         if isinstance(focus, self._TEXT_INPUT_WIDGETS):
             return
-        self.canvas_scene.delete_selection()
+        self.canvas_scene.delete_selected()
         self._update_delete_action()
 
     def _on_project_model_changed(self, _model: ProjectModel) -> None:
