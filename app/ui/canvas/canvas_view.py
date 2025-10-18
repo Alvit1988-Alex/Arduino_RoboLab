@@ -6,7 +6,14 @@ from typing import Optional
 
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsScene,
+    QGraphicsView,
+    QLineEdit,
+    QPlainTextEdit,
+    QTextEdit,
+)
 
 
 class CanvasView(QGraphicsView):
@@ -15,6 +22,7 @@ class CanvasView(QGraphicsView):
     MIN_ZOOM = 0.25
     MAX_ZOOM = 3.0
     GRID_SIZE = 16
+    _TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
 
     def __init__(self, scene: Optional[QGraphicsScene] = None, parent=None) -> None:
         super().__init__(scene, parent)
@@ -80,6 +88,18 @@ class CanvasView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:  # type: ignore[override]
+        if event.key() == Qt.Key_Delete:
+            focus = QApplication.focusWidget()
+            if isinstance(focus, self._TEXT_INPUT_WIDGETS):
+                super().keyPressEvent(event)
+                return
+
+            scene = self.scene()
+            deleter = getattr(scene, "delete_selected", None)
+            if callable(deleter) and deleter():
+                event.accept()
+                return
+
         # Ctrl+0 — сброс масштаба к 100%
         if event.key() == Qt.Key_0 and event.modifiers() & Qt.ControlModifier:
             self.reset_zoom()

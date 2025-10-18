@@ -530,7 +530,9 @@ class MainWindow(QMainWindow):
         focus = QApplication.focusWidget()
         if isinstance(focus, self._TEXT_INPUT_WIDGETS):
             return
-        self.canvas_scene.delete_selected()
+        removed = self.canvas_scene.delete_selected()
+        if removed:
+            self._update_status_counts()
         self._update_delete_action()
 
     def _on_project_model_changed(self, _model: ProjectModel) -> None:

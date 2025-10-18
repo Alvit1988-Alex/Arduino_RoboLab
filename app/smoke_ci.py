@@ -123,14 +123,24 @@ def main() -> int:
         # Не должно быть маркеров конфликта
         if "<<<<<<<" in scene_src or "=======" in scene_src or ">>>>>>>" in scene_src:
             errors.append("canvas_scene.py: merge markers detected")
-        # Гард фокуса для Delete/Backspace
-        if "QApplication.focusWidget" not in scene_src:
-            errors.append("canvas_scene.py: focus guard for Delete missing")
         # Хелпер удаления
         if "def delete_selection" not in scene_src:
             errors.append("canvas_scene.py: delete_selection helper missing")
     except Exception as e:
         errors.append(f"canvas_scene.py read failed: {e}")
+
+    try:
+        widgets_view_src = read_text(os.path.join(REPO_ROOT, "app/ui/widgets/canvas_view.py"))
+    except Exception:
+        widgets_view_src = ""
+
+    try:
+        canvas_view_src = read_text(os.path.join(REPO_ROOT, "app/ui/canvas/canvas_view.py"))
+    except Exception:
+        canvas_view_src = ""
+
+    if "QApplication.focusWidget" not in widgets_view_src and "QApplication.focusWidget" not in canvas_view_src:
+        errors.append("canvas_view.py: focus guard for Delete missing")
 
     try:
         block_list_src = read_text(os.path.join(REPO_ROOT, "app/ui/widgets/block_list.py"))

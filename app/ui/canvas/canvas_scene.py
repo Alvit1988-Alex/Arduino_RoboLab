@@ -237,7 +237,7 @@ class CanvasScene(QGraphicsScene):
 
     # ----------------------------------------------------------------- events
     def contextMenuEvent(self, event: QGraphicsSceneContextMenuEvent) -> None:  # type: ignore[override]
-        if self._show_delete_menu(event.screenPos()):
+        if self.show_delete_context_menu(event.screenPos()):
             event.accept()
             return
         super().contextMenuEvent(event)
