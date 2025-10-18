@@ -5,7 +5,7 @@ from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem, QMenu
 
 from .model import BlockInstance
 
@@ -219,6 +219,25 @@ class PortItem(QGraphicsEllipseItem):
                 return
         super().mouseReleaseEvent(event)
 
+    def contextMenuEvent(self, event) -> None:  # type: ignore[override]
+        scene = self.scene()
+        if scene is None:
+            super().contextMenuEvent(event)
+            return
+        if not self.isSelected():
+            scene.clearSelection()
+            self.setSelected(True)
+        menu = QMenu()
+        delete_action = menu.addAction("Удалить")
+        chosen = menu.exec(event.screenPos())
+        if chosen == delete_action:
+            handler = getattr(scene, "delete_selection", None)
+            if callable(handler):
+                handler()
+            event.accept()
+            return
+        super().contextMenuEvent(event)
+
 
 class ConnectionItem(QGraphicsPathItem):
     """Visual connection between two ports."""
@@ -308,3 +327,22 @@ class ConnectionItem(QGraphicsPathItem):
         pen.setColor(self.COLOR_DEFAULT)
         self.setPen(pen)
         super().hoverLeaveEvent(event)
+
+    def contextMenuEvent(self, event) -> None:  # type: ignore[override]
+        scene = self.scene()
+        if scene is None:
+            super().contextMenuEvent(event)
+            return
+        if not self.isSelected():
+            scene.clearSelection()
+            self.setSelected(True)
+        menu = QMenu()
+        delete_action = menu.addAction("Удалить")
+        chosen = menu.exec(event.screenPos())
+        if chosen == delete_action:
+            handler = getattr(scene, "delete_selection", None)
+            if callable(handler):
+                handler()
+            event.accept()
+            return
+        super().contextMenuEvent(event)

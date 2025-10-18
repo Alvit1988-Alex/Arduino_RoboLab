@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         self.canvas_scene.connectionsRemoved.connect(self._on_connections_removed)
         self.canvas_scene.connectionAdded.connect(self._on_connection_added)
         self.canvas_scene.statusMessage.connect(self._show_status_message)
+        self.canvas_scene.selectionChanged.connect(self._update_delete_action)
 
         self.canvas_view = CanvasView(self.canvas_scene, self)
         self.setCentralWidget(self.canvas_view)
@@ -139,14 +140,25 @@ class MainWindow(QMainWindow):
         act_generate.triggered.connect(self.action_generate)
         tools_menu.addAction(act_generate)
 
+        tools_menu.addSeparator()
+        self.act_delete = QAction("Удалить выделенное", self)
+        self.act_delete.setShortcut(QKeySequence.Delete)
+        self.act_delete.setStatusTip("Удалить выделенные блоки или соединения")
+        self.act_delete.triggered.connect(self._delete_selection)
+        tools_menu.addAction(self.act_delete)
+        self.act_delete.setEnabled(False)
+
         help_menu = menu_bar.addMenu("Справка")
         act_about = QAction("О программе", self)
         act_about.setStatusTip("Информация о приложении")
         act_about.triggered.connect(self.action_about)
         help_menu.addAction(act_about)
 
+        self._update_delete_action()
+
     def _install_shortcuts(self) -> None:
         QShortcut(QKeySequence.Delete, self, activated=self._delete_selection)
+        QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self._delete_selection)
         QShortcut(QKeySequence.ZoomIn, self, activated=self._zoom_in)
         QShortcut(QKeySequence.ZoomOut, self, activated=self._zoom_out)
         QShortcut(QKeySequence("Ctrl+0"), self, activated=self._reset_zoom)
@@ -329,9 +341,9 @@ class MainWindow(QMainWindow):
 
     # ------------------------------------------------------------ shortcuts
     def _delete_selection(self) -> None:
-        removed = self.canvas_scene.remove_selected()
-        if removed:
+        if self.canvas_scene.delete_selection():
             self._update_status_counts()
+        self._update_delete_action()
 
     def _zoom_in(self) -> None:
         self.canvas_view.scale(1.15, 1.15)
@@ -385,6 +397,13 @@ class MainWindow(QMainWindow):
         board = self._current_board or "—"
         port = self._current_port or "—"
         self.status_label.setText(f"Блоков на сцене: {count} | Плата: {board} | Порт: {port}")
+
+    def _update_delete_action(self) -> None:
+        action = getattr(self, "act_delete", None)
+        if action is None:
+            return
+        has_selection = bool(self.canvas_scene.selectedItems())
+        action.setEnabled(has_selection)
 
     # ---------------------------------------------------------- visibility
     def _sync_palette_action(self, visible: bool) -> None:

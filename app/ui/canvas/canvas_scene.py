@@ -84,26 +84,31 @@ class CanvasScene(QGraphicsScene):
         from uuid import uuid4
         metadata = self._block_catalog.get(type_id, {})
         defaults: Dict[str, object] = {}
-        params_meta = metadata.get("params")
-        if isinstance(params_meta, list):
-            for descriptor in params_meta:
-                if not isinstance(descriptor, dict):
-                    continue
-                name = descriptor.get("name")
-                if not name:
-                    continue
-                defaults[str(name)] = descriptor.get("default")
 
-        combined: Dict[str, object] = dict(defaults)
-        if params:
-            combined.update(params)
+        catalog_defaults = metadata.get("default_params")
+        if isinstance(catalog_defaults, dict):
+            defaults.update({str(k): v for k, v in catalog_defaults.items()})
+        else:
+            params_meta = metadata.get("params")
+            if isinstance(params_meta, list):
+                for descriptor in params_meta:
+                    if not isinstance(descriptor, dict):
+                        continue
+                    name = descriptor.get("name")
+                    if not name:
+                        continue
+                    defaults[str(name)] = descriptor.get("default")
+
+        if isinstance(params, dict):
+            for key, value in params.items():
+                defaults[str(key)] = value
 
         block = BlockInstance(
             uid=uid or str(uuid4()),
             type_id=type_id,
             x=pos.x(),
             y=pos.y(),
-            params=combined,
+            params=dict(defaults),
         )
         self._project_model.add_block(block)
         item = self._create_item_for_block(block)
@@ -112,8 +117,17 @@ class CanvasScene(QGraphicsScene):
         self._emit_status(f"Добавлен блок: {title}")
         return item
 
+    def delete_selection(self) -> bool:
+        """Удалить выделённые блоки и соединения."""
+        removed_blocks, removed_connections = self._purge_selected_items()
+        return (removed_blocks + removed_connections) > 0
+
     def remove_selected(self) -> int:
-        """Удалить выделенные блоки и соединения. Возвращает общее число удалённых."""
+        """Совместимость: удалить выделение и вернуть количество элементов."""
+        removed_blocks, removed_connections = self._purge_selected_items()
+        return removed_blocks + removed_connections
+
+    def _purge_selected_items(self) -> tuple[int, int]:
         removed_blocks = 0
         removed_connections = 0
         for item in list(self.selectedItems()):
@@ -127,13 +141,15 @@ class CanvasScene(QGraphicsScene):
             elif isinstance(item, ConnectionItem):
                 if self._remove_connection_item(item):
                     removed_connections += 1
+
         if removed_blocks:
             self.blocksRemoved.emit(removed_blocks)
             self._emit_status(f"Удалено блоков: {removed_blocks}")
         if removed_connections:
             self.connectionsRemoved.emit(removed_connections)
             self._emit_status(f"Удалено соединений: {removed_connections}")
-        return removed_blocks + removed_connections
+
+        return removed_blocks, removed_connections
 
     # --------------------------------------------------------------- DnD events
     def dragEnterEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
@@ -164,6 +180,13 @@ class CanvasScene(QGraphicsScene):
             event.ignore()
 
     # ----------------------------------------------------------------- events
+    def keyPressEvent(self, event) -> None:  # type: ignore[override]
+        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace):
+            if self.delete_selection():
+                event.accept()
+                return
+        super().keyPressEvent(event)
+
     def mouseMoveEvent(self, event) -> None:  # type: ignore[override]
         if self._connection_preview is not None:
             self._connection_preview.set_temp_end(event.scenePos())

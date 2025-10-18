@@ -80,10 +80,13 @@ class CanvasView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:  # type: ignore[override]
-        if event.key() == Qt.Key_Delete and self.scene() is not None:
-            remove = getattr(self.scene(), "remove_selected_blocks", None)
-            if callable(remove):
-                remove()
+        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace) and self.scene() is not None:
+            delete = getattr(self.scene(), "delete_selection", None)
+            if callable(delete) and delete():
+                event.accept()
+                return
+            remove = getattr(self.scene(), "remove_selected", None)
+            if callable(remove) and remove():
                 event.accept()
                 return
         if event.key() == Qt.Key_0 and event.modifiers() & Qt.ControlModifier:
