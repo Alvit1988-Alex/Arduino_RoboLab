@@ -23,7 +23,6 @@ from .model import BlockInstance, ConnectionModel, ProjectModel
 _TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
 
 
-
 class CanvasScene(QGraphicsScene):
     # события в UI
     blockAdded = Signal(BlockInstance)
@@ -96,10 +95,13 @@ class CanvasScene(QGraphicsScene):
         metadata = self._block_catalog.get(type_id, {})
         defaults: Dict[str, object] = {}
 
+        # --- единая логика сборки дефолтов: default_params -> legacy params[] -> overrides
         catalog_defaults = metadata.get("default_params")
         if isinstance(catalog_defaults, dict):
+            # современный формат каталога: словарь значений по умолчанию
             defaults.update({str(k): v for k, v in catalog_defaults.items()})
         else:
+            # совместимость со старыми каталогами: извлекаем из params[]
             params_meta = metadata.get("params")
             if isinstance(params_meta, list):
                 for descriptor in params_meta:
@@ -109,6 +111,7 @@ class CanvasScene(QGraphicsScene):
                     if name is not None:
                         defaults[str(name)] = descriptor.get("default")
 
+        # пользовательские overrides накрывают библиотечные дефолты
         if isinstance(params, dict):
             for key, value in params.items():
                 defaults[str(key)] = value
