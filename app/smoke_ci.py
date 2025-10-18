@@ -84,6 +84,20 @@ def main() -> int:
         errors.append(f"canvas_scene.py read failed: {e}")
 
     try:
+        block_list_src = read_text(os.path.join(REPO_ROOT, "app/ui/widgets/block_list.py"))
+        ok, msg = must_contain(
+            block_list_src,
+            "mime.setData(BLOCK_MIME",
+            "block_list uses shared BLOCK_MIME",
+        )
+        if not ok:
+            errors.append(f"block_list.py: {msg}")
+        if "from ..common.mime import BLOCK_MIME" not in block_list_src:
+            errors.append("block_list.py: BLOCK_MIME import missing")
+    except Exception as e:
+        errors.append(f"block_list.py read failed: {e}")
+
+    try:
         items_src = read_text(os.path.join(REPO_ROOT, "app/ui/canvas/items.py"))
         for cls in ["class BlockItem", "class PortItem", "class ConnectionItem"]:
             ok, msg = must_contain(items_src, cls, f"{cls} declaration")

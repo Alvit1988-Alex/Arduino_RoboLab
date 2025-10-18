@@ -54,6 +54,9 @@ class MainWindow(QMainWindow):
         self.palette_dock.visibilityChanged.connect(self._sync_palette_action)
         self.code_dock.visibilityChanged.connect(self._sync_code_action)
         self.serial_dock.visibilityChanged.connect(self._sync_monitor_action)
+        self._sync_palette_action(self.palette_dock.isVisible())
+        self._sync_code_action(self.code_dock.isVisible())
+        self._sync_monitor_action(self.serial_dock.isVisible())
 
         self.block_library: List[dict] = []
         self.block_catalog: Dict[str, Dict[str, object]] = {}
@@ -81,7 +84,7 @@ class MainWindow(QMainWindow):
         menu_bar = self.menuBar()
 
         file_menu = menu_bar.addMenu("Файл")
-        act_open = QAction("Открыть…", self)
+        act_open = QAction("Открыть", self)
         act_open.setShortcut(QKeySequence.Open)
         act_open.setStatusTip("Открыть проект .robojson")
         act_open.triggered.connect(self.action_open)
@@ -94,6 +97,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.act_save)
 
         act_save_as = QAction("Сохранить как…", self)
+        act_save_as.setShortcut(QKeySequence.SaveAs)
         act_save_as.setStatusTip("Сохранить проект под новым именем")
         act_save_as.triggered.connect(self.action_save_as)
         file_menu.addAction(act_save_as)
@@ -101,15 +105,10 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
 
         act_exit = QAction("Выход", self)
+        act_exit.setShortcut(QKeySequence.Quit)
         act_exit.setStatusTip("Закрыть приложение")
         act_exit.triggered.connect(self.action_exit)
         file_menu.addAction(act_exit)
-
-        device_menu = menu_bar.addMenu("Устройство")
-        device_menu.addAction(QAction("Настройки устройства (скоро)", self, enabled=False))
-
-        firmware_menu = menu_bar.addMenu("Прошивка")
-        firmware_menu.addAction(QAction("Инструменты прошивки (скоро)", self, enabled=False))
 
         view_menu = menu_bar.addMenu("Вид")
         self.act_show_palette = QAction(
