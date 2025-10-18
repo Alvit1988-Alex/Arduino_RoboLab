@@ -84,7 +84,11 @@ class CanvasScene(QGraphicsScene):
         from uuid import uuid4
         metadata = self._block_catalog.get(type_id, {})
         defaults: Dict[str, object] = {}
-        if isinstance(metadata.get("params"), list):
+        catalog_defaults = metadata.get("default_params")
+        if isinstance(catalog_defaults, dict):
+            defaults.update(catalog_defaults)
+        elif isinstance(metadata.get("params"), list):
+            # совместимость с каталогами без default_params
             for descriptor in metadata.get("params", []):
                 if isinstance(descriptor, dict):
                     name = descriptor.get("name")
@@ -150,7 +154,8 @@ class CanvasScene(QGraphicsScene):
     def dropEvent(self, event: QGraphicsSceneDragDropEvent) -> None:  # type: ignore[override]
         md: QMimeData = event.mimeData()
         if md.hasFormat(BLOCK_MIME) and self._accept_drops_enabled:
-            type_id = str(bytes(md.data(BLOCK_MIME)).decode("utf-8")).strip()
+            payload = bytes(md.data(BLOCK_MIME))
+            type_id = payload.decode("utf-8").strip()
             pos = event.scenePos()
             gx = round(pos.x() / self._grid_size) * self._grid_size
             gy = round(pos.y() / self._grid_size) * self._grid_size

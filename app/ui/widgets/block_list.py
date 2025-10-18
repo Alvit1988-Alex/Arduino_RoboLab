@@ -10,6 +10,8 @@ from ..common.mime import BLOCK_MIME
 
 
 class BlockListWidget(QListWidget):
+    """List widget that exposes block catalog entries for drag-and-drop."""
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         # Qt6: enum берём из класса QAbstractItemView.SelectionMode
@@ -20,7 +22,11 @@ class BlockListWidget(QListWidget):
     def set_catalog(self, catalog: Dict[str, Dict[str, object]]) -> None:
         self._catalog = dict(catalog)
         self.clear()
-        for type_id, meta in sorted(self._catalog.items()):
+        entries = sorted(
+            self._catalog.items(),
+            key=lambda item: str(item[1].get("title", item[0])).casefold(),
+        )
+        for type_id, meta in entries:
             title = str(meta.get("title", type_id))
             item = QListWidgetItem(title)
             item.setData(Qt.UserRole, type_id)

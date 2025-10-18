@@ -54,6 +54,9 @@ class MainWindow(QMainWindow):
         self.palette_dock.visibilityChanged.connect(self._sync_palette_action)
         self.code_dock.visibilityChanged.connect(self._sync_code_action)
         self.serial_dock.visibilityChanged.connect(self._sync_monitor_action)
+        self._sync_palette_action(self.palette_dock.isVisible())
+        self._sync_code_action(self.code_dock.isVisible())
+        self._sync_monitor_action(self.serial_dock.isVisible())
 
         self.block_library: List[dict] = []
         self.block_catalog: Dict[str, Dict[str, object]] = {}
