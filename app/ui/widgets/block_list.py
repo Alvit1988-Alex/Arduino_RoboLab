@@ -20,6 +20,7 @@ class BlockListWidget(QListWidget):
         self._catalog: Dict[str, Dict[str, object]] = {}
 
     def set_catalog(self, catalog: Dict[str, Dict[str, object]]) -> None:
+        """Принять каталог блоков и отрендерить список по алфавиту (по title)."""
         self._catalog = dict(catalog)
         self.clear()
         entries = sorted(

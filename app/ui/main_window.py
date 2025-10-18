@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Arduino RoboLab (Preview)")
         self.resize(1280, 800)
 
+        # Сцена и вью
         self.canvas_scene = CanvasScene()
         self.canvas_scene.blockAdded.connect(self._on_block_added)
         self.canvas_scene.blocksRemoved.connect(self._on_blocks_removed)
@@ -48,23 +49,24 @@ class MainWindow(QMainWindow):
         self.canvas_view = CanvasView(self.canvas_scene, self)
         self.setCentralWidget(self.canvas_view)
 
+        # Слева — палитра блоков
         self.palette_dock = PaletteDock(self)
         self.palette_dock.blockActivated.connect(self._add_block_from_palette)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.palette_dock)
 
+        # Справа — панель кода
         self.code_dock = CodeDock(self)
         self.addDockWidget(Qt.RightDockWidgetArea, self.code_dock)
 
+        # Снизу — монитор порта (по умолчанию скрыт)
         self.serial_dock = SerialMonitorDock(self)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.serial_dock)
         self.serial_dock.hide()
 
+        # Синхронизация меню Вид с реальной видимостью доков
         self.palette_dock.visibilityChanged.connect(self._sync_palette_action)
         self.code_dock.visibilityChanged.connect(self._sync_code_action)
         self.serial_dock.visibilityChanged.connect(self._sync_monitor_action)
-        self._sync_palette_action(self.palette_dock.isVisible())
-        self._sync_code_action(self.code_dock.isVisible())
-        self._sync_monitor_action(self.serial_dock.isVisible())
 
         self.block_library: List[dict] = []
         self.block_catalog: Dict[str, Dict[str, object]] = {}
@@ -74,16 +76,23 @@ class MainWindow(QMainWindow):
         self._current_port: str = "—"
         self._project_dir: Path = Path.cwd()
 
+        # Статусбар
         self.status_label = QLabel()
         self.statusBar().addPermanentWidget(self.status_label)
 
+        # Меню и хоткеи
         self._setup_menu_bar()
         self._install_shortcuts()
 
+        # Загрузка каталога блоков
         self._load_block_library()
         self.palette_dock.set_blocks(self.block_library)
         self.canvas_scene.set_block_catalog(self.block_catalog)
 
+        # Показатели состояния
+        self._sync_palette_action(self.palette_dock.isVisible())
+        self._sync_code_action(self.code_dock.isVisible())
+        self._sync_monitor_action(self.serial_dock.isVisible())
         self._update_status_counts()
         self.statusBar().showMessage("Готово", 2000)
 
@@ -91,6 +100,7 @@ class MainWindow(QMainWindow):
     def _setup_menu_bar(self) -> None:
         menu_bar = self.menuBar()
 
+        # Файл
         file_menu = menu_bar.addMenu("Файл")
         act_open = QAction("Открыть", self)
         act_open.setShortcut(QKeySequence.Open)
@@ -118,28 +128,24 @@ class MainWindow(QMainWindow):
         act_exit.triggered.connect(self.action_exit)
         file_menu.addAction(act_exit)
 
+        # Вид
         view_menu = menu_bar.addMenu("Вид")
-        self.act_show_palette = QAction(
-            "Показать палитру", self, checkable=True, checked=True
-        )
+        self.act_show_palette = QAction("Показать палитру", self, checkable=True, checked=True)
         self.act_show_palette.setStatusTip("Показать или скрыть палитру блоков")
         self.act_show_palette.triggered.connect(self.action_toggle_palette)
         view_menu.addAction(self.act_show_palette)
 
-        self.act_show_code = QAction(
-            "Показать панель кода", self, checkable=True, checked=True
-        )
+        self.act_show_code = QAction("Показать панель кода", self, checkable=True, checked=True)
         self.act_show_code.setStatusTip("Показать или скрыть панель кода")
         self.act_show_code.triggered.connect(self.action_toggle_code)
         view_menu.addAction(self.act_show_code)
 
-        self.act_show_monitor = QAction(
-            "Показать монитор порта", self, checkable=True, checked=False
-        )
+        self.act_show_monitor = QAction("Показать монитор порта", self, checkable=True, checked=False)
         self.act_show_monitor.setStatusTip("Показать или скрыть монитор последовательного порта")
         self.act_show_monitor.triggered.connect(self.action_toggle_monitor)
         view_menu.addAction(self.act_show_monitor)
 
+        # Инструменты
         tools_menu = menu_bar.addMenu("Инструменты")
         act_generate = QAction("Сгенерировать скетч", self)
         act_generate.setShortcut("Ctrl+G")
@@ -155,6 +161,7 @@ class MainWindow(QMainWindow):
         tools_menu.addAction(self.act_delete)
         self.act_delete.setEnabled(False)
 
+        # Справка
         help_menu = menu_bar.addMenu("Справка")
         act_about = QAction("О программе", self)
         act_about.setStatusTip("Информация о приложении")
@@ -164,6 +171,7 @@ class MainWindow(QMainWindow):
         self._update_delete_action()
 
     def _install_shortcuts(self) -> None:
+        # Дублируем горячие клавиши для Delete/Backspace (на случай, если меню не в фокусе)
         QShortcut(QKeySequence.Delete, self, activated=self._delete_selection)
         QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self._delete_selection)
         QShortcut(QKeySequence.ZoomIn, self, activated=self._zoom_in)
@@ -430,4 +438,3 @@ class MainWindow(QMainWindow):
     def _sync_monitor_action(self, visible: bool) -> None:
         if self.act_show_monitor.isChecked() != visible:
             self.act_show_monitor.setChecked(visible)
-

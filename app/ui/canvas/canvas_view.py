@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
     QTextEdit,
 )
 
-
+# Локальный кортеж виджетов ввода текста — для гарда Delete/Backspace
 _TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
 
 
@@ -90,22 +90,30 @@ class CanvasView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:  # type: ignore[override]
+        # Фокус-guard: не удаляем блоки, если пользователь печатает в текстовом поле
         if event.key() in (Qt.Key_Delete, Qt.Key_Backspace) and self.scene() is not None:
             if isinstance(QApplication.focusWidget(), _TEXT_INPUT_WIDGETS):
                 super().keyPressEvent(event)
                 return
+
+            # Предпочтительно вызывать единый helper сцены
             delete = getattr(self.scene(), "delete_selection", None)
             if callable(delete) and delete():
                 event.accept()
                 return
+
+            # Fallback для старого API
             remove = getattr(self.scene(), "remove_selected", None)
             if callable(remove) and remove():
                 event.accept()
                 return
+
+        # Ctrl+0 — сброс масштаба к 100%
         if event.key() == Qt.Key_0 and event.modifiers() & Qt.ControlModifier:
             self.reset_zoom()
             event.accept()
             return
+
         super().keyPressEvent(event)
 
     def drawBackground(self, painter: QPainter, rect) -> None:  # type: ignore[override]

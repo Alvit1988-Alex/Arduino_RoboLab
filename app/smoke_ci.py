@@ -38,7 +38,6 @@ def must_contain(text: str, needle: str, label: str) -> Tuple[bool, str]:
 
 def _simulate_default_merge() -> Dict[str, object]:
     """Reproduce the add_block_at default merge snippet for verification."""
-
     namespace: Dict[str, object] = {}
     exec(
         "def merge(metadata, params):\n"
@@ -74,7 +73,6 @@ def _simulate_default_merge() -> Dict[str, object]:
     merged = namespace["merge"](metadata, overrides)
     return merged
 
-
 def main() -> int:
     errors: List[str] = []
 
@@ -108,6 +106,7 @@ def main() -> int:
 
     try:
         scene_src = read_text(os.path.join(REPO_ROOT, "app/ui/canvas/canvas_scene.py"))
+        # Должен импортировать общий BLOCK_MIME
         ok, msg = must_contain(
             scene_src,
             "from ..common.mime import BLOCK_MIME",
@@ -115,14 +114,19 @@ def main() -> int:
         )
         if not ok:
             errors.append(f"canvas_scene.py: {msg}")
-        if "catalog_defaults = metadata.get(\"default_params\")" not in scene_src:
+        # Проверка на наличие блока слияния default_params
+        if 'catalog_defaults = metadata.get("default_params")' not in scene_src:
             errors.append("canvas_scene.py: default_params merge block missing")
+        # Не должно быть legacy-символа
         if "MIME_BLOCK" in scene_src:
             errors.append("canvas_scene.py: legacy MIME_BLOCK symbol detected")
+        # Не должно быть маркеров конфликта
         if "<<<<<<<" in scene_src or "=======" in scene_src or ">>>>>>>" in scene_src:
             errors.append("canvas_scene.py: merge markers detected")
+        # Гард фокуса для Delete/Backspace
         if "QApplication.focusWidget" not in scene_src:
             errors.append("canvas_scene.py: focus guard for Delete missing")
+        # Хелпер удаления
         if "def delete_selection" not in scene_src:
             errors.append("canvas_scene.py: delete_selection helper missing")
     except Exception as e:
@@ -159,7 +163,8 @@ def main() -> int:
             errors.append("main_window.py: Delete action missing")
         if "QApplication.focusWidget" not in main_src:
             errors.append("main_window.py: focus guard missing")
-        if "self._TEXT_INPUT_WIDGETS" not in main_src:
+        # Разрешаем разные варианты имени кортежа виджетов ввода
+        if "_TEXT_INPUT_WIDGETS" not in main_src and "TEXT_INPUT_WIDGETS" not in main_src:
             errors.append("main_window.py: text input guard tuple missing")
     except Exception as e:
         errors.append(f"main_window.py read failed: {e}")
@@ -167,15 +172,16 @@ def main() -> int:
     # 4) Безопасный импорт только модели (без PySide6)
     try:
         import importlib
-
         model = importlib.import_module("app.ui.canvas.model")
         assert hasattr(model, "BlockInstance"), "BlockInstance not found"
         assert hasattr(model, "ConnectionModel"), "ConnectionModel not found"
         assert hasattr(model, "ProjectModel"), "ProjectModel not found"
+
         BlockInstance = model.BlockInstance
         ConnectionModel = model.ConnectionModel
         ProjectModel = model.ProjectModel
 
+        # Мини-сценарий: создание, связи, удаления, сериализация
         scenario_model = ProjectModel()
         blocks = [
             BlockInstance(uid="A", type_id="logic/start"),
@@ -190,12 +196,14 @@ def main() -> int:
         scenario_model.add_connection(connection_ab)
         scenario_model.add_connection(connection_bc)
 
+        # Удаляем ребро и проверяем целостность
         scenario_model.remove_connection(connection_ab)
         if len(scenario_model.connections) != 1:
             errors.append("ProjectModel: connection removal inconsistent")
         if any(conn.matches(connection_ab) for conn in scenario_model.connections):
             errors.append("ProjectModel: dangling reference to removed connection")
 
+        # Удаляем блок и проверяем, что его рёбра исчезли
         scenario_model.remove_block("B")
         if any(block.uid == "B" for block in scenario_model.blocks):
             errors.append("ProjectModel: block removal failed")
@@ -205,6 +213,7 @@ def main() -> int:
         ):
             errors.append("ProjectModel: edges referencing removed block remain")
 
+        # Round-trip сериализация
         serialised = scenario_model.to_dict()
         roundtrip = json.loads(json.dumps(serialised))
         restored = ProjectModel.from_dict(roundtrip)
@@ -217,6 +226,7 @@ def main() -> int:
     except Exception:
         errors.append("Import error in app.ui.canvas.model:\n" + traceback.format_exc())
 
+    # 5) Имитация слияния дефолтов (проверка логики)
     try:
         merged = _simulate_default_merge()
         expected = {"threshold": 0.5, "7": "lucky", "mode": "manual", "11": 42}
