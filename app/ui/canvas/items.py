@@ -5,7 +5,7 @@ from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem, QMenu
 
 from .model import BlockInstance
 
@@ -158,10 +158,10 @@ class PortItem(QGraphicsEllipseItem):
         self.setZValue(2)
         self.setAcceptHoverEvents(True)
         self.setAcceptedMouseButtons(Qt.LeftButton)
-        self._connections: Set["ConnectionItem"] = set()
-        self.setToolTip(f"{self.direction}: {self.spec.name}")
-        # наглядный курсор для перетаскивания связей
         self.setCursor(Qt.CrossCursor)
+        self._connections: Set["ConnectionItem"] = set()
+        dtype_hint = f" ({self.dtype})" if self.dtype else ""
+        self.setToolTip(f"{self.direction}: {self.spec.name}{dtype_hint}")
 
     # увеличенная область попадания для удобства
     def shape(self) -> QPainterPath:  # type: ignore[override]
@@ -218,6 +218,25 @@ class PortItem(QGraphicsEllipseItem):
                 event.accept()
                 return
         super().mouseReleaseEvent(event)
+
+    def contextMenuEvent(self, event) -> None:  # type: ignore[override]
+        scene = self.scene()
+        if scene is None:
+            super().contextMenuEvent(event)
+            return
+        if not self.isSelected():
+            scene.clearSelection()
+            self.setSelected(True)
+        menu = QMenu()
+        delete_action = menu.addAction("Удалить")
+        chosen = menu.exec(event.screenPos())
+        if chosen == delete_action:
+            handler = getattr(scene, "delete_selection", None)
+            if callable(handler):
+                handler()
+            event.accept()
+            return
+        super().contextMenuEvent(event)
 
 
 class ConnectionItem(QGraphicsPathItem):
@@ -310,3 +329,22 @@ class ConnectionItem(QGraphicsPathItem):
         pen.setColor(self.COLOR_DEFAULT)
         self.setPen(pen)
         super().hoverLeaveEvent(event)
+
+    def contextMenuEvent(self, event) -> None:  # type: ignore[override]
+        scene = self.scene()
+        if scene is None:
+            super().contextMenuEvent(event)
+            return
+        if not self.isSelected():
+            scene.clearSelection()
+            self.setSelected(True)
+        menu = QMenu()
+        delete_action = menu.addAction("Удалить")
+        chosen = menu.exec(event.screenPos())
+        if chosen == delete_action:
+            handler = getattr(scene, "delete_selection", None)
+            if callable(handler):
+                handler()
+            event.accept()
+            return
+        super().contextMenuEvent(event)

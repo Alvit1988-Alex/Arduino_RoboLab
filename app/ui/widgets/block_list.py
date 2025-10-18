@@ -6,10 +6,12 @@ from PySide6.QtCore import Qt, QMimeData
 from PySide6.QtGui import QDrag
 from PySide6.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem
 
-from ..canvas.canvas_scene import MIME_BLOCK
+from ..common.mime import BLOCK_MIME
 
 
 class BlockListWidget(QListWidget):
+    """List widget that exposes block catalog entries for drag-and-drop."""
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         # Qt6: enum берём из класса QAbstractItemView.SelectionMode
@@ -18,9 +20,14 @@ class BlockListWidget(QListWidget):
         self._catalog: Dict[str, Dict[str, object]] = {}
 
     def set_catalog(self, catalog: Dict[str, Dict[str, object]]) -> None:
+        """Принять каталог блоков и отрендерить список по алфавиту (по title)."""
         self._catalog = dict(catalog)
         self.clear()
-        for type_id, meta in sorted(self._catalog.items()):
+        entries = sorted(
+            self._catalog.items(),
+            key=lambda item: str(item[1].get("title", item[0])).casefold(),
+        )
+        for type_id, meta in entries:
             title = str(meta.get("title", type_id))
             item = QListWidgetItem(title)
             item.setData(Qt.UserRole, type_id)
@@ -34,7 +41,7 @@ class BlockListWidget(QListWidget):
         if not type_id:
             return
         mime = QMimeData()
-        mime.setData(MIME_BLOCK, type_id.encode("utf-8"))
+        mime.setData(BLOCK_MIME, type_id.encode("utf-8"))
         drag = QDrag(self)
         drag.setMimeData(mime)
         drag.exec(Qt.CopyAction)
