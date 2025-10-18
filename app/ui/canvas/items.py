@@ -160,7 +160,9 @@ class PortItem(QGraphicsEllipseItem):
         self.setAcceptedMouseButtons(Qt.LeftButton)
         self.setCursor(Qt.CrossCursor)
         self._connections: Set["ConnectionItem"] = set()
-        self.setToolTip(f"{self.direction}: {self.spec.name}")
+        dtype_hint = f" ({self.dtype})" if self.dtype else ""
+        self.setToolTip(f"{self.direction}: {self.spec.name}{dtype_hint}")
+        self._hover_radius = self.RADIUS + 3.0
 
     # --------------------------------------------------------------- helpers
     @property
@@ -183,7 +185,7 @@ class PortItem(QGraphicsEllipseItem):
         return self.mapToScene(self.boundingRect().center())
 
     def shape(self) -> QPainterPath:  # type: ignore[override]
-        r = self.RADIUS + 3.0
+        r = self._hover_radius
         path = QPainterPath()
         path.addEllipse(QRectF(-r, -r, r * 2, r * 2))
         return path
