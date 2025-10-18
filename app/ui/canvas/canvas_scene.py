@@ -131,37 +131,57 @@ class CanvasScene(QGraphicsScene):
         self._emit_status(f"Добавлен блок: {title}")
         return item
 
+    def delete_selected(self) -> int:
+        """Удалить выделённые элементы и вернуть количество удалённых объектов."""
+        removed_blocks, removed_connections = self._delete_items(
+            list(self.selectedItems()), finalise=True
+        )
+        return removed_blocks + removed_connections
+
     def delete_selection(self) -> bool:
-        """Удалить выделённые блоки и соединения."""
-        removed_blocks, removed_connections = self._remove_selected_items()
-        if removed_blocks or removed_connections:
-            self._finalise_removal(removed_blocks, removed_connections)
-            return True
-        return False
+        """Совместимость: удалить выделение и вернуть True, если что-то удалено."""
+        return self.delete_selected() > 0
 
     def remove_selected(self) -> int:
         """Совместимость: удалить выделение и вернуть количество элементов."""
-        removed_blocks, removed_connections = self._remove_selected_items()
-        total = removed_blocks + removed_connections
-        if total:
-            self._finalise_removal(removed_blocks, removed_connections)
-        return total
+        return self.delete_selected()
 
-    def _remove_selected_items(self) -> tuple[int, int]:
+    def _delete_items(
+        self, selected: List[object], *, finalise: bool
+    ) -> tuple[int, int]:
+        if not selected:
+            return 0, 0
+
         removed_blocks = 0
         removed_connections = 0
-        for item in list(self.selectedItems()):
-            if isinstance(item, BlockItem):
-                uid = item.block.uid
-                removed_connections += self._remove_connections_for_block(uid)
-                self._project_model.remove_block(uid)
-                self._block_items.pop(uid, None)
-                self.removeItem(item)
-                removed_blocks += 1
-            elif isinstance(item, ConnectionItem):
-                if self._remove_connection_item(item):
-                    removed_connections += 1
+
+        connections = [item for item in selected if isinstance(item, ConnectionItem)]
+        blocks = [item for item in selected if isinstance(item, BlockItem)]
+
+        for connection in connections:
+            if self._remove_connection_item(connection):
+                removed_connections += 1
+
+        for block in blocks:
+            uid = block.block.uid
+            removed_connections += self._remove_connections_for_block(uid)
+            self._remove_block_item(block)
+            removed_blocks += 1
+
+        if finalise and (removed_blocks or removed_connections):
+            self._finalise_removal(removed_blocks, removed_connections)
+
         return removed_blocks, removed_connections
+
+    def _remove_block_item(self, item: BlockItem) -> None:
+        uid = item.block.uid
+        self._remove_block_from_models(uid, item)
+        self._block_items.pop(uid, None)
+        self.removeItem(item)
+
+    def _remove_selected_items(self) -> tuple[int, int]:
+        # Сохраняем для обратной совместимости в тестах сторонних проектов
+        return self._delete_items(list(self.selectedItems()), finalise=False)
 
     def _finalise_removal(self, removed_blocks: int, removed_connections: int) -> None:
         if removed_blocks:
@@ -207,7 +227,7 @@ class CanvasScene(QGraphicsScene):
             if self._focus_in_text_input():
                 super().keyPressEvent(event)
                 return
-            if self.delete_selection():
+            if self.delete_selected():
                 event.accept()
                 return
         super().keyPressEvent(event)
@@ -354,7 +374,7 @@ class CanvasScene(QGraphicsScene):
 
     def _remove_connections_for_block(self, uid: str) -> int:
         removed = 0
-        for key, item in list(self._connection_items.items()):
+        for item in list(self._connection_items.values()):
             model = item.model
             if model and (model.from_block_uid == uid or model.to_block_uid == uid):
                 if self._remove_connection_item(item):
@@ -369,9 +389,37 @@ class CanvasScene(QGraphicsScene):
         if key in self._connection_items:
             self._connection_items.pop(key, None)
         item.detach()
-        self._project_model.remove_connection(model)
+        self._remove_connection_from_models(model, item)
         self.removeItem(item)
         return True
+
+    def _remove_block_from_models(self, uid: str, item: Optional[BlockItem] = None) -> None:
+        self._project_model.remove_block(uid)
+        project = getattr(self, "_project", None)
+        if project is None:
+            return
+        remover = getattr(project, "remove_block", None)
+        if not callable(remover):
+            return
+        payload = getattr(item, "block", None) or uid
+        try:
+            remover(payload)
+        except TypeError:
+            remover(uid)
+
+    def _remove_connection_from_models(self, model: ConnectionModel, item: Optional[ConnectionItem] = None) -> None:
+        self._project_model.remove_connection(model)
+        project = getattr(self, "_project", None)
+        if project is None:
+            return
+        remover = getattr(project, "remove_connection", None)
+        if not callable(remover):
+            return
+        payload = getattr(item, "model_id", None) or model
+        try:
+            remover(payload)
+        except TypeError:
+            remover(model)
 
     def _find_port(self, block_uid: str, name: str, direction: Optional[str] = None) -> Optional[PortItem]:
         block_item = self._block_items.get(block_uid)
