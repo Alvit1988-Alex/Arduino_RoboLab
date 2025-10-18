@@ -2,19 +2,21 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Union
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtGui import QAction, QActionGroup, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QMainWindow,
+    QMenu,
+    QMenuBar,
     QMessageBox,
     QPlainTextEdit,
-    QShortcut,
     QTextEdit,
 )
 
@@ -70,6 +72,7 @@ class MainWindow(QMainWindow):
 
         self.block_library: List[dict] = []
         self.block_catalog: Dict[str, Dict[str, object]] = {}
+        self._blocks_path: Optional[Path] = None
 
         self._current_project_path: Optional[Path] = None
         self._current_board: str = "—"
@@ -81,6 +84,7 @@ class MainWindow(QMainWindow):
         self.statusBar().addPermanentWidget(self.status_label)
 
         # Меню и хоткеи
+        self._shortcuts: List[QShortcut] = []
         self._setup_menu_bar()
         self._install_shortcuts()
 
@@ -98,94 +102,209 @@ class MainWindow(QMainWindow):
 
     # ------------------------------------------------------------------ menu
     def _setup_menu_bar(self) -> None:
-        menu_bar = self.menuBar()
+        menu_bar: QMenuBar = self.menuBar()
+        menu_bar.clear()
 
-        # Файл
+        # Файл --------------------------------------------------------------
         file_menu = menu_bar.addMenu("Файл")
-        act_open = QAction("Открыть", self)
-        act_open.setShortcut(QKeySequence.Open)
-        act_open.setStatusTip("Открыть проект .robojson")
-        act_open.triggered.connect(self.action_open)
-        file_menu.addAction(act_open)
+
+        self.act_new_project = QAction("Новый проект", self)
+        self.act_new_project.setObjectName("actionNewProject")
+        self.act_new_project.setShortcut(QKeySequence("Ctrl+N"))
+        self.act_new_project.setStatusTip("Создать новый проект")
+        self.act_new_project.triggered.connect(self.action_new_project)
+        file_menu.addAction(self.act_new_project)
+
+        self.act_open = QAction("Открыть…", self)
+        self.act_open.setObjectName("actionOpenProject")
+        self.act_open.setShortcut(QKeySequence("Ctrl+O"))
+        self.act_open.setStatusTip("Открыть проект .robojson")
+        self.act_open.triggered.connect(self.action_open)
+        file_menu.addAction(self.act_open)
 
         self.act_save = QAction("Сохранить", self)
-        self.act_save.setShortcut(QKeySequence.Save)
+        self.act_save.setObjectName("actionSaveProject")
+        self.act_save.setShortcut(QKeySequence("Ctrl+S"))
         self.act_save.setStatusTip("Сохранить текущий проект")
         self.act_save.triggered.connect(self.action_save)
         file_menu.addAction(self.act_save)
 
-        act_save_as = QAction("Сохранить как…", self)
-        act_save_as.setShortcut(QKeySequence.SaveAs)
-        act_save_as.setStatusTip("Сохранить проект под новым именем")
-        act_save_as.triggered.connect(self.action_save_as)
-        file_menu.addAction(act_save_as)
+        self.act_save_as = QAction("Сохранить как…", self)
+        self.act_save_as.setObjectName("actionSaveProjectAs")
+        self.act_save_as.setShortcut(QKeySequence(QKeySequence.StandardKey.SaveAs))
+        self.act_save_as.setStatusTip("Сохранить проект под новым именем")
+        self.act_save_as.triggered.connect(self.action_save_as)
+        file_menu.addAction(self.act_save_as)
 
         file_menu.addSeparator()
 
-        act_exit = QAction("Выход", self)
-        act_exit.setShortcut(QKeySequence.Quit)
-        act_exit.setStatusTip("Закрыть приложение")
-        act_exit.triggered.connect(self.action_exit)
-        file_menu.addAction(act_exit)
+        self.act_exit = QAction("Выход", self)
+        self.act_exit.setObjectName("actionExit")
+        self.act_exit.setShortcut(QKeySequence(QKeySequence.StandardKey.Quit))
+        self.act_exit.setStatusTip("Закрыть приложение")
+        self.act_exit.triggered.connect(self.action_exit)
+        file_menu.addAction(self.act_exit)
 
-        # Вид
-        view_menu = menu_bar.addMenu("Вид")
-        self.act_show_palette = QAction("Показать палитру", self, checkable=True, checked=True)
-        self.act_show_palette.setStatusTip("Показать или скрыть палитру блоков")
-        self.act_show_palette.triggered.connect(self.action_toggle_palette)
-        view_menu.addAction(self.act_show_palette)
-
-        self.act_show_code = QAction("Показать панель кода", self, checkable=True, checked=True)
-        self.act_show_code.setStatusTip("Показать или скрыть панель кода")
-        self.act_show_code.triggered.connect(self.action_toggle_code)
-        view_menu.addAction(self.act_show_code)
-
-        self.act_show_monitor = QAction("Показать монитор порта", self, checkable=True, checked=False)
-        self.act_show_monitor.setStatusTip("Показать или скрыть монитор последовательного порта")
-        self.act_show_monitor.triggered.connect(self.action_toggle_monitor)
-        view_menu.addAction(self.act_show_monitor)
-
-        # Инструменты
-        tools_menu = menu_bar.addMenu("Инструменты")
-        act_generate = QAction("Сгенерировать скетч", self)
-        act_generate.setShortcut("Ctrl+G")
-        act_generate.setStatusTip("Сформировать предварительный Arduino-скетч")
-        act_generate.triggered.connect(self.action_generate)
-        tools_menu.addAction(act_generate)
-
-        tools_menu.addSeparator()
-        self.act_delete = QAction("Удалить выделенное", self)
-        self.act_delete.setShortcuts([QKeySequence.Delete, QKeySequence(Qt.Key_Backspace)])
+        # Правка ------------------------------------------------------------
+        edit_menu = menu_bar.addMenu("Правка")
+        self.act_delete = QAction("Удалить", self)
+        self.act_delete.setObjectName("actionDeleteSelection")
+        self.act_delete.setShortcut(QKeySequence(QKeySequence.StandardKey.Delete))
         self.act_delete.setStatusTip("Удалить выделенные блоки или соединения")
         self.act_delete.triggered.connect(self._delete_selection)
-        tools_menu.addAction(self.act_delete)
         self.act_delete.setEnabled(False)
+        edit_menu.addAction(self.act_delete)
 
-        # Справка
+        # Устройство --------------------------------------------------------
+        device_menu = menu_bar.addMenu("Устройство")
+        self.act_select_board = QAction("Выбрать плату…", self)
+        self.act_select_board.setObjectName("actionSelectBoard")
+        self.act_select_board.triggered.connect(self.action_select_board)
+        device_menu.addAction(self.act_select_board)
+
+        self.act_select_port = QAction("Выбрать порт…", self)
+        self.act_select_port.setObjectName("actionSelectPort")
+        self.act_select_port.triggered.connect(self.action_select_port)
+        device_menu.addAction(self.act_select_port)
+
+        self.act_scan_devices = QAction("Сканировать", self)
+        self.act_scan_devices.setObjectName("actionScanDevices")
+        self.act_scan_devices.triggered.connect(self.action_scan_devices)
+        device_menu.addAction(self.act_scan_devices)
+
+        # Прошивка ---------------------------------------------------------
+        firmware_menu = menu_bar.addMenu("Прошивка")
+
+        self.act_generate_code = QAction("Сгенерировать код", self)
+        self.act_generate_code.setObjectName("actionGenerateCode")
+        self.act_generate_code.setShortcut(QKeySequence("Ctrl+G"))
+        self.act_generate_code.setStatusTip("Сформировать предварительный Arduino-скетч")
+        self.act_generate_code.triggered.connect(self.action_generate)
+        firmware_menu.addAction(self.act_generate_code)
+
+        self.act_compile_firmware = QAction("Скомпилировать", self)
+        self.act_compile_firmware.setObjectName("actionCompileFirmware")
+        self.act_compile_firmware.triggered.connect(lambda: self._show_stub_dialog(
+            "Компиляция", "Компиляция прошивки будет добавлена в следующих версиях."
+        ))
+        firmware_menu.addAction(self.act_compile_firmware)
+
+        self.act_upload_firmware = QAction("Залить", self)
+        self.act_upload_firmware.setObjectName("actionUploadFirmware")
+        self.act_upload_firmware.triggered.connect(lambda: self._show_stub_dialog(
+            "Загрузка прошивки", "Загрузка прошивки пока недоступна."
+        ))
+        firmware_menu.addAction(self.act_upload_firmware)
+
+        # Вид --------------------------------------------------------------
+        view_menu = menu_bar.addMenu("Вид")
+
+        theme_menu = QMenu("Тема", self)
+        theme_group = QActionGroup(self)
+        theme_group.setExclusive(True)
+
+        self.act_theme_dark = QAction("Тёмная тема", self, checkable=True)
+        self.act_theme_dark.setObjectName("actionThemeDark")
+        self.act_theme_dark.setChecked(True)
+        self.act_theme_dark.triggered.connect(lambda checked: checked and self._apply_theme("dark"))
+        theme_group.addAction(self.act_theme_dark)
+        theme_menu.addAction(self.act_theme_dark)
+
+        self.act_theme_light = QAction("Светлая тема", self, checkable=True)
+        self.act_theme_light.setObjectName("actionThemeLight")
+        self.act_theme_light.triggered.connect(lambda checked: checked and self._apply_theme("light"))
+        theme_group.addAction(self.act_theme_light)
+        theme_menu.addAction(self.act_theme_light)
+
+        view_menu.addMenu(theme_menu)
+
+        panels_menu = QMenu("Панели", self)
+        self.act_show_palette = QAction("Палитра блоков", self, checkable=True, checked=True)
+        self.act_show_palette.setObjectName("actionTogglePalette")
+        self.act_show_palette.setStatusTip("Показать или скрыть палитру блоков")
+        self.act_show_palette.triggered.connect(self.action_toggle_palette)
+        panels_menu.addAction(self.act_show_palette)
+
+        self.act_show_code = QAction("Панель кода", self, checkable=True, checked=True)
+        self.act_show_code.setObjectName("actionToggleCode")
+        self.act_show_code.setStatusTip("Показать или скрыть панель кода")
+        self.act_show_code.triggered.connect(self.action_toggle_code)
+        panels_menu.addAction(self.act_show_code)
+
+        self.act_show_monitor = QAction("Сериал-монитор", self, checkable=True, checked=False)
+        self.act_show_monitor.setObjectName("actionToggleSerialMonitor")
+        self.act_show_monitor.setStatusTip("Показать или скрыть монитор последовательного порта")
+        self.act_show_monitor.triggered.connect(self.action_toggle_monitor)
+        panels_menu.addAction(self.act_show_monitor)
+
+        view_menu.addMenu(panels_menu)
+
+        # Инструменты ------------------------------------------------------
+        tools_menu = menu_bar.addMenu("Инструменты")
+
+        self.act_tools_monitor = QAction("Сериал-монитор", self)
+        self.act_tools_monitor.setObjectName("actionToolsSerialMonitor")
+        self.act_tools_monitor.triggered.connect(self._open_serial_monitor)
+        tools_menu.addAction(self.act_tools_monitor)
+
+        self.act_tools_telemetry = QAction("Телеметрия", self)
+        self.act_tools_telemetry.setObjectName("actionToolsTelemetry")
+        self.act_tools_telemetry.triggered.connect(lambda: self._show_stub_dialog(
+            "Телеметрия", "Модуль телеметрии находится в разработке."
+        ))
+        tools_menu.addAction(self.act_tools_telemetry)
+
+        self.act_tools_simulator = QAction("Симулятор 2D", self)
+        self.act_tools_simulator.setObjectName("actionToolsSimulator")
+        self.act_tools_simulator.triggered.connect(lambda: self._show_stub_dialog(
+            "Симулятор", "2D-симулятор будет доступен в будущих релизах."
+        ))
+        tools_menu.addAction(self.act_tools_simulator)
+
+        # Справка ----------------------------------------------------------
         help_menu = menu_bar.addMenu("Справка")
-        act_about = QAction("О программе", self)
-        act_about.setStatusTip("Информация о приложении")
-        act_about.triggered.connect(self.action_about)
-        help_menu.addAction(act_about)
+        self.act_about = QAction("О программе", self)
+        self.act_about.setObjectName("actionAbout")
+        self.act_about.setStatusTip("Информация о приложении")
+        self.act_about.triggered.connect(self.action_about)
+        help_menu.addAction(self.act_about)
 
         self._update_delete_action()
 
     def _install_shortcuts(self) -> None:
-        # Дублируем горячие клавиши для Delete/Backspace (на случай, если меню не в фокусе)
-        QShortcut(QKeySequence.Delete, self, activated=self._delete_selection)
-        QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self._delete_selection)
-        QShortcut(QKeySequence.ZoomIn, self, activated=self._zoom_in)
-        QShortcut(QKeySequence.ZoomOut, self, activated=self._zoom_out)
-        QShortcut(QKeySequence("Ctrl+0"), self, activated=self._reset_zoom)
+        self._shortcuts.clear()
+
+        self._register_shortcut("Ctrl+N", self.action_new_project)
+        self._register_shortcut("Ctrl+O", self.action_open)
+        self._register_shortcut("Ctrl+S", self.action_save)
+        self._register_shortcut("Delete", self._delete_selection)
+        self._register_shortcut("Backspace", self._delete_selection)
+        self._register_shortcut(QKeySequence.StandardKey.ZoomIn, self._zoom_in)
+        self._register_shortcut(QKeySequence.StandardKey.ZoomOut, self._zoom_out)
+        self._register_shortcut("Ctrl+0", self._reset_zoom)
+
+    def _register_shortcut(
+        self,
+        sequence: Union[QKeySequence, str, QKeySequence.StandardKey],
+        callback: Callable[[], None],
+    ) -> None:
+        key_sequence = sequence if isinstance(sequence, QKeySequence) else QKeySequence(sequence)
+        shortcut = QShortcut(key_sequence, self)
+        shortcut.setContext(Qt.WidgetWithChildrenShortcut)
+        shortcut.activated.connect(callback)
+        self._shortcuts.append(shortcut)
 
     # ----------------------------------------------------------------- palette
     def _load_block_library(self) -> None:
         blocks_path = Path(__file__).resolve().parents[2] / "data" / "blocks" / "blocks.json"
+        self._blocks_path = blocks_path
+        print(f"[RoboLab] Loading block palette from {blocks_path}")
         try:
             raw = json.loads(blocks_path.read_text(encoding="utf-8"))
             if not isinstance(raw, list):
                 raise ValueError("Неверный формат blocks.json")
         except Exception as exc:  # pragma: no cover - UI feedback path
+            print(f"[RoboLab] Failed to load blocks: {exc}")
             QMessageBox.critical(
                 self,
                 "Ошибка чтения палитры",
@@ -244,6 +363,12 @@ class MainWindow(QMainWindow):
         return result
 
     # ----------------------------------------------------------------- actions
+    def action_new_project(self) -> None:
+        self.canvas_scene.load_model(ProjectModel())
+        self._current_project_path = None
+        self.statusBar().showMessage("Создан новый проект", 3000)
+        self._update_status_counts()
+
     def action_open(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
             self,
@@ -302,6 +427,42 @@ class MainWindow(QMainWindow):
     def action_exit(self) -> None:
         self.close()
 
+    def action_select_board(self) -> None:
+        current = self._current_board if self._current_board not in {None, "—"} else ""
+        board, accepted = QInputDialog.getText(
+            self,
+            "Выбор платы",
+            "Введите идентификатор платы:",
+            text=current,
+        )
+        if accepted and board.strip():
+            self._current_board = board.strip()
+            self._update_status_counts()
+            self.statusBar().showMessage(f"Выбрана плата: {self._current_board}", 3000)
+        elif accepted:
+            self._show_stub_dialog("Выбор платы", "Укажите название платы для продолжения.")
+
+    def action_select_port(self) -> None:
+        current = self._current_port if self._current_port not in {None, "—"} else ""
+        port, accepted = QInputDialog.getText(
+            self,
+            "Выбор порта",
+            "Введите имя порта (например, COM3):",
+            text=current,
+        )
+        if accepted and port.strip():
+            self._current_port = port.strip()
+            self._update_status_counts()
+            self.statusBar().showMessage(f"Выбран порт: {self._current_port}", 3000)
+        elif accepted:
+            self._show_stub_dialog("Выбор порта", "Имя порта не может быть пустым.")
+
+    def action_scan_devices(self) -> None:
+        self._show_stub_dialog(
+            "Сканирование устройств",
+            "Поиск плат и портов будет добавлен позже.",
+        )
+
     def action_generate(self) -> None:
         sketch = self._generate_sketch_text()
         self.code_dock.set_code(sketch)
@@ -324,6 +485,14 @@ class MainWindow(QMainWindow):
             "Arduino RoboLab",
             "Arduino RoboLab (Preview)\nВерсия: 0.1.0",
         )
+
+    def _open_serial_monitor(self) -> None:
+        if not self.act_show_monitor.isChecked():
+            self.act_show_monitor.setChecked(True)
+        self.action_toggle_monitor(True)
+        self.serial_dock.raise_()
+        self.serial_dock.activateWindow()
+        self.statusBar().showMessage("Сериал-монитор открыт", 2000)
 
     # ----------------------------------------------------------- scene hooks
     def _on_block_added(self, block: BlockInstance) -> None:
@@ -374,6 +543,13 @@ class MainWindow(QMainWindow):
 
     def _reset_zoom(self) -> None:
         self.canvas_view.resetTransform()
+
+    def _apply_theme(self, theme: str) -> None:
+        theme_name = "Тёмная" if theme == "dark" else "Светлая"
+        self._show_stub_dialog(
+            "Настройка темы",
+            f"{theme_name} тема интерфейса будет доступна в следующих обновлениях.",
+        )
 
     # ------------------------------------------------------------ utilities
     def _generate_sketch_text(self) -> str:
@@ -438,3 +614,7 @@ class MainWindow(QMainWindow):
     def _sync_monitor_action(self, visible: bool) -> None:
         if self.act_show_monitor.isChecked() != visible:
             self.act_show_monitor.setChecked(visible)
+
+    def _show_stub_dialog(self, title: str, message: str) -> None:
+        print(f"[RoboLab] {title}: {message}")
+        QMessageBox.information(self, title, message)

@@ -4,6 +4,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+from PySide6 import __version__ as PYSIDE_VERSION
 from PySide6.QtWidgets import QApplication
 
 
@@ -16,6 +17,10 @@ if str(PROJECT_ROOT.parent) not in sys.path:
 def main() -> int:
     """Запустить предварительную версию GUI."""
     app = QApplication(sys.argv)
+
+    blocks_path = PROJECT_ROOT.parent / "data" / "blocks" / "blocks.json"
+    print(f"[RoboLab] PySide6 version: {PYSIDE_VERSION}")
+    print(f"[RoboLab] Blocks catalog: {blocks_path}")
 
     from app.ui.main_window import MainWindow
 
