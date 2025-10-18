@@ -1,6 +1,6 @@
+# app/ui/main_window.py
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Union
 
@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
     QTextEdit,
 )
 
+from app.core.blocks_loader import BlocksLoaderError, load_blocks
 from app.core.projects.io import load_project_file, save_project_file
 
 from .canvas.canvas_scene import CanvasScene
@@ -147,9 +148,8 @@ class MainWindow(QMainWindow):
 
         # Правка ------------------------------------------------------------
         edit_menu = menu_bar.addMenu("Правка")
-        self.act_delete = QAction("Удалить", self)
+        self.act_delete = QAction("Удалить выделенное", self)
         self.act_delete.setObjectName("actionDeleteSelection")
-        self.act_delete.setShortcut(QKeySequence(QKeySequence.StandardKey.Delete))
         self.act_delete.setStatusTip("Удалить выделенные блоки или соединения")
         self.act_delete.triggered.connect(self._delete_selection)
         self.act_delete.setEnabled(False)
@@ -304,10 +304,8 @@ class MainWindow(QMainWindow):
         self._blocks_path = blocks_path
         print(f"[RoboLab] Loading block palette from {blocks_path}")
         try:
-            raw = json.loads(blocks_path.read_text(encoding="utf-8"))
-            if not isinstance(raw, list):
-                raise ValueError("Неверный формат blocks.json")
-        except Exception as exc:  # pragma: no cover - UI feedback path
+            normalized = load_blocks(blocks_path)
+        except BlocksLoaderError as exc:  # pragma: no cover - UI feedback path
             print(f"[RoboLab] Failed to load blocks: {exc}")
             QMessageBox.critical(
                 self,
@@ -318,8 +316,9 @@ class MainWindow(QMainWindow):
             self.block_catalog = {}
             return
 
-        self.block_library = raw
-        self.block_catalog = self._build_block_catalog(raw)
+        palette = [spec.to_palette_entry() for spec in normalized.blocks]
+        self.block_library = palette
+        self.block_catalog = self._build_block_catalog(palette)
 
     def _build_block_catalog(self, blocks: List[dict]) -> Dict[str, Dict[str, object]]:
         catalog: Dict[str, Dict[str, object]] = {}
@@ -532,7 +531,9 @@ class MainWindow(QMainWindow):
         focus = QApplication.focusWidget()
         if isinstance(focus, self._TEXT_INPUT_WIDGETS):
             return
-        self.canvas_scene.delete_selected()
+        removed = self.canvas_scene.delete_selected()
+        if removed:
+            self._update_status_counts()
         self._update_delete_action()
 
     def _on_project_model_changed(self, _model: ProjectModel) -> None:

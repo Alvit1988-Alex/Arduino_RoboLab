@@ -1,3 +1,4 @@
+# app/ui/canvas/canvas_view.py
 """Graphics view with panning, zoom and grid drawing."""
 from __future__ import annotations
 
@@ -15,9 +16,6 @@ from PySide6.QtWidgets import (
     QTextEdit,
 )
 
-# Локальный кортеж виджетов ввода текста — для гарда Delete/Backspace
-_TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
-
 
 class CanvasView(QGraphicsView):
     """Customized graphics view for the RoboLab canvas."""
@@ -25,6 +23,7 @@ class CanvasView(QGraphicsView):
     MIN_ZOOM = 0.25
     MAX_ZOOM = 3.0
     GRID_SIZE = 16
+    _TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
 
     def __init__(self, scene: Optional[QGraphicsScene] = None, parent=None) -> None:
         super().__init__(scene, parent)
@@ -90,26 +89,18 @@ class CanvasView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:  # type: ignore[override]
-        # Фокус-guard: не удаляем блоки, если пользователь печатает в текстовом поле
-        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace) and self.scene() is not None:
-            if isinstance(QApplication.focusWidget(), _TEXT_INPUT_WIDGETS):
+        # Централизованная обработка удаления:
+        # - если фокус в текстовом поле — пропускаем
+        # - иначе вызываем единый контракт сцены delete_selected() -> bool
+        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace):
+            focus = QApplication.focusWidget()
+            if isinstance(focus, self._TEXT_INPUT_WIDGETS):
                 super().keyPressEvent(event)
                 return
 
-            # Предпочтительно вызывать единый helper сцены
-            delete = getattr(self.scene(), "delete_selected", None)
-            if callable(delete) and delete():
-                event.accept()
-                return
-
-            # Fallback для старого API
-            delete_compat = getattr(self.scene(), "delete_selection", None)
-            if callable(delete_compat) and delete_compat():
-                event.accept()
-                return
-
-            remove = getattr(self.scene(), "remove_selected", None)
-            if callable(remove) and remove():
+            scene = self.scene()
+            deleter = getattr(scene, "delete_selected", None)
+            if callable(deleter) and deleter():
                 event.accept()
                 return
 

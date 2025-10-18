@@ -1,32 +1,31 @@
 """Проверка структуры файла data/blocks/blocks.json."""
 from __future__ import annotations
 
-import json
 import re
 from pathlib import Path
 
 import pytest
+
+from app.core.blocks_loader import load_blocks
 
 
 DATA_PATH = Path(__file__).resolve().parents[2] / "data" / "blocks" / "blocks.json"
 HEX_COLOR_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
 
-def load_blocks() -> list[dict]:
-    payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
-    if not isinstance(payload, list):  # pragma: no cover - защитная проверка
-        raise TypeError("Ожидался список блоков")
-    return payload
+def load_palette_entries() -> list[dict]:
+    normalized = load_blocks(DATA_PATH)
+    return [spec.to_palette_entry() for spec in normalized.blocks]
 
 
 def test_blocks_collection_has_expected_size() -> None:
-    blocks = load_blocks()
+    blocks = load_palette_entries()
     assert len(blocks) >= 150, "Палитра должна содержать минимум 150 блоков"
 
 
 @pytest.mark.parametrize("key", ["id", "category", "title", "section", "color"])
 def test_blocks_have_required_fields(key: str) -> None:
-    blocks = load_blocks()
+    blocks = load_palette_entries()
     for block in blocks:
         assert isinstance(block, dict)
         value = block.get(key)
@@ -34,7 +33,7 @@ def test_blocks_have_required_fields(key: str) -> None:
 
 
 def test_block_colors_are_hex() -> None:
-    blocks = load_blocks()
+    blocks = load_palette_entries()
     for block in blocks:
         color = block.get("color", "")
         assert isinstance(color, str)
@@ -42,7 +41,7 @@ def test_block_colors_are_hex() -> None:
 
 
 def test_block_ids_unique() -> None:
-    blocks = load_blocks()
+    blocks = load_palette_entries()
     seen: set[str] = set()
     for block in blocks:
         block_id = block.get("id")
@@ -52,7 +51,7 @@ def test_block_ids_unique() -> None:
 
 
 def test_ports_and_params_shapes() -> None:
-    blocks = load_blocks()
+    blocks = load_palette_entries()
     for block in blocks:
         ports = block.get("ports", {})
         assert isinstance(ports, dict)

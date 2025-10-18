@@ -1,3 +1,4 @@
+# app/ui/canvas/canvas_scene.py
 from __future__ import annotations
 """Graphics scene implementing drag-and-drop, connections, and project sync."""
 
@@ -7,20 +8,15 @@ from typing import Dict, List, Optional
 from PySide6.QtCore import QPointF, Qt, QMimeData, Signal
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
-    QApplication,
     QGraphicsScene,
+    QGraphicsSceneContextMenuEvent,
     QGraphicsSceneDragDropEvent,
-    QLineEdit,
-    QPlainTextEdit,
-    QTextEdit,
+    QMenu,
 )
 
 from ..common.mime import BLOCK_MIME
 from .items import BlockItem, ConnectionItem, PortItem, PortSpec, GRID_SIZE
 from .model import BlockInstance, ConnectionModel, ProjectModel
-
-
-_TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
 
 
 class CanvasScene(QGraphicsScene):
@@ -131,20 +127,24 @@ class CanvasScene(QGraphicsScene):
         self._emit_status(f"Добавлен блок: {title}")
         return item
 
-    def delete_selected(self) -> int:
-        """Удалить выделённые элементы и вернуть количество удалённых объектов."""
+    # ------------------------------------------------------------- deletion API
+    def delete_selected(self) -> bool:
+        """Удалить выделённые элементы и вернуть True, если что-то удалено."""
+        removed_blocks, removed_connections = self._delete_items(
+            list(self.selectedItems()), finalise=True
+        )
+        return bool(removed_blocks or removed_connections)
+
+    def delete_selection(self) -> bool:
+        """Совместимость: удалить выделение и вернуть True, если что-то удалено."""
+        return self.delete_selected()
+
+    def remove_selected(self) -> int:
+        """Совместимость: удалить выделение и вернуть количество элементов."""
         removed_blocks, removed_connections = self._delete_items(
             list(self.selectedItems()), finalise=True
         )
         return removed_blocks + removed_connections
-
-    def delete_selection(self) -> bool:
-        """Совместимость: удалить выделение и вернуть True, если что-то удалено."""
-        return self.delete_selected() > 0
-
-    def remove_selected(self) -> int:
-        """Совместимость: удалить выделение и вернуть количество элементов."""
-        return self.delete_selected()
 
     def _delete_items(
         self, selected: List[object], *, finalise: bool
@@ -158,6 +158,7 @@ class CanvasScene(QGraphicsScene):
         connections = [item for item in selected if isinstance(item, ConnectionItem)]
         blocks = [item for item in selected if isinstance(item, BlockItem)]
 
+        # сначала связи — затем блоки
         for connection in connections:
             if self._remove_connection_item(connection):
                 removed_connections += 1
@@ -182,6 +183,22 @@ class CanvasScene(QGraphicsScene):
     def _remove_selected_items(self) -> tuple[int, int]:
         # Сохраняем для обратной совместимости в тестах сторонних проектов
         return self._delete_items(list(self.selectedItems()), finalise=False)
+
+    # ----------------------------------------------------------- context menu
+    def show_delete_context_menu(self, screen_pos) -> bool:
+        """Показать меню удаления для внешних вызовов (делегаты из items/view)."""
+        return self._show_delete_menu(screen_pos)
+
+    def _show_delete_menu(self, screen_pos) -> bool:
+        if not self.selectedItems():
+            return False
+        menu = QMenu()
+        delete_action = menu.addAction("Удалить")
+        pos = screen_pos.toPoint() if hasattr(screen_pos, "toPoint") else screen_pos
+        chosen = menu.exec(pos)
+        if chosen == delete_action:
+            return self.delete_selected()
+        return False
 
     def _finalise_removal(self, removed_blocks: int, removed_connections: int) -> None:
         if removed_blocks:
@@ -222,15 +239,11 @@ class CanvasScene(QGraphicsScene):
             event.ignore()
 
     # ----------------------------------------------------------------- events
-    def keyPressEvent(self, event) -> None:  # type: ignore[override]
-        if event.key() in (Qt.Key_Delete, Qt.Key_Backspace):
-            if self._focus_in_text_input():
-                super().keyPressEvent(event)
-                return
-            if self.delete_selected():
-                event.accept()
-                return
-        super().keyPressEvent(event)
+    def contextMenuEvent(self, event: QGraphicsSceneContextMenuEvent) -> None:  # type: ignore[override]
+        if self.show_delete_context_menu(event.screenPos()):
+            event.accept()
+            return
+        super().contextMenuEvent(event)
 
     def mouseMoveEvent(self, event) -> None:  # type: ignore[override]
         if self._connection_preview is not None:
@@ -483,10 +496,6 @@ class CanvasScene(QGraphicsScene):
     def _notify_model_change(self) -> None:
         """Уведомить подписчиков о том, что модель проекта изменилась."""
         self.projectModelChanged.emit(self.model().clone())
-
-    def _focus_in_text_input(self) -> bool:
-        widget = QApplication.focusWidget()
-        return isinstance(widget, _TEXT_INPUT_WIDGETS)
 
     # --------------------------------------------------------- drop toggling API
     def setAcceptDrops(self, accept: bool) -> None:  # type: ignore[override]

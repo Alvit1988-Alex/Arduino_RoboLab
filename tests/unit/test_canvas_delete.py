@@ -1,3 +1,4 @@
+# tests/unit/test_canvas_delete.py
 import pytest
 
 try:  # pragma: no cover - skip when Qt bindings are unavailable
@@ -50,7 +51,7 @@ def test_delete_selected_connection(scene: CanvasScene) -> None:
     connection_item.setSelected(True)
 
     removed = scene.delete_selected()
-    assert removed == 1
+    assert removed is True
 
     model = scene.model()
     assert len(model.connections) == 0
@@ -66,7 +67,7 @@ def test_delete_selected_block_removes_connections(scene: CanvasScene) -> None:
     block_a.setSelected(True)
 
     removed = scene.delete_selected()
-    assert removed >= 2
+    assert removed is True
 
     model = scene.model()
     assert all(block.uid != block_a.block.uid for block in model.blocks)
@@ -100,7 +101,7 @@ def test_delete_selected_updates_attached_project(scene: CanvasScene) -> None:
     block_a.setSelected(True)
 
     removed = scene.delete_selected()
-    assert removed >= 2
+    assert removed is True
 
     assert len(dummy.removed_blocks) == 1
     removed_block_payload = dummy.removed_blocks[0]
@@ -110,7 +111,10 @@ def test_delete_selected_updates_attached_project(scene: CanvasScene) -> None:
     assert len(dummy.removed_connections) >= 1
     connection_payload = dummy.removed_connections[0]
     if hasattr(connection_payload, "from_block_uid"):
-        assert connection_payload.from_block_uid == block_a.block.uid or connection_payload.to_block_uid == block_a.block.uid
+        assert (
+            connection_payload.from_block_uid == block_a.block.uid
+            or connection_payload.to_block_uid == block_a.block.uid
+        )
     else:
         assert block_a.block.uid in str(connection_payload)
 

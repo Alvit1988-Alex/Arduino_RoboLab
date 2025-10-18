@@ -1,3 +1,4 @@
+# app/ui/canvas/items.py
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -5,7 +6,7 @@ from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPainterPathStroker, QPen
-from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem, QMenu
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsItem, QGraphicsPathItem
 
 from .model import BlockInstance
 
@@ -228,15 +229,8 @@ class PortItem(QGraphicsEllipseItem):
         if not self.isSelected():
             scene.clearSelection()
             self.setSelected(True)
-        menu = QMenu()
-        delete_action = menu.addAction("Удалить")
-        chosen = menu.exec(event.screenPos())
-        if chosen == delete_action:
-            handler = getattr(scene, "delete_selected", None)
-            if not callable(handler):
-                handler = getattr(scene, "delete_selection", None)
-            if callable(handler):
-                handler()
+        handler = getattr(scene, "show_delete_context_menu", None)
+        if callable(handler) and handler(event.screenPos()):
             event.accept()
             return
         super().contextMenuEvent(event)
@@ -347,15 +341,8 @@ class ConnectionItem(QGraphicsPathItem):
         if not self.isSelected():
             scene.clearSelection()
             self.setSelected(True)
-        menu = QMenu()
-        delete_action = menu.addAction("Удалить")
-        chosen = menu.exec(event.screenPos())
-        if chosen == delete_action:
-            handler = getattr(scene, "delete_selected", None)
-            if not callable(handler):
-                handler = getattr(scene, "delete_selection", None)
-            if callable(handler):
-                handler()
+        handler = getattr(scene, "show_delete_context_menu", None)
+        if callable(handler) and handler(event.screenPos()):
             event.accept()
             return
         super().contextMenuEvent(event)

@@ -4,9 +4,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, MutableMapping, Optional
+from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Optional
 
 import json
+
+from app.core.blocks_loader import BlocksLoaderError, load_blocks
 
 
 class Section(Enum):
@@ -116,39 +118,104 @@ class BlockRegistry:
 
     @classmethod
     def load_from_file(cls, path: Path) -> "BlockRegistry":
-        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        normalized = load_blocks(path)
+        try:
+            payload = normalized.require_registry_payload()
+        except BlocksLoaderError as exc:
+            raise BlocksLoaderError(
+                f"Не удалось получить определения блоков из {path}: {exc}"
+            ) from exc
+        return cls.from_mapping(payload)
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, Any]) -> "BlockRegistry":
         definitions: Dict[str, BlockDefinition] = {}
-        categories = data.get("categories", {})
-        for block_data in data.get("blocks", []):
-            containers = [
-                BlockContainerSpec(
-                    name=item["name"],
-                    section=Section.from_string(item["section"]),
-                    placeholder=item.get("placeholder"),
+        categories = payload.get("categories", {})
+        blocks_data = payload.get("blocks", [])
+        if not isinstance(blocks_data, Iterable):
+            raise BlocksLoaderError("Секция 'blocks' должна быть списком")
+
+        def _string_list(value: Any) -> List[str]:
+            if isinstance(value, str):
+                return [value]
+            if isinstance(value, Iterable):
+                return [str(item) for item in value if isinstance(item, str)]
+            return []
+
+        for block_data in blocks_data:
+            if not isinstance(block_data, Mapping):
+                continue
+            try:
+                block_id = str(block_data["id"])
+                name = str(block_data["name"])
+                category = str(block_data["category"])
+                kind = str(block_data["kind"])
+            except KeyError as exc:
+                raise BlocksLoaderError(
+                    "Определение блока отсутствует или содержит неполные данные"
+                ) from exc
+
+            containers = []
+            for item in block_data.get("containers", []):
+                if not isinstance(item, Mapping):
+                    continue
+                try:
+                    container_name = str(item["name"])
+                    section = Section.from_string(str(item["section"]))
+                except (KeyError, ValueError) as exc:
+                    raise BlocksLoaderError(
+                        f"Некорректное описание контейнера блока {block_id}"
+                    ) from exc
+                placeholder = item.get("placeholder")
+                containers.append(
+                    BlockContainerSpec(
+                        name=container_name,
+                        section=section,
+                        placeholder=placeholder if isinstance(placeholder, str) else None,
+                    )
                 )
-                for item in block_data.get("containers", [])
-            ]
-            parameters = [
-                BlockParameter(name=p["name"], type=p["type"], default=p.get("default"))
-                for p in block_data.get("parameters", [])
-            ]
+
+            parameters: List[BlockParameter] = []
+            for param in block_data.get("parameters", []):
+                if not isinstance(param, Mapping):
+                    continue
+                try:
+                    param_name = str(param["name"])
+                    param_type = str(param["type"])
+                except KeyError as exc:
+                    raise BlocksLoaderError(
+                        f"Некорректное описание параметра блока {block_id}"
+                    ) from exc
+                parameters.append(
+                    BlockParameter(
+                        name=param_name,
+                        type=param_type,
+                        default=param.get("default"),
+                    )
+                )
+
             section_value = block_data.get("section")
-            section = Section.from_string(section_value) if section_value else None
-            definitions[block_data["id"]] = BlockDefinition(
-                block_id=block_data["id"],
-                name=block_data["name"],
-                category=block_data["category"],
-                kind=block_data["kind"],
+            if isinstance(section_value, str) and section_value:
+                section = Section.from_string(section_value)
+            else:
+                section = None
+
+            definitions[block_id] = BlockDefinition(
+                block_id=block_id,
+                name=name,
+                category=category,
+                kind=kind,
                 section=section,
                 template=block_data.get("template"),
                 returns=block_data.get("returns"),
                 parameters=parameters,
-                setup_snippets=block_data.get("setup", []),
-                globals_snippets=block_data.get("globals", []),
-                includes=block_data.get("includes", []),
-                functions_snippets=block_data.get("functions", []),
+                setup_snippets=_string_list(block_data.get("setup", [])),
+                globals_snippets=_string_list(block_data.get("globals", [])),
+                includes=_string_list(block_data.get("includes", [])),
+                functions_snippets=_string_list(block_data.get("functions", [])),
                 containers=containers,
             )
+
         return cls(definitions, categories)
 
     def __contains__(self, block_id: str) -> bool:

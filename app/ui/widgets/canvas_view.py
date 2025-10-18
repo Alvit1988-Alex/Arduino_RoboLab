@@ -1,12 +1,20 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QPoint
-from PySide6.QtWidgets import QGraphicsView
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsView,
+    QLineEdit,
+    QPlainTextEdit,
+    QTextEdit,
+)
 
 from ..canvas.canvas_scene import CanvasScene
 
 
 class CanvasView(QGraphicsView):
+    _TEXT_INPUT_WIDGETS = (QLineEdit, QPlainTextEdit, QTextEdit)
+
     def __init__(self, scene: CanvasScene, parent=None) -> None:
         super().__init__(parent)
         self.setScene(scene)
@@ -46,3 +54,18 @@ class CanvasView(QGraphicsView):
             event.accept()
             return
         super().mouseReleaseEvent(event)
+
+    def keyPressEvent(self, event) -> None:  # type: ignore[override]
+        if event.key() == Qt.Key_Delete:
+            focus = QApplication.focusWidget()
+            if isinstance(focus, self._TEXT_INPUT_WIDGETS):
+                super().keyPressEvent(event)
+                return
+
+            scene = self.scene()
+            deleter = getattr(scene, "delete_selected", None)
+            if callable(deleter) and deleter():
+                event.accept()
+                return
+
+        super().keyPressEvent(event)
