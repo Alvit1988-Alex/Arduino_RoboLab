@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Collection, Mapping, Optional, Tuple
 
 from app.ui.canvas.model import BlockInstance, ConnectionModel, ProjectModel
 
 
-def load_project_file(path: str | Path) -> Tuple[ProjectModel, Optional[str], Optional[str]]:
+def load_project_file(
+    path: str | Path,
+    *,
+    aliases: Mapping[str, str] | None = None,
+    known_blocks: Collection[str] | None = None,
+) -> Tuple[ProjectModel, Optional[str], Optional[str]]:
     """Load project definition from .robojson file."""
     project_path = Path(path)
     data = json.loads(project_path.read_text(encoding="utf-8"))
@@ -16,6 +21,8 @@ def load_project_file(path: str | Path) -> Tuple[ProjectModel, Optional[str], Op
     port = data.get("port")
 
     model = ProjectModel()
+    alias_map = dict(aliases) if aliases is not None else {}
+    known_ids = set(known_blocks) if known_blocks is not None else None
     for node in data.get("nodes", []):
         if not isinstance(node, dict):
             continue
@@ -25,9 +32,17 @@ def load_project_file(path: str | Path) -> Tuple[ProjectModel, Optional[str], Op
         params = node.get("params", {}) if isinstance(node.get("params", {}), dict) else {}
         if not type_id:
             continue
+        canonical_type = type_id
+        if alias_map:
+            if type_id in alias_map:
+                canonical_type = alias_map[type_id]
+            elif known_ids is not None and type_id not in known_ids:
+                canonical_type = alias_map.get(type_id, type_id)
+        if canonical_type != type_id:
+            print(f"[RoboLab] Блок {type_id} заменён на {canonical_type} (совместимость)")
         block = BlockInstance(
             uid=uid or type_id,
-            type_id=type_id,
+            type_id=canonical_type,
             x=float(pos.get("x", 0.0)),
             y=float(pos.get("y", 0.0)),
             params=dict(params),

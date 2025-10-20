@@ -27,6 +27,7 @@ class CanvasScene(QGraphicsScene):
     connectionAdded = Signal(ConnectionModel)
     projectModelChanged = Signal(ProjectModel)
     statusMessage = Signal(str, int)
+    blockPropertiesRequested = Signal(BlockItem)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -53,6 +54,17 @@ class CanvasScene(QGraphicsScene):
     def set_block_catalog(self, catalog: Dict[str, Dict[str, object]]) -> None:
         """catalog: {type_id: metadata} — хранение метаданных блоков из палитры."""
         self._block_catalog = dict(catalog)
+
+    def notify_block_params_changed(self, block_item: BlockItem) -> None:
+        """Emit project change notification for updated block parameters."""
+        title = self._block_catalog.get(block_item.block.type_id, {}).get(
+            "title", block_item.block.type_id
+        )
+        self._notify_model_change()
+        self._emit_status(f"Параметры обновлены: {title}")
+
+    def request_properties(self, block_item: BlockItem) -> None:
+        self.blockPropertiesRequested.emit(block_item)
 
     def load_model(self, model: ProjectModel) -> None:
         """Загрузить полную модель проекта в сцену."""
@@ -190,12 +202,22 @@ class CanvasScene(QGraphicsScene):
         return self._show_delete_menu(screen_pos)
 
     def _show_delete_menu(self, screen_pos) -> bool:
-        if not self.selectedItems():
+        selection = list(self.selectedItems())
+        if not selection:
             return False
         menu = QMenu()
+        block_item = next((item for item in selection if isinstance(item, BlockItem)), None)
+        props_action = None
+        if block_item is not None:
+            props_action = menu.addAction("Свойства…")
+        if props_action is not None:
+            menu.addSeparator()
         delete_action = menu.addAction("Удалить")
         pos = screen_pos.toPoint() if hasattr(screen_pos, "toPoint") else screen_pos
         chosen = menu.exec(pos)
+        if chosen == props_action and block_item is not None:
+            self.request_properties(block_item)
+            return True
         if chosen == delete_action:
             return self.delete_selected()
         return False

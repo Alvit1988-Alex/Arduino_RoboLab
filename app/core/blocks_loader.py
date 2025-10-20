@@ -19,12 +19,14 @@ class BlockParamSpec:
     name: str
     type: Optional[str] = None
     default: Any = None
+    raw: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        payload: Dict[str, Any] = {"name": self.name}
+        payload: Dict[str, Any] = dict(self.raw) if self.raw else {"name": self.name}
+        payload.setdefault("name", self.name)
         if self.type is not None:
-            payload["type"] = self.type
-        if self.default is not None:
+            payload.setdefault("type", self.type)
+        if self.default is not None and "default" not in payload:
             payload["default"] = self.default
         return payload
 
@@ -56,6 +58,8 @@ class BlockSpec:
     color: Optional[str] = None
     params: List[BlockParamSpec] = field(default_factory=list)
     ports: Dict[str, List[BlockPortSpec]] = field(default_factory=dict)
+    default_params: Dict[str, Any] = field(default_factory=dict)
+    aliases: List[str] = field(default_factory=list)
     raw: Dict[str, Any] = field(default_factory=dict)
 
     def to_palette_entry(self) -> Dict[str, Any]:
@@ -88,6 +92,10 @@ class BlockSpec:
             ports_dict.setdefault("inputs", ports_dict.get("inputs", []))
             ports_dict.setdefault("outputs", ports_dict.get("outputs", []))
             payload["ports"] = ports_dict
+        if self.default_params and "default_params" not in payload:
+            payload["default_params"] = dict(self.default_params)
+        if self.aliases and "aliases" not in payload:
+            payload["aliases"] = list(self.aliases)
         return payload
 
 
@@ -100,6 +108,7 @@ class NormalizedBlocks:
     registry_payload: Optional[Dict[str, Any]]
     source_format: str
     path: Path
+    aliases_map: Dict[str, str]
 
     def palette_entries(self) -> List[Dict[str, Any]]:
         return [spec.to_palette_entry() for spec in self.blocks]
@@ -132,6 +141,7 @@ def load_blocks(path: str | Path) -> NormalizedBlocks:
 
 def _load_from_list(path: Path, payload: List[Any]) -> NormalizedBlocks:
     blocks: List[BlockSpec] = []
+    alias_map: Dict[str, str] = {}
     for entry in payload:
         if not isinstance(entry, dict):
             continue
@@ -148,6 +158,10 @@ def _load_from_list(path: Path, payload: List[Any]) -> NormalizedBlocks:
         color = str(color_value) if isinstance(color_value, str) else None
         params = _parse_params(entry.get("params", []))
         ports = _parse_ports(entry.get("ports", {}))
+        default_params = entry.get("default_params") if isinstance(entry.get("default_params"), dict) else {}
+        aliases = _parse_aliases(entry.get("aliases"))
+        for alias in aliases:
+            alias_map.setdefault(alias, identifier)
         blocks.append(
             BlockSpec(
                 identifier=identifier,
@@ -158,6 +172,8 @@ def _load_from_list(path: Path, payload: List[Any]) -> NormalizedBlocks:
                 color=color,
                 params=params,
                 ports=ports,
+                default_params=dict(default_params),
+                aliases=aliases,
                 raw=dict(entry),
             )
         )
@@ -170,6 +186,7 @@ def _load_from_list(path: Path, payload: List[Any]) -> NormalizedBlocks:
         registry_payload=registry_payload,
         source_format="list",
         path=path,
+        aliases_map=alias_map,
     )
 
 
@@ -179,6 +196,7 @@ def _load_from_mapping(path: Path, payload: Mapping[str, Any]) -> NormalizedBloc
         raise BlocksLoaderError("В объекте blocks.json отсутствует массив blocks")
     categories_meta = payload.get("categories", {})
     blocks: List[BlockSpec] = []
+    alias_map: Dict[str, str] = {}
     for entry in blocks_data:
         if not isinstance(entry, Mapping):
             continue
@@ -202,6 +220,10 @@ def _load_from_mapping(path: Path, payload: Mapping[str, Any]) -> NormalizedBloc
                 color = color_value
         params = _parse_params(entry.get("parameters", []))
         ports = _parse_ports(entry.get("ports", {}))
+        default_params = entry.get("default_params") if isinstance(entry.get("default_params"), dict) else {}
+        aliases = _parse_aliases(entry.get("aliases"))
+        for alias in aliases:
+            alias_map.setdefault(alias, identifier)
         blocks.append(
             BlockSpec(
                 identifier=identifier,
@@ -212,6 +234,8 @@ def _load_from_mapping(path: Path, payload: Mapping[str, Any]) -> NormalizedBloc
                 color=color,
                 params=params,
                 ports=ports,
+                default_params=dict(default_params),
+                aliases=aliases,
                 raw=dict(entry),
             )
         )
@@ -224,6 +248,7 @@ def _load_from_mapping(path: Path, payload: Mapping[str, Any]) -> NormalizedBloc
         registry_payload=registry_payload,
         source_format="mapping",
         path=path,
+        aliases_map=alias_map,
     )
 
 
@@ -244,9 +269,22 @@ def _parse_params(data: Any) -> List[BlockParamSpec]:
                 name=name,
                 type=param_type,
                 default=descriptor.get("default"),
+                raw=dict(descriptor),
             )
         )
     return params
+
+
+def _parse_aliases(data: Any) -> List[str]:
+    aliases: List[str] = []
+    if not isinstance(data, Iterable):
+        return aliases
+    for alias in data:
+        if isinstance(alias, str):
+            value = alias.strip()
+            if value:
+                aliases.append(value)
+    return aliases
 
 
 def _parse_ports(data: Any) -> Dict[str, List[BlockPortSpec]]:

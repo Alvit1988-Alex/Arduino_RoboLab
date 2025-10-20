@@ -105,6 +105,15 @@ class BlockItem(QGraphicsItem):
                 connection.update_path()
         return super().itemChange(change, value)
 
+    def mouseDoubleClickEvent(self, event) -> None:  # type: ignore[override]
+        scene = self.scene()
+        handler = getattr(scene, "request_properties", None)
+        if callable(handler):
+            handler(self)
+            event.accept()
+            return
+        super().mouseDoubleClickEvent(event)
+
     # -------------------------------------------------------------- port utils
     def ports_in(self) -> Iterable["PortItem"]:
         return tuple(self._ports_in)
