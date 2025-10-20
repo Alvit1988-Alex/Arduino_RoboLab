@@ -24,9 +24,11 @@ from app.core.blocks_loader import BlocksLoaderError, load_blocks
 from app.core.projects.io import load_project_file, save_project_file
 
 from .canvas.canvas_scene import CanvasScene
+from .canvas.items import BlockItem
 from .canvas.model import BlockInstance, ProjectModel
 from .code_panel.code_panel import CodeDock
 from .palette.palette import PaletteDock
+from .props.props_dock import PropsDock
 from .widgets.canvas_view import CanvasView
 from .widgets.serial_monitor import SerialMonitorDock
 
@@ -48,6 +50,8 @@ class MainWindow(QMainWindow):
         self.canvas_scene.statusMessage.connect(self._show_status_message)
         self.canvas_scene.selectionChanged.connect(self._update_delete_action)
         self.canvas_scene.projectModelChanged.connect(self._on_project_model_changed)
+        self.canvas_scene.selectionChanged.connect(self._on_selection_changed)
+        self.canvas_scene.blockPropertiesRequested.connect(self._focus_properties)
 
         self.canvas_view = CanvasView(self.canvas_scene, self)
         self.setCentralWidget(self.canvas_view)
@@ -61,6 +65,11 @@ class MainWindow(QMainWindow):
         self.code_dock = CodeDock(self)
         self.addDockWidget(Qt.RightDockWidgetArea, self.code_dock)
 
+        # Справа — свойства блока
+        self.props_dock = PropsDock(self.canvas_scene, self)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.props_dock)
+        self.props_dock.hide()
+
         # Снизу — монитор порта (по умолчанию скрыт)
         self.serial_dock = SerialMonitorDock(self)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.serial_dock)
@@ -69,10 +78,12 @@ class MainWindow(QMainWindow):
         # Синхронизация меню Вид с реальной видимостью доков
         self.palette_dock.visibilityChanged.connect(self._sync_palette_action)
         self.code_dock.visibilityChanged.connect(self._sync_code_action)
+        self.props_dock.visibilityChanged.connect(self._sync_props_action)
         self.serial_dock.visibilityChanged.connect(self._sync_monitor_action)
 
         self.block_library: List[dict] = []
         self.block_catalog: Dict[str, Dict[str, object]] = {}
+        self.block_aliases: Dict[str, str] = {}
         self._blocks_path: Optional[Path] = None
 
         self._current_project_path: Optional[Path] = None
@@ -93,10 +104,12 @@ class MainWindow(QMainWindow):
         self._load_block_library()
         self.palette_dock.set_blocks(self.block_library)
         self.canvas_scene.set_block_catalog(self.block_catalog)
+        self.props_dock.set_block_catalog(self.block_catalog)
 
         # Показатели состояния
         self._sync_palette_action(self.palette_dock.isVisible())
         self._sync_code_action(self.code_dock.isVisible())
+        self._sync_props_action(self.props_dock.isVisible())
         self._sync_monitor_action(self.serial_dock.isVisible())
         self._update_status_counts()
         self.statusBar().showMessage("Готово", 2000)
@@ -231,6 +244,12 @@ class MainWindow(QMainWindow):
         self.act_show_code.triggered.connect(self.action_toggle_code)
         panels_menu.addAction(self.act_show_code)
 
+        self.act_show_props = QAction("Свойства блока", self, checkable=True, checked=False)
+        self.act_show_props.setObjectName("actionToggleProps")
+        self.act_show_props.setStatusTip("Показать или скрыть свойства выбранного блока")
+        self.act_show_props.triggered.connect(self.action_toggle_props)
+        panels_menu.addAction(self.act_show_props)
+
         self.act_show_monitor = QAction("Сериал-монитор", self, checkable=True, checked=False)
         self.act_show_monitor.setObjectName("actionToggleSerialMonitor")
         self.act_show_monitor.setStatusTip("Показать или скрыть монитор последовательного порта")
@@ -314,11 +333,16 @@ class MainWindow(QMainWindow):
             )
             self.block_library = []
             self.block_catalog = {}
+            self.block_aliases = {}
+            self.props_dock.set_block_catalog({})
+            self.props_dock.clear()
             return
 
         palette = [spec.to_palette_entry() for spec in normalized.blocks]
         self.block_library = palette
         self.block_catalog = self._build_block_catalog(palette)
+        self.block_aliases = dict(normalized.aliases_map)
+        self.props_dock.set_block_catalog(self.block_catalog)
 
     def _build_block_catalog(self, blocks: List[dict]) -> Dict[str, Dict[str, object]]:
         catalog: Dict[str, Dict[str, object]] = {}
@@ -334,11 +358,13 @@ class MainWindow(QMainWindow):
             if not outputs:
                 outputs = [{"name": "out", "type": "flow"}]
             params = block.get("params", []) if isinstance(block.get("params", []), list) else []
-            default_params = {
-                str(param.get("name")): param.get("default")
-                for param in params
-                if isinstance(param, dict) and param.get("name")
-            }
+            default_params: Dict[str, object] = {}
+            catalog_defaults = block.get("default_params")
+            if isinstance(catalog_defaults, dict):
+                default_params.update({str(k): v for k, v in catalog_defaults.items()})
+            for param in params:
+                if isinstance(param, dict) and param.get("name") and param.get("name") not in default_params:
+                    default_params[str(param.get("name"))] = param.get("default")
             catalog[block_id] = {
                 "title": block.get("title", block_id),
                 "category": block.get("category"),
@@ -371,6 +397,7 @@ class MainWindow(QMainWindow):
         self._current_project_path = None
         self.statusBar().showMessage("Создан новый проект", 3000)
         self._update_status_counts()
+        self.props_dock.clear()
 
     def action_open(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
@@ -382,7 +409,11 @@ class MainWindow(QMainWindow):
         if not path:
             return
         try:
-            model, board, port = load_project_file(path)
+            model, board, port = load_project_file(
+                path,
+                aliases=self.block_aliases,
+                known_blocks=self.block_catalog.keys(),
+            )
         except Exception as exc:  # pragma: no cover - UI feedback path
             QMessageBox.critical(self, "Ошибка", f"Не удалось открыть проект\n{exc}")
             return
@@ -392,6 +423,7 @@ class MainWindow(QMainWindow):
         self._current_board = board or "—"
         self._current_port = port or "—"
         self._update_status_counts()
+        self._on_selection_changed()
         self.statusBar().showMessage(f"Проект загружен: {self._current_project_path.name}", 4000)
 
     def action_save(self) -> None:
@@ -477,6 +509,11 @@ class MainWindow(QMainWindow):
     def action_toggle_code(self, checked: bool) -> None:
         self.code_dock.setVisible(checked)
 
+    def action_toggle_props(self, checked: bool) -> None:
+        self.props_dock.setVisible(checked)
+        if checked and self.props_dock.isHidden():
+            self.props_dock.show()
+
     def action_toggle_monitor(self, checked: bool) -> None:
         self.serial_dock.setVisible(checked)
         if checked and self.serial_dock.isHidden():
@@ -502,6 +539,7 @@ class MainWindow(QMainWindow):
         title = self.block_catalog.get(block.type_id, {}).get("title", block.type_id)
         self.statusBar().showMessage(f"Добавлен блок: {title}", 3000)
         self._update_status_counts()
+        self._on_selection_changed()
 
     def _on_blocks_removed(self, count: int) -> None:
         if count:
@@ -535,6 +573,7 @@ class MainWindow(QMainWindow):
         if removed:
             self._update_status_counts()
         self._update_delete_action()
+        self._on_selection_changed()
 
     def _on_project_model_changed(self, _model: ProjectModel) -> None:
         # Пока просто обновляем статус; в будущем можно добавить отметку «есть несохранённые изменения».
@@ -557,6 +596,30 @@ class MainWindow(QMainWindow):
         )
 
     # ------------------------------------------------------------ utilities
+    def _on_selection_changed(self) -> None:
+        if not hasattr(self, "props_dock"):
+            return
+        items = [item for item in self.canvas_scene.selectedItems() if isinstance(item, BlockItem)]
+        if len(items) == 1:
+            block_item = items[0]
+            self.props_dock.bind(block_item)
+            if self.act_show_props.isChecked() and not self.props_dock.isVisible():
+                self.props_dock.show()
+        else:
+            self.props_dock.clear()
+
+    def _focus_properties(self, block_item: BlockItem) -> None:
+        if not block_item.isSelected():
+            self.canvas_scene.clearSelection()
+            block_item.setSelected(True)
+        self.props_dock.bind(block_item)
+        if not self.act_show_props.isChecked():
+            self.act_show_props.setChecked(True)
+        self.props_dock.show()
+        self.props_dock.raise_()
+        self.props_dock.activateWindow()
+        self.props_dock.focus_first_editor()
+
     def _generate_sketch_text(self) -> str:
         model = self.canvas_scene.model().clone()
         lines = [
@@ -574,10 +637,10 @@ class MainWindow(QMainWindow):
             "// --- blocks on canvas ---",
         ]
         for block in model.blocks:
-            params = ", ".join(f"{key}={value!r}" for key, value in block.params.items())
+            params = ", ".join(f"{key}={value}" for key, value in block.params.items())
             if not params:
                 params = "<без параметров>"
-            lines.append(f"// {block.uid}: {block.type_id} ({params})")
+            lines.append(f"// {block.type_id}: {params}")
         if not model.blocks:
             lines.append("// канва пуста")
         lines.append("")
@@ -615,6 +678,10 @@ class MainWindow(QMainWindow):
     def _sync_code_action(self, visible: bool) -> None:
         if self.act_show_code.isChecked() != visible:
             self.act_show_code.setChecked(visible)
+
+    def _sync_props_action(self, visible: bool) -> None:
+        if self.act_show_props.isChecked() != visible:
+            self.act_show_props.setChecked(visible)
 
     def _sync_monitor_action(self, visible: bool) -> None:
         if self.act_show_monitor.isChecked() != visible:

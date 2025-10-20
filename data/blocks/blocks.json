@@ -1,23 +1,20 @@
 [
   {
-    "id": "MOVE_MOTOR_SPEED_01",
-    "category": "Движение",
-    "title": "Мотор скорость 5%",
+    "id": "cron_schedule",
+    "title": "Cron расписание",
+    "category": "Время",
+    "kind": "statement",
+    "description": "Выполняет блок по cron-выражению.",
+    "section": "loop",
+    "color": "#8BC34A",
     "params": [
       {
-        "name": "port",
+        "name": "expression",
         "type": "string",
-        "default": "M2"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 5
+        "label": "Cron",
+        "default": "* * * * *"
       }
     ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
     "ports": {
       "inputs": [
         {
@@ -32,657 +29,31 @@
         }
       ]
     },
-    "icon": "move_motor_speed_01"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_02",
-    "category": "Движение",
-    "title": "Мотор скорость 10%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M3"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 10
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
+    "default_params": {
+      "expression": "* * * * *"
     },
-    "icon": "move_motor_speed_02"
+    "aliases": [
+      "TIME_CRON"
+    ]
   },
   {
-    "id": "MOVE_MOTOR_SPEED_03",
-    "category": "Движение",
-    "title": "Мотор скорость 15%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M4"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 15
-      }
-    ],
+    "id": "delay_us",
+    "title": "Пауза, мкс",
+    "category": "Время",
+    "kind": "statement",
+    "description": "Микросекундная задержка.",
     "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_03"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_04",
-    "category": "Движение",
-    "title": "Мотор скорость 20%",
+    "color": "#8BC34A",
     "params": [
       {
-        "name": "port",
-        "type": "string",
-        "default": "M1"
-      },
-      {
-        "name": "speed",
+        "name": "us",
         "type": "int",
-        "default": 20
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_04"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_05",
-    "category": "Движение",
-    "title": "Мотор скорость 25%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M2"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 25
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_05"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_06",
-    "category": "Движение",
-    "title": "Мотор скорость 30%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M3"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 30
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_06"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_07",
-    "category": "Движение",
-    "title": "Мотор скорость 35%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M4"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 35
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_07"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_08",
-    "category": "Движение",
-    "title": "Мотор скорость 40%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M1"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 40
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_08"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_09",
-    "category": "Движение",
-    "title": "Мотор скорость 45%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M2"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 45
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_09"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_10",
-    "category": "Движение",
-    "title": "Мотор скорость 50%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M3"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 50
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_10"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_11",
-    "category": "Движение",
-    "title": "Мотор скорость 55%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M4"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 55
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_11"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_12",
-    "category": "Движение",
-    "title": "Мотор скорость 60%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M1"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 60
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_12"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_13",
-    "category": "Движение",
-    "title": "Мотор скорость 65%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M2"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 65
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_13"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_14",
-    "category": "Движение",
-    "title": "Мотор скорость 70%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M3"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 70
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_14"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_15",
-    "category": "Движение",
-    "title": "Мотор скорость 75%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M4"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 75
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_15"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_16",
-    "category": "Движение",
-    "title": "Мотор скорость 80%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M1"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 80
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_16"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_17",
-    "category": "Движение",
-    "title": "Мотор скорость 85%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M2"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 85
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_17"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_18",
-    "category": "Движение",
-    "title": "Мотор скорость 90%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M3"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 90
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_18"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_19",
-    "category": "Движение",
-    "title": "Мотор скорость 95%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M4"
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 95
-      }
-    ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_motor_speed_19"
-  },
-  {
-    "id": "MOVE_MOTOR_SPEED_20",
-    "category": "Движение",
-    "title": "Мотор скорость 100%",
-    "params": [
-      {
-        "name": "port",
-        "type": "string",
-        "default": "M1"
-      },
-      {
-        "name": "speed",
-        "type": "int",
+        "label": "Микросекунды",
+        "min": 0,
+        "max": 1000000,
         "default": 100
       }
     ],
-    "section": "loop",
-    "description": "Устанавливает скорость мотора на указанный порт.",
-    "color": "#9C27B0",
     "ports": {
       "inputs": [
         {
@@ -697,27 +68,31 @@
         }
       ]
     },
-    "icon": "move_motor_speed_20"
+    "default_params": {
+      "us": 100
+    },
+    "aliases": [
+      "TIME_DELAY_MICROS"
+    ]
   },
   {
-    "id": "MOVE_SERVO_SET_01",
-    "category": "Движение",
-    "title": "Серво угол 15°",
+    "id": "delay_ms",
+    "title": "Пауза, мс",
+    "category": "Время",
+    "kind": "statement",
+    "description": "Приостанавливает выполнение на указанное время.",
+    "section": "loop",
+    "color": "#8BC34A",
     "params": [
       {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 3
-      },
-      {
-        "name": "angle",
+        "name": "ms",
         "type": "int",
-        "default": 15
+        "label": "Миллисекунды",
+        "min": 0,
+        "max": 60000,
+        "default": 1000
       }
     ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
     "ports": {
       "inputs": [
         {
@@ -732,27 +107,37 @@
         }
       ]
     },
-    "icon": "move_servo_set_01"
+    "default_params": {
+      "ms": 1000
+    },
+    "aliases": [
+      "TIME_DELAY"
+    ]
   },
   {
-    "id": "MOVE_SERVO_SET_02",
-    "category": "Движение",
-    "title": "Серво угол 30°",
+    "id": "scheduler_event",
+    "title": "Планировщик задач",
+    "category": "Время",
+    "kind": "statement",
+    "description": "Настраивает выполнение блока по расписанию.",
+    "section": "loop",
+    "color": "#8BC34A",
     "params": [
       {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 4
+        "name": "task",
+        "type": "string",
+        "label": "Задача",
+        "default": "task1"
       },
       {
-        "name": "angle",
+        "name": "period_ms",
         "type": "int",
-        "default": 30
+        "label": "Период, мс",
+        "min": 1,
+        "max": 60000,
+        "default": 1000
       }
     ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
     "ports": {
       "inputs": [
         {
@@ -767,3547 +152,527 @@
         }
       ]
     },
-    "icon": "move_servo_set_02"
+    "default_params": {
+      "task": "task1",
+      "period_ms": 1000
+    },
+    "aliases": [
+      "TIME_SCHEDULER"
+    ]
   },
   {
-    "id": "MOVE_SERVO_SET_03",
-    "category": "Движение",
-    "title": "Серво угол 45°",
+    "id": "debounce",
+    "title": "Программный антидребезг",
+    "category": "Время",
+    "kind": "statement",
+    "description": "Фильтрует дребезг контактов кнопки.",
+    "section": "loop",
+    "color": "#8BC34A",
     "params": [
       {
         "name": "pin",
-        "type": "digital_pin",
-        "default": 5
-      },
-      {
-        "name": "angle",
         "type": "int",
-        "default": 45
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_03"
-  },
-  {
-    "id": "MOVE_SERVO_SET_04",
-    "category": "Движение",
-    "title": "Серво угол 60°",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 6
-      },
-      {
-        "name": "angle",
-        "type": "int",
-        "default": 60
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_04"
-  },
-  {
-    "id": "MOVE_SERVO_SET_05",
-    "category": "Движение",
-    "title": "Серво угол 75°",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 7
-      },
-      {
-        "name": "angle",
-        "type": "int",
-        "default": 75
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_05"
-  },
-  {
-    "id": "MOVE_SERVO_SET_06",
-    "category": "Движение",
-    "title": "Серво угол 90°",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 8
-      },
-      {
-        "name": "angle",
-        "type": "int",
-        "default": 90
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_06"
-  },
-  {
-    "id": "MOVE_SERVO_SET_07",
-    "category": "Движение",
-    "title": "Серво угол 105°",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 9
-      },
-      {
-        "name": "angle",
-        "type": "int",
-        "default": 105
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_07"
-  },
-  {
-    "id": "MOVE_SERVO_SET_08",
-    "category": "Движение",
-    "title": "Серво угол 120°",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 10
-      },
-      {
-        "name": "angle",
-        "type": "int",
-        "default": 120
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_08"
-  },
-  {
-    "id": "MOVE_SERVO_SET_09",
-    "category": "Движение",
-    "title": "Серво угол 135°",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 11
-      },
-      {
-        "name": "angle",
-        "type": "int",
-        "default": 135
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_09"
-  },
-  {
-    "id": "MOVE_SERVO_SET_10",
-    "category": "Движение",
-    "title": "Серво угол 150°",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 12
-      },
-      {
-        "name": "angle",
-        "type": "int",
-        "default": 150
-      }
-    ],
-    "section": "loop",
-    "description": "Поворачивает сервопривод на заданный угол.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_servo_set_10"
-  },
-  {
-    "id": "MOVE_DRIVE_DISTANCE_01",
-    "category": "Движение",
-    "title": "Ехать 10 см",
-    "params": [
-      {
-        "name": "distance_cm",
-        "type": "float",
-        "default": 10.0
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 120
-      }
-    ],
-    "section": "loop",
-    "description": "Движение вперёд на заданное расстояние.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_drive_distance_01"
-  },
-  {
-    "id": "MOVE_DRIVE_DISTANCE_02",
-    "category": "Движение",
-    "title": "Ехать 20 см",
-    "params": [
-      {
-        "name": "distance_cm",
-        "type": "float",
-        "default": 20.0
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 120
-      }
-    ],
-    "section": "loop",
-    "description": "Движение вперёд на заданное расстояние.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_drive_distance_02"
-  },
-  {
-    "id": "MOVE_DRIVE_DISTANCE_03",
-    "category": "Движение",
-    "title": "Ехать 30 см",
-    "params": [
-      {
-        "name": "distance_cm",
-        "type": "float",
-        "default": 30.0
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 120
-      }
-    ],
-    "section": "loop",
-    "description": "Движение вперёд на заданное расстояние.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_drive_distance_03"
-  },
-  {
-    "id": "MOVE_DRIVE_DISTANCE_04",
-    "category": "Движение",
-    "title": "Ехать 40 см",
-    "params": [
-      {
-        "name": "distance_cm",
-        "type": "float",
-        "default": 40.0
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 120
-      }
-    ],
-    "section": "loop",
-    "description": "Движение вперёд на заданное расстояние.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_drive_distance_04"
-  },
-  {
-    "id": "MOVE_DRIVE_DISTANCE_05",
-    "category": "Движение",
-    "title": "Ехать 50 см",
-    "params": [
-      {
-        "name": "distance_cm",
-        "type": "float",
-        "default": 50.0
-      },
-      {
-        "name": "speed",
-        "type": "int",
-        "default": 120
-      }
-    ],
-    "section": "loop",
-    "description": "Движение вперёд на заданное расстояние.",
-    "color": "#9C27B0",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "move_drive_distance_05"
-  },
-  {
-    "id": "SENS_ULTRASONIC_01",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 1",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 6
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 7
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_01"
-  },
-  {
-    "id": "SENS_ULTRASONIC_02",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 2",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 7
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 8
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_02"
-  },
-  {
-    "id": "SENS_ULTRASONIC_03",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 3",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 8
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 9
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_03"
-  },
-  {
-    "id": "SENS_ULTRASONIC_04",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 4",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 5
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 6
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_04"
-  },
-  {
-    "id": "SENS_ULTRASONIC_05",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 5",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 6
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 7
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_05"
-  },
-  {
-    "id": "SENS_ULTRASONIC_06",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 6",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 7
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 8
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_06"
-  },
-  {
-    "id": "SENS_ULTRASONIC_07",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 7",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 8
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 9
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_07"
-  },
-  {
-    "id": "SENS_ULTRASONIC_08",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 8",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 5
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 6
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_08"
-  },
-  {
-    "id": "SENS_ULTRASONIC_09",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 9",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 6
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 7
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_09"
-  },
-  {
-    "id": "SENS_ULTRASONIC_10",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 10",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 7
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 8
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_10"
-  },
-  {
-    "id": "SENS_ULTRASONIC_11",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 11",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 8
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 9
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_11"
-  },
-  {
-    "id": "SENS_ULTRASONIC_12",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 12",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 5
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 6
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_12"
-  },
-  {
-    "id": "SENS_ULTRASONIC_13",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 13",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 6
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 7
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_13"
-  },
-  {
-    "id": "SENS_ULTRASONIC_14",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 14",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 7
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 8
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_14"
-  },
-  {
-    "id": "SENS_ULTRASONIC_15",
-    "category": "Датчики",
-    "title": "Ультразвук датчик 15",
-    "params": [
-      {
-        "name": "trig",
-        "type": "digital_pin",
-        "default": 8
-      },
-      {
-        "name": "echo",
-        "type": "digital_pin",
-        "default": 9
-      }
-    ],
-    "section": "loop",
-    "description": "Считывает расстояние с ультразвукового датчика.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "distance",
-          "type": "float"
-        }
-      ]
-    },
-    "icon": "sens_ultrasonic_15"
-  },
-  {
-    "id": "SENS_ANALOG_READ_01",
-    "category": "Датчики",
-    "title": "Аналоговый вход A1",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A1"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_01"
-  },
-  {
-    "id": "SENS_ANALOG_READ_02",
-    "category": "Датчики",
-    "title": "Аналоговый вход A2",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A2"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_02"
-  },
-  {
-    "id": "SENS_ANALOG_READ_03",
-    "category": "Датчики",
-    "title": "Аналоговый вход A3",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A3"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_03"
-  },
-  {
-    "id": "SENS_ANALOG_READ_04",
-    "category": "Датчики",
-    "title": "Аналоговый вход A4",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A4"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_04"
-  },
-  {
-    "id": "SENS_ANALOG_READ_05",
-    "category": "Датчики",
-    "title": "Аналоговый вход A5",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A5"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_05"
-  },
-  {
-    "id": "SENS_ANALOG_READ_06",
-    "category": "Датчики",
-    "title": "Аналоговый вход A0",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A0"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_06"
-  },
-  {
-    "id": "SENS_ANALOG_READ_07",
-    "category": "Датчики",
-    "title": "Аналоговый вход A1",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A1"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_07"
-  },
-  {
-    "id": "SENS_ANALOG_READ_08",
-    "category": "Датчики",
-    "title": "Аналоговый вход A2",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A2"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_08"
-  },
-  {
-    "id": "SENS_ANALOG_READ_09",
-    "category": "Датчики",
-    "title": "Аналоговый вход A3",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A3"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_09"
-  },
-  {
-    "id": "SENS_ANALOG_READ_10",
-    "category": "Датчики",
-    "title": "Аналоговый вход A4",
-    "params": [
-      {
-        "name": "pin",
-        "type": "analog_pin",
-        "default": "A4"
-      }
-    ],
-    "section": "loop",
-    "description": "Читает значение с аналогового входа.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "value",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "sens_analog_read_10"
-  },
-  {
-    "id": "SENS_BUTTON_01",
-    "category": "Датчики",
-    "title": "Кнопка D2",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
+        "label": "Пин",
+        "min": 0,
+        "max": 53,
         "default": 2
+      },
+      {
+        "name": "interval_ms",
+        "type": "int",
+        "label": "Интервал, мс",
+        "min": 1,
+        "max": 500,
+        "default": 50
       }
     ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "pin": 2,
+      "interval_ms": 50
+    },
+    "aliases": [
+      "TIME_DEBOUNCE"
+    ]
+  },
+  {
+    "id": "timer_timeout",
+    "title": "Таймаут",
+    "category": "Время",
+    "kind": "statement",
+    "description": "Запускает таймер с отслеживанием истечения времени.",
     "section": "loop",
-    "description": "Проверяет состояние кнопки.",
-    "color": "#00ACC1",
+    "color": "#8BC34A",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "timer1"
+      },
+      {
+        "name": "duration_ms",
+        "type": "int",
+        "label": "Длительность, мс",
+        "min": 1,
+        "max": 60000,
+        "default": 1000
+      },
+      {
+        "name": "repeat",
+        "type": "bool",
+        "label": "Повторять",
+        "default": false
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "timer1",
+      "duration_ms": 1000,
+      "repeat": false
+    },
+    "aliases": [
+      "TIME_TIMEOUT"
+    ]
+  },
+  {
+    "id": "timer_value",
+    "title": "Текущее время",
+    "category": "Время",
+    "kind": "expression",
+    "description": "Получает значение встроенного таймера.",
+    "section": "loop",
+    "color": "#8BC34A",
+    "params": [
+      {
+        "name": "source",
+        "type": "enum",
+        "label": "Источник",
+        "options": [
+          "millis",
+          "micros",
+          "timestamp"
+        ],
+        "default": "millis"
+      }
+    ],
     "ports": {
       "inputs": [],
       "outputs": [
         {
-          "name": "pressed",
-          "type": "bool"
+          "name": "value",
+          "type": "int"
         }
       ]
     },
-    "icon": "sens_button_01"
+    "default_params": {
+      "source": "millis"
+    },
+    "aliases": [
+      "TIME_MICROS",
+      "TIME_MILLIS",
+      "TIME_TIMESTAMP"
+    ]
   },
   {
-    "id": "SENS_BUTTON_02",
-    "category": "Датчики",
-    "title": "Кнопка D3",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 3
-      }
-    ],
+    "id": "motor_stop",
+    "title": "Остановить мотор",
+    "category": "Движение",
+    "kind": "statement",
+    "description": "Останавливает мотор и при необходимости включает торможение.",
     "section": "loop",
-    "description": "Проверяет состояние кнопки.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "pressed",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "sens_button_02"
-  },
-  {
-    "id": "SENS_BUTTON_03",
-    "category": "Датчики",
-    "title": "Кнопка D4",
+    "color": "#9C27B0",
     "params": [
       {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 4
-      }
-    ],
-    "section": "loop",
-    "description": "Проверяет состояние кнопки.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "pressed",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "sens_button_03"
-  },
-  {
-    "id": "SENS_BUTTON_04",
-    "category": "Датчики",
-    "title": "Кнопка D5",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 5
-      }
-    ],
-    "section": "loop",
-    "description": "Проверяет состояние кнопки.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "pressed",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "sens_button_04"
-  },
-  {
-    "id": "SENS_BUTTON_05",
-    "category": "Датчики",
-    "title": "Кнопка D6",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 6
-      }
-    ],
-    "section": "loop",
-    "description": "Проверяет состояние кнопки.",
-    "color": "#00ACC1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "pressed",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "sens_button_05"
-  },
-  {
-    "id": "LIGHT_LED_ON_01",
-    "category": "Свет и звук",
-    "title": "LED ON D3",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 3
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_01"
-  },
-  {
-    "id": "LIGHT_LED_ON_02",
-    "category": "Свет и звук",
-    "title": "LED ON D4",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 4
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_02"
-  },
-  {
-    "id": "LIGHT_LED_ON_03",
-    "category": "Свет и звук",
-    "title": "LED ON D5",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 5
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_03"
-  },
-  {
-    "id": "LIGHT_LED_ON_04",
-    "category": "Свет и звук",
-    "title": "LED ON D6",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 6
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_04"
-  },
-  {
-    "id": "LIGHT_LED_ON_05",
-    "category": "Свет и звук",
-    "title": "LED ON D7",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 7
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_05"
-  },
-  {
-    "id": "LIGHT_LED_ON_06",
-    "category": "Свет и звук",
-    "title": "LED ON D8",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 8
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_06"
-  },
-  {
-    "id": "LIGHT_LED_ON_07",
-    "category": "Свет и звук",
-    "title": "LED ON D9",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 9
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_07"
-  },
-  {
-    "id": "LIGHT_LED_ON_08",
-    "category": "Свет и звук",
-    "title": "LED ON D10",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 10
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_08"
-  },
-  {
-    "id": "LIGHT_LED_ON_09",
-    "category": "Свет и звук",
-    "title": "LED ON D11",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 11
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_09"
-  },
-  {
-    "id": "LIGHT_LED_ON_10",
-    "category": "Свет и звук",
-    "title": "LED ON D12",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 12
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_10"
-  },
-  {
-    "id": "LIGHT_LED_ON_11",
-    "category": "Свет и звук",
-    "title": "LED ON D13",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 13
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_11"
-  },
-  {
-    "id": "LIGHT_LED_ON_12",
-    "category": "Свет и звук",
-    "title": "LED ON D14",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 14
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_12"
-  },
-  {
-    "id": "LIGHT_LED_ON_13",
-    "category": "Свет и звук",
-    "title": "LED ON D15",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 15
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_13"
-  },
-  {
-    "id": "LIGHT_LED_ON_14",
-    "category": "Свет и звук",
-    "title": "LED ON D16",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 16
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_14"
-  },
-  {
-    "id": "LIGHT_LED_ON_15",
-    "category": "Свет и звук",
-    "title": "LED ON D17",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 17
-      }
-    ],
-    "section": "loop",
-    "description": "Включает светодиод на указанном пине.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_led_on_15"
-  },
-  {
-    "id": "LIGHT_TONE_01",
-    "category": "Свет и звук",
-    "title": "Тон 460 Гц",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 9
+        "name": "port",
+        "type": "enum",
+        "label": "Порт",
+        "options": [
+          "M1",
+          "M2",
+          "M3",
+          "M4"
+        ],
+        "default": "M1"
       },
       {
-        "name": "frequency",
-        "type": "int",
-        "default": 460
-      },
-      {
-        "name": "duration",
-        "type": "duration_ms",
-        "default": 250
-      }
-    ],
-    "section": "loop",
-    "description": "Проигрывает тон на пьезоизлучателе.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_tone_01"
-  },
-  {
-    "id": "LIGHT_TONE_02",
-    "category": "Свет и звук",
-    "title": "Тон 480 Гц",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 9
-      },
-      {
-        "name": "frequency",
-        "type": "int",
-        "default": 480
-      },
-      {
-        "name": "duration",
-        "type": "duration_ms",
-        "default": 250
-      }
-    ],
-    "section": "loop",
-    "description": "Проигрывает тон на пьезоизлучателе.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_tone_02"
-  },
-  {
-    "id": "LIGHT_TONE_03",
-    "category": "Свет и звук",
-    "title": "Тон 500 Гц",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 9
-      },
-      {
-        "name": "frequency",
-        "type": "int",
-        "default": 500
-      },
-      {
-        "name": "duration",
-        "type": "duration_ms",
-        "default": 250
-      }
-    ],
-    "section": "loop",
-    "description": "Проигрывает тон на пьезоизлучателе.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_tone_03"
-  },
-  {
-    "id": "LIGHT_TONE_04",
-    "category": "Свет и звук",
-    "title": "Тон 520 Гц",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 9
-      },
-      {
-        "name": "frequency",
-        "type": "int",
-        "default": 520
-      },
-      {
-        "name": "duration",
-        "type": "duration_ms",
-        "default": 250
-      }
-    ],
-    "section": "loop",
-    "description": "Проигрывает тон на пьезоизлучателе.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_tone_04"
-  },
-  {
-    "id": "LIGHT_TONE_05",
-    "category": "Свет и звук",
-    "title": "Тон 540 Гц",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 9
-      },
-      {
-        "name": "frequency",
-        "type": "int",
-        "default": 540
-      },
-      {
-        "name": "duration",
-        "type": "duration_ms",
-        "default": 250
-      }
-    ],
-    "section": "loop",
-    "description": "Проигрывает тон на пьезоизлучателе.",
-    "color": "#F39C12",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "light_tone_05"
-  },
-  {
-    "id": "LOGIC_AND",
-    "category": "Логика",
-    "title": "Логика: И",
-    "params": [
-      {
-        "name": "left",
+        "name": "brake",
         "type": "bool",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "bool",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "bool"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "logic_and"
-  },
-  {
-    "id": "LOGIC_OR",
-    "category": "Логика",
-    "title": "Логика: ИЛИ",
-    "params": [
-      {
-        "name": "left",
-        "type": "bool",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "bool",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "bool"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "logic_or"
-  },
-  {
-    "id": "LOGIC_NOT",
-    "category": "Логика",
-    "title": "Логика: НЕ",
-    "params": [
-      {
-        "name": "value",
-        "type": "bool",
+        "label": "Торможение",
         "default": true
       }
     ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "logic_not"
-  },
-  {
-    "id": "LOGIC_GT",
-    "category": "Логика",
-    "title": "Логика: A > B",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
     "ports": {
       "inputs": [
         {
-          "name": "A",
-          "type": "number"
+          "name": "in",
+          "type": "flow"
         }
       ],
       "outputs": [
         {
-          "name": "res",
-          "type": "number"
+          "name": "out",
+          "type": "flow"
         }
       ]
     },
-    "icon": "logic_gt"
+    "default_params": {
+      "port": "M1",
+      "brake": true
+    },
+    "aliases": []
   },
   {
-    "id": "LOGIC_LT",
-    "category": "Логика",
-    "title": "Логика: A < B",
+    "id": "servo_set",
+    "title": "Повернуть сервопривод",
+    "category": "Движение",
+    "kind": "statement",
+    "description": "Задаёт угол сервопривода.",
+    "section": "loop",
+    "color": "#9C27B0",
     "params": [
       {
-        "name": "left",
-        "type": "number",
-        "default": 0
+        "name": "port",
+        "type": "enum",
+        "label": "Порт",
+        "options": [
+          "S1",
+          "S2",
+          "S3",
+          "S4"
+        ],
+        "default": "S1"
       },
       {
-        "name": "right",
-        "type": "number",
-        "default": 0
+        "name": "angle",
+        "type": "int",
+        "label": "Угол",
+        "min": 0,
+        "max": 180,
+        "default": 90
       }
     ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
     "ports": {
       "inputs": [
         {
-          "name": "A",
-          "type": "number"
+          "name": "in",
+          "type": "flow"
         }
       ],
       "outputs": [
         {
-          "name": "res",
-          "type": "number"
+          "name": "out",
+          "type": "flow"
         }
       ]
     },
-    "icon": "logic_lt"
+    "default_params": {
+      "port": "S1",
+      "angle": 90
+    },
+    "aliases": [
+      "MOVE_SERVO_SET_01",
+      "MOVE_SERVO_SET_02",
+      "MOVE_SERVO_SET_03",
+      "MOVE_SERVO_SET_04",
+      "MOVE_SERVO_SET_05",
+      "MOVE_SERVO_SET_06",
+      "MOVE_SERVO_SET_07",
+      "MOVE_SERVO_SET_08",
+      "MOVE_SERVO_SET_09",
+      "MOVE_SERVO_SET_10"
+    ]
   },
   {
-    "id": "LOGIC_EQ",
-    "category": "Логика",
-    "title": "Логика: A == B",
+    "id": "drive_distance",
+    "title": "Проехать расстояние",
+    "category": "Движение",
+    "kind": "statement",
+    "description": "Проезжает указанное расстояние с заданной скоростью.",
+    "section": "loop",
+    "color": "#9C27B0",
     "params": [
       {
-        "name": "left",
-        "type": "any",
-        "default": 0
+        "name": "distance_cm",
+        "type": "int",
+        "label": "Расстояние, см",
+        "min": 0,
+        "max": 1000,
+        "default": 10
       },
       {
-        "name": "right",
-        "type": "any",
-        "default": 0
+        "name": "speed",
+        "type": "int",
+        "label": "Скорость",
+        "min": 0,
+        "max": 100,
+        "default": 50
+      },
+      {
+        "name": "direction",
+        "type": "enum",
+        "label": "Направление",
+        "options": [
+          "forward",
+          "backward"
+        ],
+        "default": "forward"
       }
     ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
     "ports": {
       "inputs": [
         {
-          "name": "A",
-          "type": "any"
+          "name": "in",
+          "type": "flow"
         }
       ],
       "outputs": [
         {
-          "name": "res",
-          "type": "number"
+          "name": "out",
+          "type": "flow"
         }
       ]
     },
-    "icon": "logic_eq"
+    "default_params": {
+      "distance_cm": 10,
+      "speed": 50,
+      "direction": "forward"
+    },
+    "aliases": [
+      "MOVE_DRIVE_DISTANCE_01",
+      "MOVE_DRIVE_DISTANCE_02",
+      "MOVE_DRIVE_DISTANCE_03",
+      "MOVE_DRIVE_DISTANCE_04",
+      "MOVE_DRIVE_DISTANCE_05"
+    ]
   },
   {
-    "id": "LOGIC_NE",
-    "category": "Логика",
-    "title": "Логика: A != B",
+    "id": "motor_set",
+    "title": "Установить скорость мотора",
+    "category": "Движение",
+    "kind": "statement",
+    "description": "Устанавливает скорость двигателя на выбранном порту.",
+    "section": "loop",
+    "color": "#9C27B0",
     "params": [
       {
-        "name": "left",
-        "type": "any",
-        "default": 0
+        "name": "port",
+        "type": "enum",
+        "label": "Порт",
+        "options": [
+          "M1",
+          "M2",
+          "M3",
+          "M4"
+        ],
+        "default": "M1"
       },
       {
-        "name": "right",
-        "type": "any",
-        "default": 0
+        "name": "speed",
+        "type": "int",
+        "label": "Скорость",
+        "min": 0,
+        "max": 100,
+        "default": 50
+      },
+      {
+        "name": "direction",
+        "type": "enum",
+        "label": "Направление",
+        "options": [
+          "forward",
+          "backward"
+        ],
+        "default": "forward"
       }
     ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
     "ports": {
       "inputs": [
         {
-          "name": "A",
-          "type": "any"
+          "name": "in",
+          "type": "flow"
         }
       ],
       "outputs": [
         {
-          "name": "res",
-          "type": "number"
+          "name": "out",
+          "type": "flow"
         }
       ]
     },
-    "icon": "logic_ne"
+    "default_params": {
+      "port": "M1",
+      "speed": 50,
+      "direction": "forward"
+    },
+    "aliases": [
+      "MOVE_MOTOR_SPEED_01",
+      "MOVE_MOTOR_SPEED_02",
+      "MOVE_MOTOR_SPEED_03",
+      "MOVE_MOTOR_SPEED_04",
+      "MOVE_MOTOR_SPEED_05",
+      "MOVE_MOTOR_SPEED_06",
+      "MOVE_MOTOR_SPEED_07",
+      "MOVE_MOTOR_SPEED_08",
+      "MOVE_MOTOR_SPEED_09",
+      "MOVE_MOTOR_SPEED_10",
+      "MOVE_MOTOR_SPEED_11",
+      "MOVE_MOTOR_SPEED_12",
+      "MOVE_MOTOR_SPEED_13",
+      "MOVE_MOTOR_SPEED_14",
+      "MOVE_MOTOR_SPEED_15",
+      "MOVE_MOTOR_SPEED_16",
+      "MOVE_MOTOR_SPEED_17",
+      "MOVE_MOTOR_SPEED_18",
+      "MOVE_MOTOR_SPEED_19",
+      "MOVE_MOTOR_SPEED_20"
+    ]
   },
   {
-    "id": "LOGIC_GTE",
-    "category": "Логика",
-    "title": "Логика: A >= B",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
+    "id": "assert_condition",
+    "title": "Assert",
+    "category": "Диагностика",
+    "kind": "statement",
+    "description": "Проверяет условие и сообщает об ошибке.",
     "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "logic_gte"
-  },
-  {
-    "id": "LOGIC_LTE",
-    "category": "Логика",
-    "title": "Логика: A <= B",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "logic_lte"
-  },
-  {
-    "id": "LOGIC_SWITCH",
-    "category": "Логика",
-    "title": "Логика: Switch",
-    "params": [
-      {
-        "name": "value",
-        "type": "any",
-        "default": 0
-      },
-      {
-        "name": "cases",
-        "type": "string",
-        "default": "0:1"
-      }
-    ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "any"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "logic_switch"
-  },
-  {
-    "id": "LOGIC_TERNARY",
-    "category": "Логика",
-    "title": "Логика: Тернарный",
-    "params": [
-      {
-        "name": "left",
-        "type": "any",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "any",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "any"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "logic_ternary"
-  },
-  {
-    "id": "LOGIC_ASSERT",
-    "category": "Логика",
-    "title": "Логика: Assert",
+    "color": "#FF5722",
     "params": [
       {
         "name": "condition",
         "type": "bool",
+        "label": "Условие",
         "default": true
       },
       {
         "name": "message",
         "type": "string",
+        "label": "Сообщение",
         "default": ""
       }
     ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "condition": true,
+      "message": ""
+    },
+    "aliases": [
+      "DIAG_ASSERT"
+    ]
+  },
+  {
+    "id": "log_message",
+    "title": "Лог",
+    "category": "Диагностика",
+    "kind": "statement",
+    "description": "Выводит сообщение в лог с заданным уровнем.",
     "section": "loop",
-    "description": "Логический блок.",
-    "color": "#0D47A1",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "res",
-          "type": "bool"
-        }
-      ]
-    },
-    "icon": "logic_assert"
-  },
-  {
-    "id": "MATH_ADD",
-    "category": "Математика",
-    "title": "Математика: A + B",
+    "color": "#FF5722",
     "params": [
       {
-        "name": "left",
-        "type": "number",
-        "default": 0
+        "name": "level",
+        "type": "enum",
+        "label": "Уровень",
+        "options": [
+          "info",
+          "warn",
+          "error"
+        ],
+        "default": "info"
       },
       {
-        "name": "right",
-        "type": "number",
-        "default": 0
+        "name": "message",
+        "type": "string",
+        "label": "Сообщение",
+        "default": ""
       }
     ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
     "ports": {
       "inputs": [
         {
-          "name": "A",
-          "type": "number"
+          "name": "in",
+          "type": "flow"
         }
       ],
       "outputs": [
         {
-          "name": "result",
-          "type": "number"
+          "name": "out",
+          "type": "flow"
         }
       ]
     },
-    "icon": "math_add"
-  },
-  {
-    "id": "MATH_SUB",
-    "category": "Математика",
-    "title": "Математика: A - B",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
+    "default_params": {
+      "level": "info",
+      "message": ""
     },
-    "icon": "math_sub"
+    "aliases": [
+      "DIAG_LOG_ERROR",
+      "DIAG_LOG_INFO",
+      "DIAG_LOG_WARN"
+    ]
   },
   {
-    "id": "MATH_MUL",
-    "category": "Математика",
-    "title": "Математика: A * B",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_mul"
-  },
-  {
-    "id": "MATH_DIV",
-    "category": "Математика",
-    "title": "Математика: A / B",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_div"
-  },
-  {
-    "id": "MATH_MOD",
-    "category": "Математика",
-    "title": "Математика: A % B",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_mod"
-  },
-  {
-    "id": "MATH_ABS",
-    "category": "Математика",
-    "title": "Математика: abs",
-    "params": [
-      {
-        "name": "value",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_abs"
-  },
-  {
-    "id": "MATH_MIN",
-    "category": "Математика",
-    "title": "Математика: min",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_min"
-  },
-  {
-    "id": "MATH_MAX",
-    "category": "Математика",
-    "title": "Математика: max",
-    "params": [
-      {
-        "name": "left",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "right",
-        "type": "number",
-        "default": 0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_max"
-  },
-  {
-    "id": "MATH_MAP",
-    "category": "Математика",
-    "title": "Математика: map",
-    "params": [
-      {
-        "name": "value",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "from_min",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "from_max",
-        "type": "number",
-        "default": 1023
-      },
-      {
-        "name": "to_min",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "to_max",
-        "type": "number",
-        "default": 255
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_map"
-  },
-  {
-    "id": "MATH_CLAMP",
-    "category": "Математика",
-    "title": "Математика: clamp",
-    "params": [
-      {
-        "name": "value",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "min",
-        "type": "number",
-        "default": 0
-      },
-      {
-        "name": "max",
-        "type": "number",
-        "default": 100
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_clamp"
-  },
-  {
-    "id": "MATH_RANDOM_INT",
-    "category": "Математика",
-    "title": "Математика: rand int",
-    "params": [
-      {
-        "name": "min",
-        "type": "int",
-        "default": 0
-      },
-      {
-        "name": "max",
-        "type": "int",
-        "default": 10
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [
-        {
-          "name": "A",
-          "type": "number"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_random_int"
-  },
-  {
-    "id": "MATH_RANDOM_FLOAT",
-    "category": "Математика",
-    "title": "Математика: rand float",
-    "params": [
-      {
-        "name": "min",
-        "type": "float",
-        "default": 0.0
-      },
-      {
-        "name": "max",
-        "type": "float",
-        "default": 1.0
-      }
-    ],
-    "section": "functions",
-    "description": "Математическая операция.",
-    "color": "#2E7D32",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "result",
-          "type": "number"
-        }
-      ]
-    },
-    "icon": "math_random_float"
-  },
-  {
-    "id": "VAR_DECLARE_INT",
-    "category": "Переменные",
-    "title": "Объявить int",
+    "id": "watch_variable",
+    "title": "Наблюдение переменной",
+    "category": "Диагностика",
+    "kind": "statement",
+    "description": "Отслеживает изменение переменной.",
+    "section": "loop",
+    "color": "#FF5722",
     "params": [
       {
         "name": "name",
         "type": "string",
+        "label": "Имя",
         "default": "value"
       },
       {
-        "name": "initial",
+        "name": "interval_ms",
         "type": "int",
-        "default": 0
-      }
-    ],
-    "section": "globals",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "var_declare_int"
-  },
-  {
-    "id": "VAR_DECLARE_FLOAT",
-    "category": "Переменные",
-    "title": "Объявить float",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "value"
-      },
-      {
-        "name": "initial",
-        "type": "float",
-        "default": 0.0
-      }
-    ],
-    "section": "globals",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "var_declare_float"
-  },
-  {
-    "id": "VAR_SET",
-    "category": "Переменные",
-    "title": "Присвоить",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "value"
-      },
-      {
-        "name": "value",
-        "type": "any",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_set"
-  },
-  {
-    "id": "VAR_GET",
-    "category": "Переменные",
-    "title": "Значение переменной",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "value"
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_get"
-  },
-  {
-    "id": "VAR_INC",
-    "category": "Переменные",
-    "title": "Инкремент",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "counter"
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_inc"
-  },
-  {
-    "id": "VAR_DEC",
-    "category": "Переменные",
-    "title": "Декремент",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "counter"
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_dec"
-  },
-  {
-    "id": "VAR_ARRAY_DECLARE",
-    "category": "Переменные",
-    "title": "Массив",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "arr"
-      },
-      {
-        "name": "size",
-        "type": "int",
-        "default": 5
-      }
-    ],
-    "section": "globals",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "var_array_declare"
-  },
-  {
-    "id": "VAR_ARRAY_SET",
-    "category": "Переменные",
-    "title": "Массив присвоить",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "arr"
-      },
-      {
-        "name": "index",
-        "type": "int",
-        "default": 0
-      },
-      {
-        "name": "value",
-        "type": "any",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_array_set"
-  },
-  {
-    "id": "VAR_ARRAY_GET",
-    "category": "Переменные",
-    "title": "Массив получить",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "arr"
-      },
-      {
-        "name": "index",
-        "type": "int",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_array_get"
-  },
-  {
-    "id": "VAR_BOOL_TOGGLE",
-    "category": "Переменные",
-    "title": "Инвертировать bool",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "flag"
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_bool_toggle"
-  },
-  {
-    "id": "VAR_RESET",
-    "category": "Переменные",
-    "title": "Сброс переменной",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "value"
-      },
-      {
-        "name": "reset",
-        "type": "any",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_reset"
-  },
-  {
-    "id": "VAR_RANDOM_SEED",
-    "category": "Переменные",
-    "title": "Random seed",
-    "params": [
-      {
-        "name": "seed",
-        "type": "int",
-        "default": 1
-      }
-    ],
-    "section": "setup",
-    "description": "Операции с переменными.",
-    "color": "#E53935",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "var_random_seed"
-  },
-  {
-    "id": "FUNC_DEFINE_01",
-    "category": "Функции",
-    "title": "Объявить функцию 1",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_1"
-      },
-      {
-        "name": "return_type",
-        "type": "string",
-        "default": "void"
-      }
-    ],
-    "section": "functions",
-    "description": "Определяет пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_define_01"
-  },
-  {
-    "id": "FUNC_DEFINE_02",
-    "category": "Функции",
-    "title": "Объявить функцию 2",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_2"
-      },
-      {
-        "name": "return_type",
-        "type": "string",
-        "default": "void"
-      }
-    ],
-    "section": "functions",
-    "description": "Определяет пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_define_02"
-  },
-  {
-    "id": "FUNC_DEFINE_03",
-    "category": "Функции",
-    "title": "Объявить функцию 3",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_3"
-      },
-      {
-        "name": "return_type",
-        "type": "string",
-        "default": "void"
-      }
-    ],
-    "section": "functions",
-    "description": "Определяет пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_define_03"
-  },
-  {
-    "id": "FUNC_DEFINE_04",
-    "category": "Функции",
-    "title": "Объявить функцию 4",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_4"
-      },
-      {
-        "name": "return_type",
-        "type": "string",
-        "default": "void"
-      }
-    ],
-    "section": "functions",
-    "description": "Определяет пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_define_04"
-  },
-  {
-    "id": "FUNC_DEFINE_05",
-    "category": "Функции",
-    "title": "Объявить функцию 5",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_5"
-      },
-      {
-        "name": "return_type",
-        "type": "string",
-        "default": "void"
-      }
-    ],
-    "section": "functions",
-    "description": "Определяет пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_define_05"
-  },
-  {
-    "id": "FUNC_DEFINE_06",
-    "category": "Функции",
-    "title": "Объявить функцию 6",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_6"
-      },
-      {
-        "name": "return_type",
-        "type": "string",
-        "default": "void"
-      }
-    ],
-    "section": "functions",
-    "description": "Определяет пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_define_06"
-  },
-  {
-    "id": "FUNC_CALL_01",
-    "category": "Функции",
-    "title": "Вызвать функцию 1",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_1"
-      },
-      {
-        "name": "args",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Вызывает пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_call_01"
-  },
-  {
-    "id": "FUNC_CALL_02",
-    "category": "Функции",
-    "title": "Вызвать функцию 2",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_2"
-      },
-      {
-        "name": "args",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Вызывает пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_call_02"
-  },
-  {
-    "id": "FUNC_CALL_03",
-    "category": "Функции",
-    "title": "Вызвать функцию 3",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_3"
-      },
-      {
-        "name": "args",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Вызывает пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_call_03"
-  },
-  {
-    "id": "FUNC_CALL_04",
-    "category": "Функции",
-    "title": "Вызвать функцию 4",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_4"
-      },
-      {
-        "name": "args",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Вызывает пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_call_04"
-  },
-  {
-    "id": "FUNC_CALL_05",
-    "category": "Функции",
-    "title": "Вызвать функцию 5",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_5"
-      },
-      {
-        "name": "args",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Вызывает пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_call_05"
-  },
-  {
-    "id": "FUNC_CALL_06",
-    "category": "Функции",
-    "title": "Вызвать функцию 6",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "func_6"
-      },
-      {
-        "name": "args",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Вызывает пользовательскую функцию.",
-    "color": "#8E24AA",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "func_call_06"
-  },
-  {
-    "id": "TIME_DELAY",
-    "category": "Время",
-    "title": "Задержка",
-    "params": [
-      {
-        "name": "duration",
-        "type": "duration_ms",
+        "label": "Период, мс",
+        "min": 0,
+        "max": 60000,
         "default": 1000
       }
     ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
     "ports": {
       "inputs": [
         {
@@ -4322,929 +687,1493 @@
         }
       ]
     },
-    "icon": "time_delay"
-  },
-  {
-    "id": "TIME_DELAY_MICROS",
-    "category": "Время",
-    "title": "Задержка мкс",
-    "params": [
-      {
-        "name": "duration",
-        "type": "int",
-        "default": 100
-      }
-    ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
+    "default_params": {
+      "name": "value",
+      "interval_ms": 1000
     },
-    "icon": "time_delay_micros"
+    "aliases": [
+      "DIAG_WATCH"
+    ]
   },
   {
-    "id": "TIME_EVERY",
-    "category": "Время",
-    "title": "Каждые N мс",
-    "params": [
-      {
-        "name": "interval",
-        "type": "duration_ms",
-        "default": 500
-      }
-    ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_every"
-  },
-  {
-    "id": "TIME_TIMEOUT",
-    "category": "Время",
-    "title": "Таймаут",
-    "params": [
-      {
-        "name": "interval",
-        "type": "duration_ms",
-        "default": 2000
-      }
-    ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_timeout"
-  },
-  {
-    "id": "TIME_MILLIS",
-    "category": "Время",
-    "title": "millis()",
-    "params": [],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_millis"
-  },
-  {
-    "id": "TIME_MICROS",
-    "category": "Время",
-    "title": "micros()",
-    "params": [],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_micros"
-  },
-  {
-    "id": "TIME_TIMESTAMP",
-    "category": "Время",
-    "title": "Отметка времени",
-    "params": [
-      {
-        "name": "label",
-        "type": "string",
-        "default": "tick"
-      }
-    ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_timestamp"
-  },
-  {
-    "id": "TIME_DEBOUNCE",
-    "category": "Время",
-    "title": "Дребезг",
-    "params": [
-      {
-        "name": "interval",
-        "type": "duration_ms",
-        "default": 50
-      }
-    ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_debounce"
-  },
-  {
-    "id": "TIME_SCHEDULER",
-    "category": "Время",
-    "title": "Планировщик",
-    "params": [
-      {
-        "name": "slots",
-        "type": "int",
-        "default": 3
-      }
-    ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_scheduler"
-  },
-  {
-    "id": "TIME_CRON",
-    "category": "Время",
-    "title": "Cron",
-    "params": [
-      {
-        "name": "pattern",
-        "type": "string",
-        "default": "* * *"
-      }
-    ],
-    "section": "loop",
-    "description": "Управление временем выполнения.",
-    "color": "#4FC3F7",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "time_cron"
-  },
-  {
-    "id": "COMM_SERIAL_BEGIN",
-    "category": "Коммуникации",
-    "title": "Serial.begin",
-    "params": [
-      {
-        "name": "baud",
-        "type": "int",
-        "default": 9600
-      }
-    ],
-    "section": "setup",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "comm_serial_begin"
-  },
-  {
-    "id": "COMM_SERIAL_PRINT",
-    "category": "Коммуникации",
-    "title": "Serial.print",
-    "params": [
-      {
-        "name": "value",
-        "type": "any",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_serial_print"
-  },
-  {
-    "id": "COMM_SERIAL_PRINTLN",
-    "category": "Коммуникации",
-    "title": "Serial.println",
-    "params": [
-      {
-        "name": "value",
-        "type": "any",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_serial_println"
-  },
-  {
-    "id": "COMM_SERIAL_READ",
-    "category": "Коммуникации",
-    "title": "Serial.readString",
-    "params": [],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_serial_read"
-  },
-  {
-    "id": "COMM_I2C_BEGIN",
-    "category": "Коммуникации",
-    "title": "Wire.begin",
-    "params": [],
-    "section": "setup",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "comm_i2c_begin"
-  },
-  {
-    "id": "COMM_I2C_WRITE",
-    "category": "Коммуникации",
-    "title": "I2C write",
-    "params": [
-      {
-        "name": "address",
-        "type": "int",
-        "default": 60
-      },
-      {
-        "name": "data",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_i2c_write"
-  },
-  {
-    "id": "COMM_I2C_READ",
-    "category": "Коммуникации",
-    "title": "I2C read",
-    "params": [
-      {
-        "name": "address",
-        "type": "int",
-        "default": 60
-      },
-      {
-        "name": "size",
-        "type": "int",
-        "default": 1
-      }
-    ],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_i2c_read"
-  },
-  {
-    "id": "COMM_SPI_BEGIN",
-    "category": "Коммуникации",
-    "title": "SPI.begin",
-    "params": [],
-    "section": "setup",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "comm_spi_begin"
-  },
-  {
-    "id": "COMM_SPI_TRANSFER",
-    "category": "Коммуникации",
-    "title": "SPI.transfer",
-    "params": [
-      {
-        "name": "value",
-        "type": "int",
-        "default": 0
-      }
-    ],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_spi_transfer"
-  },
-  {
-    "id": "COMM_BT_SEND",
-    "category": "Коммуникации",
-    "title": "BT send",
-    "params": [
-      {
-        "name": "value",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_bt_send"
-  },
-  {
-    "id": "COMM_WIFI_CONNECT",
-    "category": "Коммуникации",
-    "title": "Wi-Fi connect",
-    "params": [
-      {
-        "name": "ssid",
-        "type": "string",
-        "default": "ssid"
-      },
-      {
-        "name": "password",
-        "type": "string",
-        "default": "pass"
-      }
-    ],
-    "section": "setup",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "comm_wifi_connect"
-  },
-  {
-    "id": "COMM_MQTT_PUBLISH",
-    "category": "Коммуникации",
-    "title": "MQTT publish",
-    "params": [
-      {
-        "name": "topic",
-        "type": "string",
-        "default": "topic"
-      },
-      {
-        "name": "payload",
-        "type": "string",
-        "default": ""
-      }
-    ],
-    "section": "loop",
-    "description": "Команды общения с внешними устройствами.",
-    "color": "#1976D2",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "comm_mqtt_publish"
-  },
-  {
-    "id": "SYS_INCLUDE",
-    "category": "Система",
-    "title": "Include",
-    "params": [
-      {
-        "name": "header",
-        "type": "string",
-        "default": "Arduino.h"
-      }
-    ],
-    "section": "globals",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "sys_include"
-  },
-  {
-    "id": "SYS_DEFINE",
-    "category": "Система",
-    "title": "#define",
-    "params": [
-      {
-        "name": "name",
-        "type": "string",
-        "default": "VALUE"
-      },
-      {
-        "name": "value",
-        "type": "string",
-        "default": "1"
-      }
-    ],
-    "section": "globals",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "sys_define"
-  },
-  {
-    "id": "SYS_PIN_MODE",
-    "category": "Система",
-    "title": "pinMode",
-    "params": [
-      {
-        "name": "pin",
-        "type": "digital_pin",
-        "default": 13
-      },
-      {
-        "name": "mode",
-        "type": "enum",
-        "default": "OUTPUT",
-        "enum_values": [
-          "OUTPUT",
-          "INPUT",
-          "INPUT_PULLUP"
-        ]
-      }
-    ],
-    "section": "setup",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "sys_pin_mode"
-  },
-  {
-    "id": "SYS_LOOP_MARK",
-    "category": "Система",
-    "title": "Loop маркер",
-    "params": [],
-    "section": "loop",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "sys_loop_mark"
-  },
-  {
-    "id": "SYS_SETUP_MARK",
-    "category": "Система",
-    "title": "Setup маркер",
-    "params": [],
-    "section": "setup",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "sys_setup_mark"
-  },
-  {
-    "id": "SYS_DELAY_SAFE",
-    "category": "Система",
-    "title": "Safe delay",
-    "params": [
-      {
-        "name": "duration",
-        "type": "duration_ms",
-        "default": 100
-      }
-    ],
-    "section": "loop",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "sys_delay_safe"
-  },
-  {
-    "id": "SYS_TASK_SCHEDULE",
-    "category": "Система",
-    "title": "Планировщик задач",
-    "params": [
-      {
-        "name": "tasks",
-        "type": "int",
-        "default": 3
-      }
-    ],
-    "section": "loop",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "sys_task_schedule"
-  },
-  {
-    "id": "SYS_EMERGENCY_STOP",
-    "category": "Система",
-    "title": "Аварийный стоп",
-    "params": [],
-    "section": "loop",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "sys_emergency_stop"
-  },
-  {
-    "id": "SYS_MODE_SELECT",
-    "category": "Система",
-    "title": "Режим",
-    "params": [
-      {
-        "name": "mode",
-        "type": "enum",
-        "default": "NORMAL",
-        "enum_values": [
-          "NORMAL",
-          "SAFE",
-          "TEST"
-        ]
-      }
-    ],
-    "section": "setup",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "sys_mode_select"
-  },
-  {
-    "id": "SYS_PROFILE_APPLY",
-    "category": "Система",
-    "title": "Профиль HW",
-    "params": [
-      {
-        "name": "profile",
-        "type": "string",
-        "default": "default"
-      }
-    ],
-    "section": "setup",
-    "description": "Системные операции.",
-    "color": "#455A64",
-    "ports": {
-      "inputs": [],
-      "outputs": []
-    },
-    "icon": "sys_profile_apply"
-  },
-  {
-    "id": "DIAG_LOG_INFO",
+    "id": "telemetry_publish",
+    "title": "Отправить телеметрию",
     "category": "Диагностика",
-    "title": "Log info",
-    "params": [
-      {
-        "name": "message",
-        "type": "string",
-        "default": "info"
-      }
-    ],
+    "kind": "statement",
+    "description": "Публикует значение для телеметрии.",
     "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "diag_log_info"
-  },
-  {
-    "id": "DIAG_LOG_WARN",
-    "category": "Диагностика",
-    "title": "Log warn",
-    "params": [
-      {
-        "name": "message",
-        "type": "string",
-        "default": "warn"
-      }
-    ],
-    "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "diag_log_warn"
-  },
-  {
-    "id": "DIAG_LOG_ERROR",
-    "category": "Диагностика",
-    "title": "Log error",
-    "params": [
-      {
-        "name": "message",
-        "type": "string",
-        "default": "error"
-      }
-    ],
-    "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
-    "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "out",
-          "type": "flow"
-        }
-      ]
-    },
-    "icon": "diag_log_error"
-  },
-  {
-    "id": "DIAG_PUBLISH",
-    "category": "Диагностика",
-    "title": "Telemetry send",
+    "color": "#FF5722",
     "params": [
       {
         "name": "key",
         "type": "string",
+        "label": "Ключ",
+        "default": "sensor"
+      },
+      {
+        "name": "value",
+        "type": "any",
+        "label": "Значение",
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "key": "sensor",
+      "value": 0
+    },
+    "aliases": [
+      "DIAG_PUBLISH"
+    ]
+  },
+  {
+    "id": "profiler_control",
+    "title": "Профилировщик",
+    "category": "Диагностика",
+    "kind": "statement",
+    "description": "Управляет профилировщиком.",
+    "section": "loop",
+    "color": "#FF5722",
+    "params": [
+      {
+        "name": "action",
+        "type": "enum",
+        "label": "Действие",
+        "options": [
+          "start",
+          "stop"
+        ],
+        "default": "start"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "label": "Метка",
+        "default": "block"
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "action": "start",
+      "label": "block"
+    },
+    "aliases": [
+      "DIAG_PROFILER_START",
+      "DIAG_PROFILER_STOP"
+    ]
+  },
+  {
+    "id": "i2c_transfer",
+    "title": "I2C операция",
+    "category": "Коммуникации",
+    "kind": "statement",
+    "description": "Выполняет операцию I2C: инициализация, чтение или запись.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [
+      {
+        "name": "mode",
+        "type": "enum",
+        "label": "Режим",
+        "options": [
+          "begin",
+          "write",
+          "read"
+        ],
+        "default": "begin"
+      },
+      {
+        "name": "address",
+        "type": "int",
+        "label": "Адрес",
+        "min": 0,
+        "max": 127,
+        "default": 8
+      },
+      {
+        "name": "data",
+        "type": "string",
+        "label": "Данные",
+        "default": ""
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "label": "Количество",
+        "min": 0,
+        "max": 32,
+        "default": 1
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "mode": "begin",
+      "address": 8,
+      "data": "",
+      "length": 1
+    },
+    "aliases": [
+      "COMM_I2C_BEGIN",
+      "COMM_I2C_READ",
+      "COMM_I2C_WRITE"
+    ]
+  },
+  {
+    "id": "mqtt_publish",
+    "title": "MQTT publish",
+    "category": "Коммуникации",
+    "kind": "statement",
+    "description": "Отправляет сообщение на MQTT брокер.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [
+      {
+        "name": "topic",
+        "type": "string",
+        "label": "Топик",
+        "default": "robolab"
+      },
+      {
+        "name": "payload",
+        "type": "string",
+        "label": "Сообщение",
+        "default": ""
+      },
+      {
+        "name": "retain",
+        "type": "bool",
+        "label": "Retain",
+        "default": false
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "topic": "robolab",
+      "payload": "",
+      "retain": false
+    },
+    "aliases": [
+      "COMM_MQTT_PUBLISH"
+    ]
+  },
+  {
+    "id": "spi_transfer",
+    "title": "SPI операция",
+    "category": "Коммуникации",
+    "kind": "statement",
+    "description": "Инициализирует или выполняет обмен по SPI.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [
+      {
+        "name": "mode",
+        "type": "enum",
+        "label": "Режим",
+        "options": [
+          "begin",
+          "transfer"
+        ],
+        "default": "begin"
+      },
+      {
+        "name": "value",
+        "type": "int",
+        "label": "Данные",
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "mode": "begin",
+      "value": 0
+    },
+    "aliases": [
+      "COMM_SPI_BEGIN",
+      "COMM_SPI_TRANSFER"
+    ]
+  },
+  {
+    "id": "serial_begin",
+    "title": "Serial.begin",
+    "category": "Коммуникации",
+    "kind": "statement",
+    "description": "Инициализирует последовательный порт.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [
+      {
+        "name": "baud",
+        "type": "int",
+        "label": "Скорость",
+        "min": 300,
+        "max": 2000000,
+        "default": 9600
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "baud": 9600
+    },
+    "aliases": [
+      "COMM_SERIAL_BEGIN"
+    ]
+  },
+  {
+    "id": "serial_print",
+    "title": "Serial.print",
+    "category": "Коммуникации",
+    "kind": "statement",
+    "description": "Отправляет текст в последовательный порт.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [
+      {
+        "name": "text",
+        "type": "string",
+        "label": "Текст",
+        "default": "Hello"
+      },
+      {
+        "name": "mode",
+        "type": "enum",
+        "label": "Режим",
+        "options": [
+          "print",
+          "println"
+        ],
+        "default": "print"
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "text": "Hello",
+      "mode": "print"
+    },
+    "aliases": [
+      "COMM_SERIAL_PRINT",
+      "COMM_SERIAL_PRINTLN"
+    ]
+  },
+  {
+    "id": "serial_read_string",
+    "title": "Serial.readString",
+    "category": "Коммуникации",
+    "kind": "expression",
+    "description": "Читает строку из последовательного порта.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ]
+    },
+    "default_params": {},
+    "aliases": [
+      "COMM_SERIAL_READ"
+    ]
+  },
+  {
+    "id": "wifi_connect",
+    "title": "Wi-Fi подключение",
+    "category": "Коммуникации",
+    "kind": "statement",
+    "description": "Подключается к Wi-Fi сети.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [
+      {
+        "name": "ssid",
+        "type": "string",
+        "label": "SSID",
+        "default": "MyWiFi"
+      },
+      {
+        "name": "password",
+        "type": "string",
+        "label": "Пароль",
+        "default": "password"
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "ssid": "MyWiFi",
+      "password": "password"
+    },
+    "aliases": [
+      "COMM_WIFI_CONNECT"
+    ]
+  },
+  {
+    "id": "bluetooth_send",
+    "title": "Отправить по Bluetooth",
+    "category": "Коммуникации",
+    "kind": "statement",
+    "description": "Передаёт сообщение через Bluetooth-модуль.",
+    "section": "loop",
+    "color": "#00BCD4",
+    "params": [
+      {
+        "name": "text",
+        "type": "string",
+        "label": "Текст",
+        "default": ""
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "text": ""
+    },
+    "aliases": [
+      "COMM_BT_SEND"
+    ]
+  },
+  {
+    "id": "logic_switch",
+    "title": "Switch",
+    "category": "Логика",
+    "kind": "statement",
+    "description": "Выполняет ветки в зависимости от значения.",
+    "section": "loop",
+    "color": "#4CAF50",
+    "params": [
+      {
+        "name": "value",
+        "type": "any",
+        "label": "Выражение"
+      },
+      {
+        "name": "cases",
+        "type": "string",
+        "label": "Варианты",
+        "default": ""
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "value": null,
+      "cases": ""
+    },
+    "aliases": [
+      "LOGIC_SWITCH"
+    ]
+  },
+  {
+    "id": "logic_and",
+    "title": "Логическое И",
+    "category": "Логика",
+    "kind": "expression",
+    "description": "Возвращает истинно, если оба условия истинны.",
+    "section": "loop",
+    "color": "#4CAF50",
+    "params": [
+      {
+        "name": "a",
+        "type": "bool",
+        "label": "A",
+        "default": true
+      },
+      {
+        "name": "b",
+        "type": "bool",
+        "label": "B",
+        "default": true
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ]
+    },
+    "default_params": {
+      "a": true,
+      "b": true
+    },
+    "aliases": [
+      "LOGIC_AND"
+    ]
+  },
+  {
+    "id": "logic_or",
+    "title": "Логическое ИЛИ",
+    "category": "Логика",
+    "kind": "expression",
+    "description": "Возвращает истинно, если хотя бы одно условие истинно.",
+    "section": "loop",
+    "color": "#4CAF50",
+    "params": [
+      {
+        "name": "a",
+        "type": "bool",
+        "label": "A",
+        "default": false
+      },
+      {
+        "name": "b",
+        "type": "bool",
+        "label": "B",
+        "default": false
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ]
+    },
+    "default_params": {
+      "a": false,
+      "b": false
+    },
+    "aliases": [
+      "LOGIC_OR"
+    ]
+  },
+  {
+    "id": "logic_not",
+    "title": "Логическое НЕ",
+    "category": "Логика",
+    "kind": "expression",
+    "description": "Инвертирует булево значение.",
+    "section": "loop",
+    "color": "#4CAF50",
+    "params": [
+      {
+        "name": "value",
+        "type": "bool",
+        "label": "Значение",
+        "default": false
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ]
+    },
+    "default_params": {
+      "value": false
+    },
+    "aliases": [
+      "LOGIC_NOT"
+    ]
+  },
+  {
+    "id": "logic_assert",
+    "title": "Проверка условия",
+    "category": "Логика",
+    "kind": "statement",
+    "description": "Вызывает ошибку, если условие ложно.",
+    "section": "loop",
+    "color": "#4CAF50",
+    "params": [
+      {
+        "name": "condition",
+        "type": "bool",
+        "label": "Условие",
+        "default": true
+      },
+      {
+        "name": "message",
+        "type": "string",
+        "label": "Сообщение",
+        "default": ""
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "condition": true,
+      "message": ""
+    },
+    "aliases": [
+      "LOGIC_ASSERT"
+    ]
+  },
+  {
+    "id": "logic_compare",
+    "title": "Сравнение",
+    "category": "Логика",
+    "kind": "expression",
+    "description": "Сравнивает два значения выбранным оператором.",
+    "section": "loop",
+    "color": "#4CAF50",
+    "params": [
+      {
+        "name": "left",
+        "type": "any",
+        "label": "Левый операнд"
+      },
+      {
+        "name": "right",
+        "type": "any",
+        "label": "Правый операнд"
+      },
+      {
+        "name": "operator",
+        "type": "enum",
+        "label": "Оператор",
+        "options": [
+          "==",
+          "!=",
+          ">",
+          ">=",
+          "<",
+          "<="
+        ],
+        "default": "=="
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ]
+    },
+    "default_params": {
+      "operator": "=="
+    },
+    "aliases": [
+      "LOGIC_EQ",
+      "LOGIC_GT",
+      "LOGIC_GTE",
+      "LOGIC_LT",
+      "LOGIC_LTE",
+      "LOGIC_NE"
+    ]
+  },
+  {
+    "id": "logic_ternary",
+    "title": "Тернарный оператор",
+    "category": "Логика",
+    "kind": "expression",
+    "description": "Возвращает одно из значений в зависимости от условия.",
+    "section": "loop",
+    "color": "#4CAF50",
+    "params": [
+      {
+        "name": "condition",
+        "type": "bool",
+        "label": "Условие",
+        "default": true
+      },
+      {
+        "name": "if_true",
+        "type": "any",
+        "label": "Если да"
+      },
+      {
+        "name": "if_false",
+        "type": "any",
+        "label": "Если нет"
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "any"
+        }
+      ]
+    },
+    "default_params": {
+      "condition": true
+    },
+    "aliases": [
+      "LOGIC_TERNARY"
+    ]
+  },
+  {
+    "id": "math_div",
+    "title": "Деление",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Делит одно число на другое.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "a",
+        "type": "number",
+        "label": "Числитель",
+        "default": 1
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "label": "Знаменатель",
+        "default": 1
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "a": 1,
+      "b": 1
+    },
+    "aliases": [
+      "MATH_DIV"
+    ]
+  },
+  {
+    "id": "math_extrema",
+    "title": "Мин/Макс",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Находит минимум или максимум двух значений.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "a",
+        "type": "number",
+        "label": "A",
+        "default": 0
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "label": "B",
+        "default": 0
+      },
+      {
+        "name": "mode",
+        "type": "enum",
+        "label": "Режим",
+        "options": [
+          "min",
+          "max"
+        ],
+        "default": "min"
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "a": 0,
+      "b": 0,
+      "mode": "min"
+    },
+    "aliases": [
+      "MATH_MAX",
+      "MATH_MIN"
+    ]
+  },
+  {
+    "id": "math_abs",
+    "title": "Модуль",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Возвращает модуль числа.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "value",
+        "type": "number",
+        "label": "Число",
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "value": 0
+    },
+    "aliases": [
+      "MATH_ABS"
+    ]
+  },
+  {
+    "id": "math_clamp",
+    "title": "Ограничение",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Ограничивает значение заданным диапазоном.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "value",
+        "type": "number",
+        "label": "Значение",
+        "default": 0
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "label": "Мин",
+        "default": 0
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "label": "Макс",
+        "default": 100
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "value": 0,
+      "min": 0,
+      "max": 100
+    },
+    "aliases": [
+      "MATH_CLAMP"
+    ]
+  },
+  {
+    "id": "math_mod",
+    "title": "Остаток",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Возвращает остаток от деления.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "a",
+        "type": "int",
+        "label": "Делимое",
+        "default": 0
+      },
+      {
+        "name": "b",
+        "type": "int",
+        "label": "Делитель",
+        "default": 1
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "int"
+        }
+      ]
+    },
+    "default_params": {
+      "a": 0,
+      "b": 1
+    },
+    "aliases": [
+      "MATH_MOD"
+    ]
+  },
+  {
+    "id": "math_map",
+    "title": "Преобразование диапазона",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Пересчитывает число из одного диапазона в другой.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "value",
+        "type": "number",
+        "label": "Значение",
+        "default": 0
+      },
+      {
+        "name": "in_min",
+        "type": "number",
+        "label": "Вход мин",
+        "default": 0
+      },
+      {
+        "name": "in_max",
+        "type": "number",
+        "label": "Вход макс",
+        "default": 1023
+      },
+      {
+        "name": "out_min",
+        "type": "number",
+        "label": "Выход мин",
+        "default": 0
+      },
+      {
+        "name": "out_max",
+        "type": "number",
+        "label": "Выход макс",
+        "default": 255
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "value": 0,
+      "in_min": 0,
+      "in_max": 1023,
+      "out_min": 0,
+      "out_max": 255
+    },
+    "aliases": [
+      "MATH_MAP"
+    ]
+  },
+  {
+    "id": "math_mul",
+    "title": "Произведение",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Перемножает два числа.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "a",
+        "type": "number",
+        "label": "A",
+        "default": 1
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "label": "B",
+        "default": 1
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "a": 1,
+      "b": 1
+    },
+    "aliases": [
+      "MATH_MUL"
+    ]
+  },
+  {
+    "id": "math_sub",
+    "title": "Разность",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Вычитает второе число из первого.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "a",
+        "type": "number",
+        "label": "A",
+        "default": 0
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "label": "B",
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "a": 0,
+      "b": 0
+    },
+    "aliases": [
+      "MATH_SUB"
+    ]
+  },
+  {
+    "id": "math_random",
+    "title": "Случайное значение",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Возвращает случайное число в заданном диапазоне.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "mode",
+        "type": "enum",
+        "label": "Тип",
+        "options": [
+          "int",
+          "float"
+        ],
+        "default": "int"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "label": "Минимум",
+        "default": 0
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "label": "Максимум",
+        "default": 100
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "mode": "int",
+      "min": 0,
+      "max": 100
+    },
+    "aliases": [
+      "MATH_RANDOM_FLOAT",
+      "MATH_RANDOM_INT"
+    ]
+  },
+  {
+    "id": "math_add",
+    "title": "Сумма",
+    "category": "Математика",
+    "kind": "expression",
+    "description": "Складывает два числа.",
+    "section": "loop",
+    "color": "#2E7D32",
+    "params": [
+      {
+        "name": "a",
+        "type": "number",
+        "label": "A",
+        "default": 0
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "label": "B",
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ]
+    },
+    "default_params": {
+      "a": 0,
+      "b": 0
+    },
+    "aliases": [
+      "MATH_ADD"
+    ]
+  },
+  {
+    "id": "var_change",
+    "title": "Изменить на",
+    "category": "Переменные",
+    "kind": "statement",
+    "description": "Увеличивает или уменьшает переменную на значение.",
+    "section": "loop",
+    "color": "#F06292",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "value"
+      },
+      {
+        "name": "delta",
+        "type": "number",
+        "label": "Изменение",
+        "default": 1
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "value",
+      "delta": 1
+    },
+    "aliases": [
+      "VAR_DEC",
+      "VAR_INC"
+    ]
+  },
+  {
+    "id": "var_toggle",
+    "title": "Инвертировать bool",
+    "category": "Переменные",
+    "kind": "statement",
+    "description": "Инвертирует логическую переменную.",
+    "section": "loop",
+    "color": "#F06292",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "flag"
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "flag"
+    },
+    "aliases": [
+      "VAR_BOOL_TOGGLE"
+    ]
+  },
+  {
+    "id": "random_seed",
+    "title": "Инициализация random",
+    "category": "Переменные",
+    "kind": "statement",
+    "description": "Устанавливает зерно генератора случайных чисел.",
+    "section": "loop",
+    "color": "#F06292",
+    "params": [
+      {
+        "name": "seed",
+        "type": "int",
+        "label": "Seed",
+        "default": 1
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "seed": 1
+    },
+    "aliases": [
+      "VAR_RANDOM_SEED"
+    ]
+  },
+  {
+    "id": "var_array_access",
+    "title": "Массив",
+    "category": "Переменные",
+    "kind": "statement",
+    "description": "Читает или записывает элемент массива.",
+    "section": "loop",
+    "color": "#F06292",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "arr"
+      },
+      {
+        "name": "index",
+        "type": "int",
+        "label": "Индекс",
+        "min": 0,
+        "max": 127,
+        "default": 0
+      },
+      {
+        "name": "mode",
+        "type": "enum",
+        "label": "Режим",
+        "options": [
+          "set",
+          "get"
+        ],
+        "default": "set"
+      },
+      {
+        "name": "value",
+        "type": "any",
+        "label": "Значение",
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "arr",
+      "index": 0,
+      "mode": "set",
+      "value": 0
+    },
+    "aliases": [
+      "VAR_ARRAY_GET",
+      "VAR_ARRAY_SET"
+    ]
+  },
+  {
+    "id": "var_declare",
+    "title": "Объявить переменную",
+    "category": "Переменные",
+    "kind": "statement",
+    "description": "Создаёт новую переменную указанного типа.",
+    "section": "loop",
+    "color": "#F06292",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "value"
+      },
+      {
+        "name": "var_type",
+        "type": "enum",
+        "label": "Тип",
+        "options": [
+          "int",
+          "float",
+          "bool",
+          "string"
+        ],
+        "default": "int"
+      },
+      {
+        "name": "initial",
+        "type": "any",
+        "label": "Начальное значение",
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "value",
+      "var_type": "int",
+      "initial": 0
+    },
+    "aliases": [
+      "VAR_DECLARE_FLOAT",
+      "VAR_DECLARE_INT"
+    ]
+  },
+  {
+    "id": "var_get",
+    "title": "Получить переменную",
+    "category": "Переменные",
+    "kind": "expression",
+    "description": "Возвращает текущее значение переменной.",
+    "section": "loop",
+    "color": "#F06292",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "value"
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "any"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "value"
+    },
+    "aliases": [
+      "VAR_GET"
+    ]
+  },
+  {
+    "id": "var_set",
+    "title": "Присвоить",
+    "category": "Переменные",
+    "kind": "statement",
+    "description": "Устанавливает значение переменной.",
+    "section": "loop",
+    "color": "#F06292",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
         "default": "value"
       },
       {
         "name": "value",
         "type": "any",
+        "label": "Значение",
         "default": 0
       }
     ],
-    "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
     "ports": {
       "inputs": [
         {
@@ -5259,22 +2188,89 @@
         }
       ]
     },
-    "icon": "diag_publish"
+    "default_params": {
+      "name": "value",
+      "value": 0
+    },
+    "aliases": [
+      "VAR_RESET",
+      "VAR_SET"
+    ]
   },
   {
-    "id": "DIAG_WATCH",
-    "category": "Диагностика",
-    "title": "Watch var",
+    "id": "var_array_declare",
+    "title": "Создать массив",
+    "category": "Переменные",
+    "kind": "statement",
+    "description": "Объявляет массив указанного размера.",
+    "section": "loop",
+    "color": "#F06292",
     "params": [
       {
         "name": "name",
         "type": "string",
-        "default": "value"
+        "label": "Имя",
+        "default": "arr"
+      },
+      {
+        "name": "size",
+        "type": "int",
+        "label": "Размер",
+        "min": 1,
+        "max": 128,
+        "default": 8
+      },
+      {
+        "name": "var_type",
+        "type": "enum",
+        "label": "Тип",
+        "options": [
+          "int",
+          "float",
+          "bool"
+        ],
+        "default": "int"
       }
     ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "arr",
+      "size": 8,
+      "var_type": "int"
+    },
+    "aliases": [
+      "VAR_ARRAY_DECLARE"
+    ]
+  },
+  {
+    "id": "custom_code",
+    "title": "Пользовательский код",
+    "category": "Пользовательские",
+    "kind": "statement",
+    "description": "Вставляет произвольный код пользователя.",
     "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
+    "color": "#9E9E9E",
+    "params": [
+      {
+        "name": "code",
+        "type": "string",
+        "label": "Код",
+        "default": ""
+      }
+    ],
     "ports": {
       "inputs": [
         {
@@ -5289,22 +2285,61 @@
         }
       ]
     },
-    "icon": "diag_watch"
+    "default_params": {
+      "code": ""
+    },
+    "aliases": [
+      "CUSTOM_SNIPPET_01",
+      "CUSTOM_SNIPPET_02",
+      "CUSTOM_SNIPPET_03",
+      "CUSTOM_SNIPPET_04",
+      "CUSTOM_SNIPPET_05",
+      "CUSTOM_SNIPPET_06",
+      "CUSTOM_SNIPPET_07"
+    ]
   },
   {
-    "id": "DIAG_PROFILER_START",
-    "category": "Диагностика",
-    "title": "Profiler start",
-    "params": [
-      {
-        "name": "label",
-        "type": "string",
-        "default": "start"
-      }
-    ],
+    "id": "rgb_set",
+    "title": "RGB цвет",
+    "category": "Свет и звук",
+    "kind": "statement",
+    "description": "Устанавливает цвет RGB-светодиода.",
     "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
+    "color": "#FFC107",
+    "params": [
+      {
+        "name": "pin",
+        "type": "int",
+        "label": "Пин",
+        "min": 0,
+        "max": 53,
+        "default": 6
+      },
+      {
+        "name": "r",
+        "type": "int",
+        "label": "Красный",
+        "min": 0,
+        "max": 255,
+        "default": 255
+      },
+      {
+        "name": "g",
+        "type": "int",
+        "label": "Зелёный",
+        "min": 0,
+        "max": 255,
+        "default": 0
+      },
+      {
+        "name": "b",
+        "type": "int",
+        "label": "Синий",
+        "min": 0,
+        "max": 255,
+        "default": 0
+      }
+    ],
     "ports": {
       "inputs": [
         {
@@ -5319,22 +2354,48 @@
         }
       ]
     },
-    "icon": "diag_profiler_start"
+    "default_params": {
+      "pin": 6,
+      "r": 255,
+      "g": 0,
+      "b": 0
+    },
+    "aliases": []
   },
   {
-    "id": "DIAG_PROFILER_STOP",
-    "category": "Диагностика",
-    "title": "Profiler stop",
-    "params": [
-      {
-        "name": "label",
-        "type": "string",
-        "default": "stop"
-      }
-    ],
+    "id": "tone_play",
+    "title": "Звук",
+    "category": "Свет и звук",
+    "kind": "statement",
+    "description": "Проигрывает тон на пьезоизлучателе.",
     "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
+    "color": "#FFC107",
+    "params": [
+      {
+        "name": "pin",
+        "type": "int",
+        "label": "Пин",
+        "min": 0,
+        "max": 53,
+        "default": 8
+      },
+      {
+        "name": "frequency",
+        "type": "int",
+        "label": "Частота, Гц",
+        "min": 20,
+        "max": 20000,
+        "default": 440
+      },
+      {
+        "name": "duration_ms",
+        "type": "int",
+        "label": "Длительность, мс",
+        "min": 0,
+        "max": 10000,
+        "default": 500
+      }
+    ],
     "ports": {
       "inputs": [
         {
@@ -5349,22 +2410,47 @@
         }
       ]
     },
-    "icon": "diag_profiler_stop"
+    "default_params": {
+      "pin": 8,
+      "frequency": 440,
+      "duration_ms": 500
+    },
+    "aliases": [
+      "LIGHT_TONE_01",
+      "LIGHT_TONE_02",
+      "LIGHT_TONE_03",
+      "LIGHT_TONE_04",
+      "LIGHT_TONE_05"
+    ]
   },
   {
-    "id": "DIAG_ASSERT",
-    "category": "Диагностика",
-    "title": "Assert",
-    "params": [
-      {
-        "name": "condition",
-        "type": "bool",
-        "default": true
-      }
-    ],
+    "id": "led_set",
+    "title": "Светодиод",
+    "category": "Свет и звук",
+    "kind": "statement",
+    "description": "Управляет состоянием светодиода на пине.",
     "section": "loop",
-    "description": "Диагностический блок.",
-    "color": "#757575",
+    "color": "#FFC107",
+    "params": [
+      {
+        "name": "pin",
+        "type": "int",
+        "label": "Пин",
+        "min": 0,
+        "max": 53,
+        "default": 13
+      },
+      {
+        "name": "state",
+        "type": "enum",
+        "label": "Состояние",
+        "options": [
+          "on",
+          "off"
+        ],
+        "default": "on"
+      }
+    ],
     "ports": {
       "inputs": [
         {
@@ -5379,22 +2465,316 @@
         }
       ]
     },
-    "icon": "diag_assert"
+    "default_params": {
+      "pin": 13,
+      "state": "on"
+    },
+    "aliases": [
+      "LIGHT_LED_ON_01",
+      "LIGHT_LED_ON_02",
+      "LIGHT_LED_ON_03",
+      "LIGHT_LED_ON_04",
+      "LIGHT_LED_ON_05",
+      "LIGHT_LED_ON_06",
+      "LIGHT_LED_ON_07",
+      "LIGHT_LED_ON_08",
+      "LIGHT_LED_ON_09",
+      "LIGHT_LED_ON_10",
+      "LIGHT_LED_ON_11",
+      "LIGHT_LED_ON_12",
+      "LIGHT_LED_ON_13",
+      "LIGHT_LED_ON_14",
+      "LIGHT_LED_ON_15"
+    ]
   },
   {
-    "id": "CUSTOM_SNIPPET_01",
-    "category": "Пользовательские",
-    "title": "Пользовательский код 1",
+    "id": "analog_read",
+    "title": "Аналоговый вход",
+    "category": "Сенсоры",
+    "kind": "expression",
+    "description": "Читает значение аналогового входа.",
+    "section": "loop",
+    "color": "#03A9F4",
     "params": [
+      {
+        "name": "pin",
+        "type": "int",
+        "label": "Пин",
+        "min": 0,
+        "max": 15,
+        "default": 0
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "int"
+        }
+      ]
+    },
+    "default_params": {
+      "pin": 0
+    },
+    "aliases": [
+      "SENS_ANALOG_READ_01",
+      "SENS_ANALOG_READ_02",
+      "SENS_ANALOG_READ_03",
+      "SENS_ANALOG_READ_04",
+      "SENS_ANALOG_READ_05",
+      "SENS_ANALOG_READ_06",
+      "SENS_ANALOG_READ_07",
+      "SENS_ANALOG_READ_08",
+      "SENS_ANALOG_READ_09",
+      "SENS_ANALOG_READ_10"
+    ]
+  },
+  {
+    "id": "ultrasonic_read",
+    "title": "Ультразвуковой датчик",
+    "category": "Сенсоры",
+    "kind": "expression",
+    "description": "Измеряет расстояние ультразвуковым датчиком.",
+    "section": "loop",
+    "color": "#03A9F4",
+    "params": [
+      {
+        "name": "trig_pin",
+        "type": "int",
+        "label": "TRIG",
+        "min": 0,
+        "max": 53,
+        "default": 12
+      },
+      {
+        "name": "echo_pin",
+        "type": "int",
+        "label": "ECHO",
+        "min": 0,
+        "max": 53,
+        "default": 11
+      },
+      {
+        "name": "units",
+        "type": "enum",
+        "label": "Единицы",
+        "options": [
+          "cm",
+          "mm"
+        ],
+        "default": "cm"
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "float"
+        }
+      ]
+    },
+    "default_params": {
+      "trig_pin": 12,
+      "echo_pin": 11,
+      "units": "cm"
+    },
+    "aliases": [
+      "SENS_ULTRASONIC_01",
+      "SENS_ULTRASONIC_02",
+      "SENS_ULTRASONIC_03",
+      "SENS_ULTRASONIC_04",
+      "SENS_ULTRASONIC_05",
+      "SENS_ULTRASONIC_06",
+      "SENS_ULTRASONIC_07",
+      "SENS_ULTRASONIC_08",
+      "SENS_ULTRASONIC_09",
+      "SENS_ULTRASONIC_10",
+      "SENS_ULTRASONIC_11",
+      "SENS_ULTRASONIC_12",
+      "SENS_ULTRASONIC_13",
+      "SENS_ULTRASONIC_14",
+      "SENS_ULTRASONIC_15"
+    ]
+  },
+  {
+    "id": "digital_read",
+    "title": "Цифровой вход",
+    "category": "Сенсоры",
+    "kind": "expression",
+    "description": "Читает состояние цифрового входа.",
+    "section": "loop",
+    "color": "#03A9F4",
+    "params": [
+      {
+        "name": "pin",
+        "type": "int",
+        "label": "Пин",
+        "min": 0,
+        "max": 53,
+        "default": 2
+      }
+    ],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ]
+    },
+    "default_params": {
+      "pin": 2
+    },
+    "aliases": [
+      "SENS_BUTTON_01",
+      "SENS_BUTTON_02",
+      "SENS_BUTTON_03",
+      "SENS_BUTTON_04",
+      "SENS_BUTTON_05"
+    ]
+  },
+  {
+    "id": "emergency_stop",
+    "title": "Аварийный стоп",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Мгновенно останавливает выполнение и выключает моторы.",
+    "section": "loop",
+    "color": "#546E7A",
+    "params": [
+      {
+        "name": "message",
+        "type": "string",
+        "label": "Сообщение",
+        "default": ""
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "message": ""
+    },
+    "aliases": [
+      "SYS_EMERGENCY_STOP"
+    ]
+  },
+  {
+    "id": "delay_safe",
+    "title": "Безопасная задержка",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Выполняет задержку с обслуживанием событий.",
+    "section": "loop",
+    "color": "#546E7A",
+    "params": [
+      {
+        "name": "ms",
+        "type": "int",
+        "label": "Миллисекунды",
+        "min": 0,
+        "max": 60000,
+        "default": 1000
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "ms": 1000
+    },
+    "aliases": [
+      "SYS_DELAY_SAFE"
+    ]
+  },
+  {
+    "id": "include_header",
+    "title": "Добавить include",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Добавляет директиву #include.",
+    "section": "loop",
+    "color": "#546E7A",
+    "params": [
+      {
+        "name": "header",
+        "type": "string",
+        "label": "Файл",
+        "default": "<Arduino.h>"
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "header": "<Arduino.h>"
+    },
+    "aliases": [
+      "SYS_INCLUDE"
+    ]
+  },
+  {
+    "id": "section_marker",
+    "title": "Маркер области",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Вставляет код в выбранный раздел скетча.",
+    "section": "loop",
+    "color": "#546E7A",
+    "params": [
+      {
+        "name": "section",
+        "type": "enum",
+        "label": "Раздел",
+        "options": [
+          "setup",
+          "loop"
+        ],
+        "default": "loop"
+      },
       {
         "name": "code",
         "type": "string",
-        "default": "// code"
+        "label": "Код",
+        "default": ""
       }
     ],
-    "section": "functions",
-    "description": "Произвольный пользовательский фрагмент.",
-    "color": "#7E57C2",
     "ports": {
       "inputs": [
         {
@@ -5409,22 +2789,37 @@
         }
       ]
     },
-    "icon": "custom_snippet_01"
+    "default_params": {
+      "section": "loop",
+      "code": ""
+    },
+    "aliases": [
+      "SYS_LOOP_MARK",
+      "SYS_SETUP_MARK"
+    ]
   },
   {
-    "id": "CUSTOM_SNIPPET_02",
-    "category": "Пользовательские",
-    "title": "Пользовательский код 2",
+    "id": "define_macro",
+    "title": "Определить макрос",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Создаёт директиву #define.",
+    "section": "loop",
+    "color": "#546E7A",
     "params": [
       {
-        "name": "code",
+        "name": "name",
         "type": "string",
-        "default": "// code"
+        "label": "Имя",
+        "default": "LED_PIN"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "label": "Значение",
+        "default": "13"
       }
     ],
-    "section": "functions",
-    "description": "Произвольный пользовательский фрагмент.",
-    "color": "#7E57C2",
     "ports": {
       "inputs": [
         {
@@ -5439,22 +2834,38 @@
         }
       ]
     },
-    "icon": "custom_snippet_02"
+    "default_params": {
+      "name": "LED_PIN",
+      "value": "13"
+    },
+    "aliases": [
+      "SYS_DEFINE"
+    ]
   },
   {
-    "id": "CUSTOM_SNIPPET_03",
-    "category": "Пользовательские",
-    "title": "Пользовательский код 3",
+    "id": "task_schedule",
+    "title": "Расписание задач",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Добавляет задачу в системный планировщик.",
+    "section": "loop",
+    "color": "#546E7A",
     "params": [
       {
-        "name": "code",
+        "name": "name",
         "type": "string",
-        "default": "// code"
+        "label": "Задача",
+        "default": "task"
+      },
+      {
+        "name": "period_ms",
+        "type": "int",
+        "label": "Период, мс",
+        "min": 1,
+        "max": 60000,
+        "default": 1000
       }
     ],
-    "section": "functions",
-    "description": "Произвольный пользовательский фрагмент.",
-    "color": "#7E57C2",
     "ports": {
       "inputs": [
         {
@@ -5469,22 +2880,43 @@
         }
       ]
     },
-    "icon": "custom_snippet_03"
+    "default_params": {
+      "name": "task",
+      "period_ms": 1000
+    },
+    "aliases": [
+      "SYS_TASK_SCHEDULE"
+    ]
   },
   {
-    "id": "CUSTOM_SNIPPET_04",
-    "category": "Пользовательские",
-    "title": "Пользовательский код 4",
+    "id": "pin_mode",
+    "title": "Режим пина",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Устанавливает режим работы цифрового пина.",
+    "section": "loop",
+    "color": "#546E7A",
     "params": [
       {
-        "name": "code",
-        "type": "string",
-        "default": "// code"
+        "name": "pin",
+        "type": "int",
+        "label": "Пин",
+        "min": 0,
+        "max": 53,
+        "default": 13
+      },
+      {
+        "name": "mode",
+        "type": "enum",
+        "label": "Режим",
+        "options": [
+          "INPUT",
+          "OUTPUT",
+          "INPUT_PULLUP"
+        ],
+        "default": "OUTPUT"
       }
     ],
-    "section": "functions",
-    "description": "Произвольный пользовательский фрагмент.",
-    "color": "#7E57C2",
     "ports": {
       "inputs": [
         {
@@ -5499,22 +2931,40 @@
         }
       ]
     },
-    "icon": "custom_snippet_04"
+    "default_params": {
+      "pin": 13,
+      "mode": "OUTPUT"
+    },
+    "aliases": [
+      "SYS_PIN_MODE"
+    ]
   },
   {
-    "id": "CUSTOM_SNIPPET_05",
-    "category": "Пользовательские",
-    "title": "Пользовательский код 5",
+    "id": "system_mode",
+    "title": "Режим/профиль",
+    "category": "Система",
+    "kind": "statement",
+    "description": "Переключает режим или применяет профиль оборудования.",
+    "section": "loop",
+    "color": "#546E7A",
     "params": [
       {
-        "name": "code",
+        "name": "action",
+        "type": "enum",
+        "label": "Действие",
+        "options": [
+          "mode",
+          "profile"
+        ],
+        "default": "mode"
+      },
+      {
+        "name": "value",
         "type": "string",
-        "default": "// code"
+        "label": "Значение",
+        "default": "default"
       }
     ],
-    "section": "functions",
-    "description": "Произвольный пользовательский фрагмент.",
-    "color": "#7E57C2",
     "ports": {
       "inputs": [
         {
@@ -5529,29 +2979,35 @@
         }
       ]
     },
-    "icon": "custom_snippet_05"
+    "default_params": {
+      "action": "mode",
+      "value": "default"
+    },
+    "aliases": [
+      "SYS_MODE_SELECT",
+      "SYS_PROFILE_APPLY"
+    ]
   },
   {
-    "id": "CUSTOM_SNIPPET_06",
-    "category": "Пользовательские",
-    "title": "Пользовательский код 6",
+    "id": "every_ms",
+    "title": "Каждые N миллисекунд",
+    "category": "События",
+    "kind": "event",
+    "description": "Периодический запуск с заданным интервалом.",
+    "section": "events",
+    "color": "#607D8B",
     "params": [
       {
-        "name": "code",
-        "type": "string",
-        "default": "// code"
+        "name": "period_ms",
+        "type": "int",
+        "label": "Интервал, мс",
+        "min": 1,
+        "max": 60000,
+        "default": 1000
       }
     ],
-    "section": "functions",
-    "description": "Произвольный пользовательский фрагмент.",
-    "color": "#7E57C2",
     "ports": {
-      "inputs": [
-        {
-          "name": "in",
-          "type": "flow"
-        }
-      ],
+      "inputs": [],
       "outputs": [
         {
           "name": "out",
@@ -5559,22 +3015,99 @@
         }
       ]
     },
-    "icon": "custom_snippet_06"
+    "default_params": {
+      "period_ms": 1000
+    },
+    "aliases": [
+      "TIME_EVERY"
+    ]
   },
   {
-    "id": "CUSTOM_SNIPPET_07",
-    "category": "Пользовательские",
-    "title": "Пользовательский код 7",
+    "id": "on_button",
+    "title": "Кнопка",
+    "category": "События",
+    "kind": "event",
+    "description": "Запускается при срабатывании кнопки.",
+    "section": "events",
+    "color": "#607D8B",
     "params": [
       {
-        "name": "code",
-        "type": "string",
-        "default": "// code"
+        "name": "pin",
+        "type": "int",
+        "label": "Пин",
+        "min": 0,
+        "max": 53,
+        "default": 2
+      },
+      {
+        "name": "edge",
+        "type": "enum",
+        "label": "Событие",
+        "options": [
+          "pressed",
+          "released"
+        ],
+        "default": "pressed"
       }
     ],
-    "section": "functions",
-    "description": "Произвольный пользовательский фрагмент.",
-    "color": "#7E57C2",
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "pin": 2,
+      "edge": "pressed"
+    },
+    "aliases": []
+  },
+  {
+    "id": "on_start",
+    "title": "При старте",
+    "category": "События",
+    "kind": "event",
+    "description": "Запускается один раз при старте программы.",
+    "section": "events",
+    "color": "#607D8B",
+    "params": [],
+    "ports": {
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {},
+    "aliases": []
+  },
+  {
+    "id": "function_call",
+    "title": "Вызов функции",
+    "category": "Функции",
+    "kind": "statement",
+    "description": "Вызывает пользовательскую функцию.",
+    "section": "loop",
+    "color": "#795548",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "myFunction"
+      },
+      {
+        "name": "args",
+        "type": "string",
+        "label": "Аргументы",
+        "default": ""
+      }
+    ],
     "ports": {
       "inputs": [
         {
@@ -5589,6 +3122,66 @@
         }
       ]
     },
-    "icon": "custom_snippet_07"
+    "default_params": {
+      "name": "myFunction",
+      "args": ""
+    },
+    "aliases": [
+      "FUNC_CALL_01",
+      "FUNC_CALL_02",
+      "FUNC_CALL_03",
+      "FUNC_CALL_04",
+      "FUNC_CALL_05",
+      "FUNC_CALL_06"
+    ]
+  },
+  {
+    "id": "function_define",
+    "title": "Определить функцию",
+    "category": "Функции",
+    "kind": "statement",
+    "description": "Создаёт пользовательскую функцию.",
+    "section": "functions",
+    "color": "#795548",
+    "params": [
+      {
+        "name": "name",
+        "type": "string",
+        "label": "Имя",
+        "default": "myFunction"
+      },
+      {
+        "name": "args",
+        "type": "string",
+        "label": "Аргументы",
+        "default": ""
+      }
+    ],
+    "ports": {
+      "inputs": [
+        {
+          "name": "in",
+          "type": "flow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "flow"
+        }
+      ]
+    },
+    "default_params": {
+      "name": "myFunction",
+      "args": ""
+    },
+    "aliases": [
+      "FUNC_DEFINE_01",
+      "FUNC_DEFINE_02",
+      "FUNC_DEFINE_03",
+      "FUNC_DEFINE_04",
+      "FUNC_DEFINE_05",
+      "FUNC_DEFINE_06"
+    ]
   }
 ]

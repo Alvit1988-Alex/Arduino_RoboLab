@@ -20,7 +20,7 @@ def load_palette_entries() -> list[dict]:
 
 def test_blocks_collection_has_expected_size() -> None:
     blocks = load_palette_entries()
-    assert len(blocks) >= 150, "Палитра должна содержать минимум 150 блоков"
+    assert 60 <= len(blocks) <= 80, "Палитра должна содержать около 60–80 универсальных блоков"
 
 
 @pytest.mark.parametrize("key", ["id", "category", "title", "section", "color"])

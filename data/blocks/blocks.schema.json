@@ -1,77 +1,130 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Arduino RoboLab Blocks",
-  "type": "object",
-  "required": ["version", "categories", "blocks"],
-  "properties": {
-    "version": {"type": "integer", "minimum": 1},
-    "categories": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "required": ["title", "color"],
-        "properties": {
-          "title": {"type": "string"},
-          "color": {"type": "string"}
-        }
-      }
-    },
-    "blocks": {
+  "oneOf": [
+    {
       "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "required": ["id", "name", "category", "kind"],
-        "properties": {
-          "id": {"type": "string"},
-          "name": {"type": "string"},
-          "category": {"type": "string"},
-          "kind": {"type": "string", "enum": ["event", "statement", "expression"]},
-          "section": {"type": "string"},
-          "template": {"type": "string"},
-          "returns": {"type": "string"},
-          "parameters": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": ["name", "type"],
-              "properties": {
-                "name": {"type": "string"},
-                "type": {"type": "string"},
-                "default": {}
-              }
-            }
-          },
-          "setup": {
-            "type": "array",
-            "items": {"type": "string"}
-          },
-          "globals": {
-            "type": "array",
-            "items": {"type": "string"}
-          },
-          "includes": {
-            "type": "array",
-            "items": {"type": "string"}
-          },
-          "functions": {
-            "type": "array",
-            "items": {"type": "string"}
-          },
-          "containers": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": ["name", "section"],
-              "properties": {
-                "name": {"type": "string"},
-                "section": {"type": "string"},
-                "placeholder": {"type": "string"}
-              }
+      "items": {"$ref": "#/definitions/block"}
+    },
+    {
+      "type": "object",
+      "required": ["version", "categories", "blocks"],
+      "properties": {
+        "version": {"type": "integer", "minimum": 1},
+        "categories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["title", "color"],
+            "properties": {
+              "title": {"type": "string"},
+              "color": {"type": "string"}
             }
           }
+        },
+        "blocks": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/block"}
         }
       }
+    }
+  ],
+  "definitions": {
+    "param": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {"type": "string"},
+        "type": {"type": "string"},
+        "label": {"type": "string"},
+        "description": {"type": "string"},
+        "default": {},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "step": {"type": "number"},
+        "options": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "object",
+                "required": ["value"],
+                "properties": {
+                  "value": {},
+                  "label": {"type": "string"}
+                }
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "port": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string"},
+        "type": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "container": {
+      "type": "object",
+      "required": ["name", "section"],
+      "properties": {
+        "name": {"type": "string"},
+        "section": {"type": "string"},
+        "placeholder": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "block": {
+      "type": "object",
+      "required": ["id", "title", "category", "kind"],
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "category": {"type": "string"},
+        "kind": {"type": "string", "enum": ["event", "statement", "expression"]},
+        "description": {"type": "string"},
+        "section": {"type": "string"},
+        "color": {"type": "string"},
+        "icon": {"type": "string"},
+        "params": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/param"}
+        },
+        "ports": {
+          "type": "object",
+          "properties": {
+            "inputs": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/port"}
+            },
+            "outputs": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/port"}
+            }
+          },
+          "additionalProperties": true
+        },
+        "default_params": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "aliases": {
+          "type": "array",
+          "items": {"type": "string"},
+          "default": []
+        },
+        "containers": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/container"}
+        }
+      },
+      "additionalProperties": true
     }
   }
 }
